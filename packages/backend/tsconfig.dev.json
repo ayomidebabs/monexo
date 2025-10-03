@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "incremental": true,
+        "target": "es2020",
+        "outDir": "./dist/dev",
+        "sourceMap": true,
+        // "noEmitOnError": true,
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "monexo",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "backend": "pnpm --filter @monexo/backend dev",
+    "frontend": "pnpm --filter @monexo/frontend dev",
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "start": "pnpm --filter @ecommerce/backend start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0"
+}
