@@ -1,0 +1,333 @@
+$base-font-size: 1rem ;
+$line-height-body: 1.5 ;
+$line-height-heading: 1.2 ;
+$font-family-body: 'Inter', sans-serif;
+$font-family-heading: 'Inter', serif;
+$text-color: var(--text-primary) ;
+
+$font-sizes-base: (
+    h1: clamp(2rem, 5vw, 3rem),
+    h2: clamp(1.5rem, 4vw, 2.25rem),
+    h3: clamp(1.25rem, 3vw, 1.75rem),
+    h4: clamp(1.125rem, 2.5vw, 1.5rem),
+    h5: clamp(1rem, 2vw, 1.25rem),
+    h6: clamp(0.875rem, 1.8vw, 1.125rem),
+    body: clamp(1rem, 2vw, 1.125rem)
+);
+
+$breakpoints: (
+    sm: 36rem,
+    md: 48rem,
+    lg: 62rem,
+    xl: 75rem,
+    xxl: 87.5rem
+);
+
+$font-sizes-breakpoints: (
+    sm: (h1: clamp(2.25rem, 5.5vw, 3.5rem),
+        h2: clamp(1.75rem, 4.5vw, 2.5rem),
+        h3: clamp(1.5rem, 3.5vw, 2rem),
+        h4: clamp(1.25rem, 3vw, 1.75rem),
+        h5: clamp(1.125rem, 2.5vw, 1.5rem),
+        h6: clamp(1rem, 2vw, 1.25rem),
+        body: clamp(1rem, 2.1vw, 1.25rem)),
+    md: (h1: clamp(2.5rem, 6vw, 4rem),
+        h2: clamp(2rem, 5vw, 3rem),
+        h3: clamp(1.75rem, 4vw, 2.25rem),
+        h4: clamp(1.5rem, 3.5vw, 2rem),
+        h5: clamp(1.25rem, 3vw, 1.75rem),
+        h6: clamp(1.125rem, 2.5vw, 1.5rem),
+        body: clamp(1.125rem, 2.3vw, 1.375rem)),
+    lg: (h1: clamp(3rem, 6.5vw, 4.5rem),
+        h2: clamp(2.25rem, 5.5vw, 3.25rem),
+        h3: clamp(2rem, 4.5vw, 2.5rem),
+        h4: clamp(1.75rem, 4vw, 2.25rem),
+        h5: clamp(1.5rem, 3.5vw, 2rem),
+        h6: clamp(1.25rem, 3vw, 1.75rem),
+        body: clamp(1.125rem, 2.5vw, 1.5rem)),
+    xl: (h1: clamp(3.5rem, 7vw, 5rem),
+        h2: clamp(2.5rem, 6vw, 3.5rem),
+        h3: clamp(2.25rem, 5vw, 2.75rem),
+        h4: clamp(2rem, 4.5vw, 2.5rem),
+        h5: clamp(1.75rem, 4vw, 2.25rem),
+        h6: clamp(1.5rem, 3.5vw, 2rem),
+        body: clamp(1.25rem, 2.8vw, 1.5rem)),
+    xxl: (h1: clamp(4rem, 7.5vw, 5.5rem),
+        h2: clamp(3rem, 6.5vw, 4rem),
+        h3: clamp(2.5rem, 5.5vw, 3rem),
+        h4: clamp(2.25rem, 5vw, 2.75rem),
+        h5: clamp(2rem, 4.5vw, 2.5rem),
+        h6: clamp(1.75rem, 4vw, 2.25rem),
+        body: clamp(1.375rem, 3vw, 1.5rem))
+);
+
+
+// base heading sizes
+@each $heading, $size in (h1: map-get($font-sizes-base, h1), h2: map-get($font-sizes-base, h2), h3: map-get($font-sizes-base, h3), h4: map-get($font-sizes-base, h4), h5: map-get($font-sizes-base, h5), h6: map-get($font-sizes-base, h6)) {
+    #{$heading} {
+        font-size: $size ;
+    }
+}
+
+// heading sizes at breakpoints
+@each $bp, $min-width in $breakpoints {
+    @media (min-width: $min-width) {
+        h1 {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), h1) ;
+        }
+
+        h2 {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), h2) ;
+        }
+
+        h3 {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), h3) ;
+        }
+
+        h4 {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), h4) ;
+        }
+
+        h5 {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), h5) ;
+        }
+
+        h6 {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), h6) ;
+        }
+
+       nav a {
+            font-size: map-get(map-get($font-sizes-breakpoints, $bp), body) ;
+        }
+    }
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/fonts/inter-v19-latin/inter-v19-latin-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/fonts/inter-v19-latin/inter-v19-latin-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/fonts/inter-v19-latin/inter-v19-latin-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/fonts/inter-v19-latin//inter-v19-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    src: url('../assets/fonts/merriweather-v32-latin/merriweather-v32-latin-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    src: url('../assets/fonts/merriweather-v32-latin/merriweather-v32-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+/* roboto-300 - latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-300.woff2') format('woff2');
+}
+
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 300;
+    src: url('../fonts/roboto-v48-latin-300italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 400;
+    src: url('../fonts/roboto-v48-latin-italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 500;
+    src: url('../fonts/roboto-v48-latin-500italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 600;
+    src: url('../fonts/roboto-v48-latin-600italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 700;
+    src: url('../fonts/roboto-v48-latin-700italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 800;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-800.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 800;
+    src: url('../fonts/roboto-v48-latin-800italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    src: url('../assets/fonts/roboto-v48-latin/roboto-v48-latin-900.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 900;
+    src: url('../fonts/roboto-v48-latin-900italic.woff2') format('woff2');
+}
+
+
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../assets/fonts/lora-v36-latin/lora-v36-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 400;
+    src: url('../fonts/lora-v36-latin-italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../assets/fonts/lora-v36-latin/lora-v36-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 500;
+    src: url('../fonts/lora-v36-latin-500italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../assets/fonts/lora-v36-latin/lora-v36-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 600;
+    src: url('../fonts/lora-v36-latin-600italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../assets/fonts/lora-v36-latin/lora-v36-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 700;
+    src: url('../fonts/lora-v36-latin-700italic.woff2') format('woff2');
+}

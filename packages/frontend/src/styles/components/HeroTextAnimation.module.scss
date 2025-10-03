@@ -1,0 +1,42 @@
+@use "../utils//functions" as f;
+@use "../utils//mixins" as m;
+
+.heroText {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: f.r(1);
+    text-shadow: 0 f.r(2) f.r(4) rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: var(--accent-primary);
+}
+
+@include m.up(sm) {
+    .heroText {
+            font-size: 2.5rem;
+            letter-spacing: f.r(1.5);
+        }
+}
+
+@include m.up(md) {
+    .heroText {
+            font-size: 3rem;
+            letter-spacing: f.r(2);
+        }
+}
+
+@include m.up(lg) {
+    .heroText {
+            font-size: 3.5rem;
+            letter-spacing: f.r(2.5);
+        }
+}
+
+@include m.up(xl) {
+    .heroText {
+            font-size: 4rem;
+            letter-spacing: f.r(3);
+        }
+}

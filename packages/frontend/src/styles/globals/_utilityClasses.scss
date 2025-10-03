@@ -1,0 +1,15 @@
+.text-center {
+    text-align: center ;
+}
+
+.text-large {
+    font-size: clamp(1.5rem, 3vw, 2rem) ;
+}
+
+.text-small {
+    font-size: clamp(0.875rem, 1.8vw, 1rem) ;
+}
+
+.text-bold {
+    font-weight: 700 ;
+}

@@ -1,0 +1,13 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+.HorizontalSlider-container {
+  background-color: var(--neutral-white);
+  border-radius: f.r(10) f.r(10) 0 0;
+}
+
+.category-grid-container {
+  background-color: var(--neutral-white);
+  border-radius: f.r(10) f.r(10) 0 0;
+  padding-top: f.r(10);
+}

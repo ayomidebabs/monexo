@@ -1,0 +1,235 @@
+@use '../utils//functions' as f;
+@use '../utils//mixins' as m;
+@use '../utils/shadows' as s;
+
+.emptyCart-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 6rem;
+
+  .emptyTitle {
+    margin: 0;
+    color: var(--accent-primary);
+  }
+
+  .signin {
+    background-color: var(--accent-primary);
+    border: none;
+    color: var(--neutral-white);
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: f.r(4);
+    margin-left: f.r(10);
+    transition: background-color 0.3s ease, scale 0.12s ease;
+
+    &:hover {
+      background-color: var(--accent-secondary);
+      scale: 1.02;
+    }
+
+    &:active {
+      scale: 0.99;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .continue-shopping {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: f.r(5);
+    background: none;
+    border: 1px solid var(--accent-primary);
+    color: var(--accent-primary);
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    transition-property: color border-color background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+
+    svg {
+      transition-property: transform;
+    }
+
+    &:hover {
+      border-color: var(--accent-secondary);
+      background-color: var(--accent-secondary);
+      color: var(--neutral-white);
+      svg {
+        transform: translateX(f.r(-3));
+      }
+    }
+
+    &:active {
+      scale: 0.95;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  @include m.up(sm) {
+    .continue-shopping {
+      padding: 0.6rem;
+    }
+  }
+}
+
+.cart-content {
+  align-self: start;
+  .subtotal-wrapper {
+    padding: f.r(12) f.r(5) f.r(15) f.r(5);
+    background-color: var(--bg-secondary);
+    padding-inline: f.r(10);
+    font-size: f.r(14.5);
+    margin-bottom: f.r(10);
+    box-shadow: s.$soft;
+  }
+
+  .title {
+    font-size: f.r(16);
+    font-weight: 600;
+    padding-block: f.r(15);
+    padding-inline: f.r(10);
+    background-color: var(--neutral-white);
+    margin-bottom: f.r(4);
+    border-radius: f.r(4);
+  }
+
+  .subtotal {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .cartItems {
+    margin-top: f.r(20);
+  }
+
+  .continue-shopping {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: f.r(5);
+    background: none;
+    border: 1px solid var(--accent-primary);
+    color: var(--accent-primary);
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    transition-property: color border-color background-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+
+    svg {
+      transition-property: transform;
+    }
+
+    &:hover {
+      border-color: var(--accent-secondary);
+      background-color: var(--accent-secondary);
+      color: var(--neutral-white);
+      svg {
+        transform: translateX(f.r(-3));
+      }
+    }
+
+    &:active {
+      scale: 0.95;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .paymentMethods-secureNote-wrapper {
+    margin: f.r(24) 0;
+  }
+
+  .weAccept-paymentMethods-Wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: f.r(4);
+  }
+  .we-accept {
+    display: inline-block;
+    font-size: f.r(14);
+  }
+  .payment-methods {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: f.r(8);
+
+    .payment-icon {
+      img {
+        width: f.r(35);
+        height: f.r(35);
+      }
+    }
+  }
+
+  .secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: f.r(5);
+    font-size: f.r(10);
+
+    svg {
+      width: f.r(15);
+      height: f.r(15);
+    }
+  }
+
+  .checkout-link {
+    display: block;
+    text-align: center;
+    width: 80%;
+    margin-inline: auto;
+    padding: f.r(10) f.r(15);
+    border-radius: f.r(4);
+    background-color: var(--accent-primary);
+    color: var(--neutral-white);
+    transition: scale 0.18s ease, background-color 0.3s ease;
+
+    &:focus {
+      outline: none;
+    }
+    &:hover {
+      scale: 1.02;
+      background-color: var(--accent-secondary);
+    }
+    &:active {
+      scale: 0.95;
+    }
+  }
+
+  @include m.up(md) {
+    .title {
+      font-size: f.r(18);
+      font-weight: 600;
+      padding-block: f.r(15);
+      padding-inline: f.r(10);
+      background-color: var(--neutral-white);
+      margin-bottom: f.r(4);
+      border-radius: f.r(4);
+    }
+
+    .subtotal {
+      span {
+        font-size: f.r(16.5);
+      }
+    }
+  }
+}

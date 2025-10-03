@@ -1,0 +1,11 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+.categoriesSlider-container {
+  background-color: var(--neutral-white);
+  border-radius: f.r(10) f.r(10) 0 0;
+}
+
+.marginTop {
+  margin-top: f.r(10);
+}

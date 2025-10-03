@@ -1,0 +1,70 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+a {
+  &:focus {
+    outline: none;
+  }
+}
+.sectionFooter {
+  height: f.r(35);
+  padding: f.r(8) f.r(8) 0 f.r(8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .title {
+    font-size: f.r(14);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  svg {
+    font-size: f.r(14);
+    animation: bounceRight 1s infinite;
+    color: var(--accent-primary);
+  }
+
+  @keyframes bounceRight {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(f.r(2.5));
+    }
+  }
+}
+
+@media screen and (min-width: f.r(400)) {
+  .sectionFooter {
+    .title {
+      font-size: f.r(16);
+    }
+    svg {
+      font-size: f.r(16);
+    }
+  }
+}
+
+@media (min-width: f.r(576)) {
+  .sectionFooter {
+    height: f.r(45);
+  }
+}
+
+@media (min-width: f.r(768)) {
+  .sectionFooter {
+    height: f.r(70);
+
+    .title {
+      font-size: f.r(18);
+    }
+
+    svg {
+      font-size: f.r(18);
+    }
+  }
+}

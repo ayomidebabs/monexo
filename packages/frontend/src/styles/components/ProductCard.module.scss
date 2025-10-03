@@ -1,0 +1,233 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+.productCard {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border-radius: f.r(8);
+  box-shadow: 0 f.r(2) f.r(8) rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 f.r(6) f.r(12) rgba(0, 0, 0, 0.15);
+    transform: translateY(f.r(-4));
+  }
+
+  .imageLink {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+
+    .productImage {
+      width: 100%;
+      height: f.r(150);
+      object-fit: contain;
+      transition: filter 0.3s ease-in-out;
+    }
+  }
+
+  .cardDetails {
+    padding: f.r(8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+
+    .productName {
+      font-size: f.r(16);
+      font-weight: normal;
+      margin-bottom: f.r(14);
+
+      .nameLink {
+        text-decoration: none;
+        color: inherit;
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+          color: var(--accent-primary);
+        }
+      }
+    }
+
+    .price-container {
+      display: flex;
+      justify-content: space-between;
+      .productPrice {
+        font-size: f.r(16);
+        font-weight: 500;
+      }
+
+      .removeFromWishlist {
+        svg {
+          color: var(--accent-primary);
+          transition: scale 0.12s ease;
+        }
+
+        &:hover {
+          svg {
+            color: var(--accent-secondary);
+            scale: 1.2;
+          }
+        }
+
+        &:active {
+          svg {
+            scale: 0.99;
+          }
+        }
+
+        &:focus {
+          outline: none;
+        }
+
+        &:disabled {
+          opacity: 0.7;
+        }
+      }
+    }
+
+    .rating-container {
+      display: flex;
+      align-items: center;
+      gap: f.r(2);
+      margin-bottom: f.r(2);
+
+      .star {
+        font-size: f.r(12);
+        color: var(--accent-primary, #f68b1e);
+      }
+
+      .reviewCount {
+        font-size: f.r(13.5);
+        color: #666;
+      }
+    }
+
+    .addToCart {
+      display: block;
+      width: 100%;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--neutral-white);
+      padding: f.r(8) f.r(16);
+      border: 1px solid var(--accent-secondary);
+      border-radius: f.r(4);
+      text-align: center;
+      background-color: var(--accent-primary);
+      transition: background-color 0.3s ease, transform 0.2s ease,
+        scale 0.12s ease;
+
+      &:hover {
+        background-color: var(--accent-secondary);
+        scale: 1.02;
+      }
+
+      &:active {
+        scale: 0.99;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  @media screen and (min-width: f.r(500)) {
+    .imageLink .productImage {
+      height: f.r(160);
+    }
+
+    .cardDetails {
+      .rating {
+        margin-bottom: f.r(2.5);
+      }
+
+      .addToCart {
+        font-size: f.r(16);
+      }
+    }
+  }
+
+  @include m.up(sm) {
+    .imageLink .productImage {
+      height: f.r(170);
+    }
+
+    .cardDetails {
+      padding: f.r(16);
+
+      .productName {
+        font-size: f.r(17);
+      }
+
+      .productPrice {
+        font-size: f.r(17);
+      }
+
+      .rating {
+        .star {
+          font-size: f.r(14);
+        }
+
+        .reviewCount {
+          font-size: f.r(14);
+        }
+      }
+
+      .addToCart {
+        font-size: f.r(17);
+      }
+    }
+  }
+
+  @include m.up(md) {
+    .imageLink .productImage {
+      height: f.r(160);
+    }
+  }
+
+  @include m.up(lg) {
+    .imageLink .productImage {
+      height: f.r(180);
+    }
+
+    .cardDetails {
+      .productName {
+        font-size: f.r(18);
+      }
+
+      .productPrice {
+        font-size: f.r(18);
+      }
+
+      .addToCart {
+        font-size: f.r(18);
+      }
+    }
+  }
+
+  @include m.up(xl) {
+    .cardDetails {
+      .price-container {
+        .removeFromWishlist {
+          svg {
+            font-size: f.r(18);
+          }
+        }
+      }
+    }
+    .imageLink .productImage {
+      height: f.r(200);
+    }
+  }
+
+  @include m.up(xxl) {
+    .imageLink .productImage {
+      height: f.r(220);
+    }
+  }
+}

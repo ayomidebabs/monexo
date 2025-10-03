@@ -1,0 +1,54 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+@use '../utils/shadows' as s;
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 20vw);
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 100%;
+
+  img {
+    width: 100%;
+    border-radius: f.r(8);
+    height: f.r(80);
+    object-fit: cover;
+  }
+}
+
+@media screen and (min-width: f.r(500)) {
+  .categoryGrid {
+    grid-template-columns: repeat(4, 22vw);
+
+    img {
+      height: f.r(140);
+    }
+  }
+}
+
+@media screen and (min-width: f.r(576)) {
+  .categoryGrid {
+    grid-template-columns: repeat(4, 22vw);
+
+    img {
+      height: f.r(140);
+    }
+  }
+}
+
+@media screen and (min-width: f.r(768)) {
+  .categoryGrid {
+    img {
+      height: f.r(180);
+    }
+  }
+}
+
+@media screen and (min-width: f.r(992)) {
+  .categoryGrid {
+    img {
+      height: f.r(220);
+    }
+  }
+}

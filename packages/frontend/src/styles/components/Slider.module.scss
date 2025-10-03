@@ -1,0 +1,278 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+@use '../utils/shadows' as s;
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-inline: auto;
+  border-radius: f.r(10);
+}
+
+.sliderWrapper {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
+  will-change: transform;
+}
+
+.slide {
+  min-width: 100%;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  height: f.r(160);
+  display: flex;
+  align-items: center;
+}
+
+.slideContent {
+  background: linear-gradient(
+    135deg,
+    rgba(246, 139, 30, 0.2),
+    rgba(255, 205, 97, 0.2)
+  );
+  backdrop-filter: blur(f.r(10));
+  -webkit-backdrop-filter: blur(f.r(10));
+  border-radius: f.r(10);
+  padding: f.r(10);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.slideText {
+  flex: 1;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 20px;
+
+  h2 {
+    font-size: f.r(18);
+    color: var(--accent-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: f.r(14);
+  }
+}
+
+.offer {
+  font-size: f.r(18);
+  font-weight: bold;
+}
+
+.bankOffers {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+
+  .bankLogo {
+    margin-right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+
+    width: 40px;
+    height: 20px;
+  }
+}
+
+.slideImage {
+  flex: 0.8;
+  width: 80px;
+  height: 80px;
+  background-color: #ccc;
+  border-radius: 10px;
+  display: inline-block;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: s.$soft;
+}
+
+.navArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.navDots {
+  display: flex;
+  justify-content: center;
+  gap: f.r(8);
+  z-index: 2;
+  padding: 10px 0;
+}
+
+.dot {
+  display: inline-block;
+  width: f.r(15);
+  height: f.r(3);
+  border-radius: f.r(1.5);
+  background-color: #d9dbdf;
+  position: relative;
+  overflow: hidden;
+
+  &.active {
+    width: f.r(30);
+  }
+}
+
+.fillBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--accent-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: fillUp 3s linear forwards;
+}
+
+@keyframes fillUp {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.navArrow {
+  display: none;
+}
+
+@media (min-width: f.r(450)) {
+  .slide {
+    height: f.r(200);
+  }
+
+  .slideImage {
+    width: 165px;
+    height: 165px;
+  }
+}
+
+@media (min-width: 768px) {
+  .slide {
+    height: f.r(280);
+  }
+
+  .slideImage {
+    width: f.r(230);
+    height: f.r(230);
+  }
+
+  .navArrow {
+    padding: f.r(15);
+  }
+
+  .dot {
+    width: f.r(20);
+    height: f.r(5);
+    border-radius: f.r(2.5);
+
+    &.active {
+      width: f.r(35);
+    }
+  }
+}
+
+@media (min-width: f.r(992)) {
+  .slide {
+    height: f.r(300);
+  }
+
+  .slideText {
+    h2 {
+      font-size: f.r(32);
+    }
+    p {
+      font-size: f.r(20);
+    }
+  }
+
+  .offer {
+    font-size: f.r(28);
+  }
+  .slideImage {
+    width: f.r(250);
+    height: f.r(250);
+  }
+  .navArrow {
+    padding: f.r(20);
+  }
+}
+
+@media (min-width: 1200px) {
+  .slide {
+    height: f.r(320);
+  }
+
+  .slideText {
+    h2 {
+      font-size: f.r(36);
+    }
+    p {
+      font-size: f.r(22);
+    }
+  }
+
+  .offer {
+    font-size: f.r(32);
+  }
+  .slideImage {
+    width: f.r(280);
+    height: f.r(280);
+  }
+  .navArrow {
+    padding: f.r(25);
+  }
+}
+
+@media (min-width: f.r(1400)) {
+  .slide {
+    height: f.r(350);
+  }
+
+  .slideText {
+    h2 {
+      font-size: f.r(40);
+    }
+    p {
+      font-size: f.r(24);
+    }
+  }
+
+  .offer {
+    font-size: f.r(36);
+  }
+  .slideImage {
+    width: f.r(350);
+    height: f.r(350);
+  }
+  .navArrow {
+    padding: f.r(30);
+  }
+}

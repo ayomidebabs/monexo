@@ -1,0 +1,7 @@
+@use './functions' as f;
+
+$floating: 0 f.r(10) f.r(20) rgb(0, 0, 0, 0.15);
+$deep: 0 f.r(15) f.r(25) rgb(0, 0, 0, 0.2);
+$sharp: 0 f.r(6) f.r(12) rgb(0, 0, 0, 0.2), 0 f.r(3) f.r(6) rgb(0, 0, 0, 0.05);
+$subtle: 0 f.r(8) f.r(16) rgb(0, 0, 0, 0.1);
+$soft: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.034);

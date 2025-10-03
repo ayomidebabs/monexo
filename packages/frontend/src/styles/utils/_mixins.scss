@@ -1,0 +1,52 @@
+@use 'functions' as f;
+$breakpointsup: (
+    sm: f.r(576),
+    md: f.r(768),
+    lg: f.r(992),
+    xl: f.r(1200),
+    xxl: f.r(1400)
+);
+
+@mixin up($size){
+    @media screen and (min-width: map-get($breakpointsup,$size)){
+        @content;
+    }
+}
+
+$breakpointsdown: (
+    sm: f.r(576),
+    md: f.r(768),
+    lg: f.r(992),
+    xl: f.r(1200),
+    xxl: f.r(1400)
+);
+
+
+@mixin down($size){
+    @media screen and (max-width: map-get($breakpointsdown,$size)){
+        @content;
+    }
+}
+
+$orientation: (
+    portrait,
+    lanscape
+);
+
+@mixin ort($ort){
+    @media screen and (orientation: map-get($orientation,$ort)){
+        @content;
+    }
+}
+
+@mixin lsmax($size){
+    @media screen and (orientation: landscape) and (max-width: map-get($breakpointsdown, $size)){
+        @content;
+    }
+}
+
+@mixin lsmin($size){
+    @media screen and (orientation: landscape) and (min-width: map-get($breakpointsup, $size)){
+        @content;
+    }
+}

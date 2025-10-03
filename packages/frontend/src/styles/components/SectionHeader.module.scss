@@ -1,0 +1,65 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+.sectionHeader {
+  padding: f.r(8) f.r(8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: f.r(1.8) solid var(--accent-primary);
+  margin-bottom: f.r(4);
+
+  .title {
+    font-size: f.r(14);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .viewAll {
+    display: inline-block;
+    font-size: f.r(14);
+    font-weight: 500;
+    color: var(--accent-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    touch-action: manipulation;
+
+    &:hover {
+      transform: translateY(f.r(-1.5));
+    }
+  }
+}
+
+@media screen and (min-width: f.r(400)) {
+  .sectionHeader {
+    .title {
+      font-size: f.r(16);
+    }
+    .viewAll {
+      font-size: f.r(16);
+    }
+  }
+}
+
+@media (min-width: f.r(768)) {
+  .sectionHeader {
+    padding: f.r(14) f.r(10);
+
+    .title {
+      font-size: f.r(18);
+    }
+  }
+}
+
+@media (min-width: f.r(1200)) {
+  .sectionHeader {
+    .title {
+      font-size: f.r(20);
+    }
+
+    .viewAll {
+      font-size: f.r(18);
+    }
+  }
+}

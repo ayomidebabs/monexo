@@ -1,0 +1,17 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+.h2 {
+  margin: 0;
+  color: var(--accent-primary);
+  text-align: center;
+  margin-top: f.r(10);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@include m.up(md) {
+  .h2 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,501 @@
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+
+.main {
+  padding: f.r(16);
+  background-color: var(--bg-primary, #f9f9f9);
+  min-height: 100vh;
+}
+
+.checkout {
+  max-width: f.r(800);
+  margin: 0 auto;
+
+  .header {
+    text-align: center;
+    margin-bottom: f.r(24);
+
+    .title {
+      font-family: 'Inter', sans-serif;
+      font-size: f.r(24);
+      font-weight: 700;
+      color: var(--text-primary, #333);
+      margin: 0;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: f.r(1);
+    }
+  }
+
+  .checkoutContent {
+    display: flex;
+    flex-direction: column;
+    gap: f.r(16);
+  }
+
+  .paymentSection {
+    background: var(--bg-secondary, #fff);
+    border-radius: f.r(8);
+    box-shadow: 0 f.r(2) f.r(8) rgba(0, 0, 0, 0.1);
+    padding: f.r(16);
+  }
+
+  .paymentForm {
+    display: flex;
+    flex-direction: column;
+    gap: f.r(16);
+  }
+
+  .savedMethodsSection {
+    margin-bottom: f.r(16);
+
+    .sectionTitle {
+      font-family: 'Inter', sans-serif;
+      font-size: f.r(16);
+      font-weight: 600;
+      color: var(--text-primary, #333);
+      margin: 0 0 f.r(12);
+      display: flex;
+      align-items: center;
+      gap: f.r(8);
+
+      .sectionIcon {
+        color: var(--accent-primary, #f68b1e);
+        font-size: f.r(16);
+      }
+
+      .sectionCount {
+        font-size: f.r(14);
+        color: var(--text-secondary, #666);
+        font-weight: 500;
+      }
+    }
+
+    .loading {
+      font-family: 'Inter', sans-serif;
+      font-size: f.r(14);
+      color: var(--text-secondary, #666);
+      text-align: center;
+      padding: f.r(16);
+    }
+  }
+
+  .methodsList {
+    display: flex;
+    flex-direction: column;
+    gap: f.r(8);
+    margin-bottom: f.r(12);
+  }
+
+  .methodItem {
+    display: flex;
+    align-items: center;
+    padding: f.r(12);
+    background: var(--bg-secondary);
+    border-radius: f.r(6);
+    border: 1px solid var(--accent-secondary);
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+    &:hover {
+      border-color: var(--accent-primary, #f68b1e);
+    }
+
+    &.selected {
+      .selectionIndicator {
+        color: var(--highlight);
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      .defaultBadge {
+        background: var(--bg-secondary, #fff);
+        color: var(--accent-primary, #f68b1e);
+      }
+    }
+
+    .methodInfo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: f.r(4);
+      color: var(--text-primary, #333);
+
+      .methodType {
+        font-family: 'Inter', sans-serif;
+        font-size: f.r(14);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .methodNumber {
+        font-family: 'Inter', sans-serif;
+        font-size: f.r(14);
+        font-weight: 500;
+      }
+
+      .methodExpiry {
+        font-family: 'Inter', sans-serif;
+        font-size: f.r(12);
+        color: var(--text-secondary, #666);
+      }
+
+      .defaultBadge {
+        font-family: 'Inter', sans-serif;
+        font-size: f.r(12);
+        color: #28a745;
+        background: #d4edda;
+        padding: f.r(2) f.r(8);
+        border-radius: f.r(4);
+        display: inline-flex;
+        align-items: center;
+        gap: f.r(4);
+        margin-top: f.r(4);
+
+        svg {
+          font-size: f.r(12);
+        }
+      }
+    }
+
+    .selectionIndicator {
+      font-size: f.r(16);
+      color: var(--text-primary, #333);
+    }
+  }
+
+  .newCardSection {
+    padding: f.r(12);
+    border: 1px solid var(--text-secondary, #666);
+    border-radius: f.r(6);
+    background: var(--bg-primary, #f9f9f9);
+
+    .sectionTitle {
+      font-family: 'Inter', sans-serif;
+      font-size: f.r(16);
+      font-weight: 600;
+      color: var(--text-primary, #333);
+      margin: 0 0 f.r(12);
+      display: flex;
+      align-items: center;
+      gap: f.r(8);
+
+      .sectionIcon {
+        color: var(--accent-primary, #f68b1e);
+        font-size: f.r(16);
+      }
+    }
+
+    .paystackInfo {
+      font-family: 'Inter', sans-serif;
+      font-size: f.r(14);
+      color: var(--text-secondary, #666);
+      margin: 0;
+    }
+  }
+
+  .cardInput {
+    padding: f.r(12);
+    border: 1px solid var(--text-secondary, #666);
+    border-radius: f.r(4);
+    background: var(--bg-secondary, #fff);
+    margin-bottom: f.r(12);
+
+    .StripeElement {
+      padding: f.r(8);
+    }
+  }
+
+  .savePayment {
+    display: flex;
+    align-items: center;
+    gap: f.r(8);
+    font-family: 'Inter', sans-serif;
+    font-size: f.r(14);
+    color: var(--text-primary, #333);
+    margin-bottom: f.r(12);
+
+    input[type='checkbox'] {
+      width: f.r(16);
+      height: f.r(16);
+      accent-color: var(--accent-primary, #f68b1e);
+      cursor: pointer;
+    }
+  }
+
+  .errorText {
+    font-family: 'Inter', sans-serif;
+    font-size: f.r(14);
+    color: #dc3545;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: f.r(4);
+    padding: f.r(8);
+    text-align: center;
+  }
+
+  .successMessage {
+    font-family: 'Inter', sans-serif;
+    font-size: f.r(14);
+    color: #28a745;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: f.r(4);
+    padding: f.r(8);
+    text-align: center;
+  }
+
+  .payButton {
+    font-family: 'Inter', sans-serif;
+    font-size: f.r(16);
+    font-weight: 600;
+    color: var(--bg-secondary, #fff);
+    background-color: var(--accent-primary, #f68b1e);
+    border: none;
+    padding: f.r(12) f.r(24);
+    border-radius: f.r(6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: f.r(8);
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover:not(:disabled) {
+      background-color: var(--accent-secondary, #e07b17);
+    }
+
+    &:disabled {
+      background-color: var(--text-secondary, #666);
+      cursor: not-allowed;
+    }
+
+    svg {
+      font-size: f.r(16);
+    }
+  }
+
+  .newCardButton {
+    font-family: 'Inter', sans-serif;
+    font-size: f.r(14);
+    font-weight: 600;
+    color: var(--accent-primary, #f68b1e);
+    background: none;
+    border: 1px solid var(--accent-primary, #f68b1e);
+    padding: f.r(8) f.r(16);
+    border-radius: f.r(4);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: f.r(4);
+
+    &:hover {
+      background-color: var(--accent-primary, #f68b1e);
+      color: var(--bg-secondary, #fff);
+    }
+  }
+
+  @include m.up(sm) {
+    padding: f.r(24);
+
+    .header {
+      margin-bottom: f.r(32);
+
+      .title {
+        font-size: f.r(28);
+      }
+    }
+
+    .paymentSection {
+      padding: f.r(24);
+    }
+
+    .paymentForm {
+      gap: f.r(20);
+    }
+
+    .savedMethodsSection {
+      margin-bottom: f.r(20);
+
+      .sectionTitle {
+        font-size: f.r(18);
+      }
+    }
+
+    .methodsList {
+      gap: f.r(12);
+    }
+
+    .methodItem {
+      padding: f.r(16);
+
+      .methodInfo {
+        .methodType {
+          font-size: f.r(16);
+        }
+
+        .methodNumber {
+          font-size: f.r(16);
+        }
+
+        .methodExpiry {
+          font-size: f.r(14);
+        }
+
+        .defaultBadge {
+          font-size: f.r(14);
+        }
+      }
+
+      .selectionIndicator {
+        font-size: f.r(18);
+      }
+    }
+
+    .newCardSection {
+      padding: f.r(16);
+
+      .sectionTitle {
+        font-size: f.r(18);
+      }
+    }
+
+    .cardInput {
+      padding: f.r(16);
+      margin-bottom: f.r(16);
+    }
+
+    .savePayment {
+      font-size: f.r(16);
+    }
+
+    .payButton {
+      font-size: f.r(18);
+      padding: f.r(16) f.r(32);
+    }
+
+    .newCardButton {
+      font-size: f.r(16);
+      padding: f.r(10) f.r(20);
+    }
+  }
+
+  @include m.up(md) {
+    padding: f.r(32);
+
+    .header {
+      margin-bottom: f.r(40);
+
+      .title {
+        font-size: f.r(32);
+        letter-spacing: f.r(2);
+      }
+    }
+
+    .paymentSection {
+      padding: f.r(32);
+    }
+
+    .methodsList {
+      gap: f.r(16);
+    }
+
+    .methodItem {
+      padding: f.r(20);
+
+      .methodInfo {
+        flex-direction: row;
+        gap: f.r(12);
+        align-items: center;
+
+        .methodType,
+        .methodNumber,
+        .methodExpiry {
+          margin: 0;
+        }
+      }
+    }
+
+    .newCardSection {
+      padding: f.r(20);
+    }
+
+    .cardInput {
+      padding: f.r(20);
+    }
+
+    .payButton {
+      font-size: f.r(20);
+      padding: f.r(20) f.r(40);
+    }
+  }
+
+  @include m.up(lg) {
+    max-width: f.r(1000);
+    margin: 0 auto;
+
+    .paymentSection {
+      padding: f.r(40);
+    }
+
+    .methodsList {
+      gap: f.r(20);
+    }
+
+    .methodItem {
+      padding: f.r(24);
+    }
+  }
+
+  @include m.up(xl) {
+    // 1200px
+    max-width: f.r(1200);
+
+    .header {
+      .title {
+        font-size: f.r(36);
+      }
+    }
+
+    .paymentSection {
+      padding: f.r(48);
+    }
+
+    .methodsList {
+      gap: f.r(24);
+    }
+
+    .methodItem {
+      padding: f.r(28);
+
+      .methodInfo {
+        .methodType {
+          font-size: f.r(18);
+        }
+
+        .methodNumber {
+          font-size: f.r(18);
+        }
+
+        .methodExpiry {
+          font-size: f.r(16);
+        }
+
+        .defaultBadge {
+          font-size: f.r(16);
+        }
+      }
+
+      .selectionIndicator {
+        font-size: f.r(25);
+      }
+    }
+
+    .payButton {
+      font-size: f.r(22);
+      padding: f.r(24) f.r(48);
+    }
+  }
+}

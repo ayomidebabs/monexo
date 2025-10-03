@@ -1,0 +1,50 @@
+@use './globals';
+@use './utils/functions' as f;
+@use './utils/mixins' as m;
+
+:root {
+  block-size: 100%;
+  scroll-behavior: smooth;
+
+  &[data-theme='light'] {
+    --bg-primary: rgb(242, 242, 242);
+    --bg-secondary: rgb(246, 246, 246);
+    --text-primary: #2c1f1f;
+    --text-secondary: #5a4033;
+    --accent-primary: #f68b1e;
+    --accent-secondary: rgb(255, 107, 97);
+    --highlight: #26a69a;
+    --accent-tertiary: #fdb56d;
+    --neutral-white: rgb(249, 249, 249);
+    --neutral-light: #fbd2a8;
+    --primary-rgb: 198, 142, 23;
+  }
+
+  &[data-theme='dark'] {
+    // --bg-primary: #1E1A13;
+    // --bg-secondary: #2F251A;
+    // --text-primary: #E8D4B5;
+    // --text-secondary: #B8A488;
+    // --accent-primary: #D4A017;
+    // --accent-secondary: #9C552E;
+    // --highlight: #33CCC1;
+    // --accent-tertiary: #FF8A80;
+    // --neutral-black: #0F0C09;
+    // --neutral-dark: #3B2F1F;
+    // --primary-rgb: 212, 160, 23;
+
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2c2c2c;
+    --text-primary: #e0e0e0;
+    --text-secondary: #adb5bd;
+    --accent-primary: #d4a017;
+    --accent-secondary: #9c552e;
+    --primary-rgb: 212, 160, 23;
+    --highlight: #de1b1b;
+  }
+}
+
+#root {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
