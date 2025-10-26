@@ -251,22 +251,11 @@ export const fetchSavedPaymentMethods = async (
   next: NextFunction
 ) => {
   const { appUser } = res.locals;
-
   try {
-    if (!appUser?.id) {
-      return res.status(401).json({
-        success: false,
-        error: 'Unauthorized: User not authenticated',
-        statusCode: 401,
-      });
-    }
-
-    const user = await User.findById(appUser.id);
+    const user = await User.findById(appUser?.id);
     if (!user?.stripeCustomerId) {
       return res.status(404).json({
-        success: false,
-        error: 'No Stripe customer ID found for user',
-        statusCode: 404,
+        message: 'No Stripe customer ID found for user',
       });
     }
 
@@ -289,7 +278,6 @@ export const fetchSavedPaymentMethods = async (
       created: method.created,
       isDefault: method.id === defaultPaymentMethodId,
     }));
-    console.log(formattedMethods);
     return res.status(200).json(formattedMethods);
   } catch (error) {
     console.error('Fetch saved payment methods error:', error);

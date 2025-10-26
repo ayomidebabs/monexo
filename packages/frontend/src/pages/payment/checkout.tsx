@@ -33,6 +33,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../app/store';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import styles from '../../styles/pages/checkout.module.scss';
+import type { ApiError } from '../../app/apiSlice';
 
 type Currency = 'USD' | 'EUR' | 'GBP' | 'NGN' | 'ZAR' | 'GHS';
 type PaymentProvider = 'stripe' | 'paystack';
@@ -536,9 +537,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   ]);
 
   useEffect(() => {
-    if (provider === 'stripe' && fetchStripeMethodsError)
+    console.log('Stripe Methods Error:', fetchStripeMethodsError);
+    if (
+      provider === 'stripe' &&
+      fetchStripeMethodsError &&
+      (fetchStripeMethodsError as ApiError).status === 500
+    )
       setErrorMessage('Failed to load payment methods');
-    else if (provider === 'paystack' && fetchPaystackMethodsError)
+    else if (
+      provider === 'paystack' &&
+      fetchPaystackMethodsError &&
+      (fetchPaystackMethodsError as ApiError).status === 500
+    )
       setErrorMessage('Failed to load payment methods');
   }, [fetchStripeMethodsError, fetchPaystackMethodsError, provider]);
 
@@ -587,17 +597,19 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 renderPaymentMethod(method, provider === 'stripe', index)
               )}
             </div>
-
-            <motion.button
-              className={styles.newCardButton}
-              onClick={handleNewCardClick}
-              aria-label='Add new payment method'
-              disabled={provider === 'stripe' && !stripe}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Use A New Card
-            </motion.button>
           </div>
         )}
+
+      {showCardInput ? null : (
+        <motion.button
+          className={styles.newCardButton}
+          onClick={handleNewCardClick}
+          aria-label='Add new payment method'
+          disabled={provider === 'stripe' && !stripe}
+        >
+          <FontAwesomeIcon icon={faPlus} /> Use A New Card
+        </motion.button>
+      )}
 
       {showCardInput && (
         <motion.div
@@ -662,7 +674,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
           isProcessing ||
           isLoadingStripeMethods ||
           isLoadingPaystackMethods ||
-          (!showCardInput && !selectedMethod && availableMethods.length > 0) ||
+          (!showCardInput && !selectedMethod) ||
           (provider === 'stripe' && !stripe)
         }
         aria-label={`Pay ${
