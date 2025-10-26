@@ -17,7 +17,6 @@ import {
   useSetPaystackDefaultPaymentMethodMutation,
   useDeletePaystackPaymentMethodMutation,
 } from '../../features/Payment/Paystack/paystackAPI';
-import type { ApiError } from '../../app/apiSlice';
 import styles from '../../styles/pages/SavedPaymentMethods.module.scss';
 
 interface PaymentMethod {
@@ -31,38 +30,29 @@ interface PaymentMethod {
 }
 
 const SavedPaymentMethods: React.FC = () => {
-  console.log("mount")
   const user = useAppSelector((state) => state.auth.user);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const {
-    data: stripePaymentMethods = [],
-    isLoading: isLoadingStripeMethods,
-    error: fetchStripeMethodsError,
-  } = useGetStripePaymentMethodsQuery(undefined, { skip: !user });
+  const { data: stripePaymentMethods = [], isLoading: isLoadingStripeMethods } =
+    useGetStripePaymentMethodsQuery(undefined, { skip: !user });
   const [
     setStripeDefaultPaymentMethod,
-    { isLoading: isSettingDefaultForStripe, error: stripeDefaultError },
+    { isLoading: isSettingDefaultForStripe },
   ] = useSetStripeDefaultPaymentMethodMutation();
-  const [
-    deleteStripePaymentMethod,
-    { isLoading: isDeletingForStripe, error: stripeDeleteError },
-  ] = useDeleteStripePaymentMethodMutation();
+  const [deleteStripePaymentMethod, { isLoading: isDeletingForStripe }] =
+    useDeleteStripePaymentMethodMutation();
 
   const {
     data: paystackPaymentMethods = [],
     isLoading: isLoadingPaystackMethods,
-    error: fetchPaystackMethodsError,
   } = useGetPaystackPaymentMethodsQuery(undefined, { skip: !user });
   const [
     setPaystackDefaultPaymentMethod,
-    { isLoading: isSettingDefaultForPaystack, error: paystackDefaultError },
+    { isLoading: isSettingDefaultForPaystack },
   ] = useSetPaystackDefaultPaymentMethodMutation();
-  const [
-    deletePaystackPaymentMethod,
-    { isLoading: isDeletingForPaystack, error: paystackDeleteError },
-  ] = useDeletePaystackPaymentMethodMutation();
+  const [deletePaystackPaymentMethod, { isLoading: isDeletingForPaystack }] =
+    useDeletePaystackPaymentMethodMutation();
 
   const paymentMethods: PaymentMethod[] = [
     ...stripePaymentMethods.map((method) => ({
@@ -132,7 +122,6 @@ const SavedPaymentMethods: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      whileHover={{ scale: 1.02 }}
     >
       <div className={styles.cardDetails}>
         <FontAwesomeIcon icon={faCreditCard} className={styles.cardIcon} />
@@ -184,38 +173,6 @@ const SavedPaymentMethods: React.FC = () => {
   );
 
   useEffect(() => {
-    if (
-      stripeDefaultError ||
-      stripeDeleteError ||
-      paystackDefaultError ||
-      paystackDeleteError
-    ) {
-      setErrorMessage(
-        (
-          (stripeDefaultError ||
-            stripeDeleteError ||
-            paystackDefaultError ||
-            paystackDeleteError) as ApiError
-        )?.data?.message || 'Failed to update card'
-      );
-    }
-  }, [
-    stripeDefaultError,
-    stripeDeleteError,
-    paystackDefaultError,
-    paystackDeleteError,
-  ]);
-
-  useEffect(() => {
-    if (fetchStripeMethodsError || fetchPaystackMethodsError) {
-      setErrorMessage(
-        ((fetchStripeMethodsError || fetchPaystackMethodsError) as ApiError)
-          ?.data?.message || 'Failed to load cards'
-      );
-    }
-  }, [fetchStripeMethodsError, fetchPaystackMethodsError]);
-
-  useEffect(() => {
     if (errorMessage) {
       const timer = setTimeout(() => setErrorMessage(''), 5000);
       return () => clearTimeout(timer);
@@ -230,72 +187,71 @@ const SavedPaymentMethods: React.FC = () => {
   }, [successMessage]);
 
   return (
-    <div className={styles.savedPaymentMethods}>
-      <motion.div
-        className={styles.header}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className={styles.title}>Saved Cards</h1>
-        <p className={styles.subtitle}>Manage your saved cards securely</p>
-      </motion.div>
+    <main className='main'>
+      <div className={styles.savedPaymentMethods}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>Saved Cards</h1>
+          <p className={styles.subtitle}>Manage your saved cards securely</p>
+        </header>
 
-      <AnimatePresence>
-        {successMessage && (
-          <motion.p
-            className={styles.successMessage}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            role='status'
-          >
-            {successMessage}
-          </motion.p>
-        )}
-        {errorMessage && (
-          <motion.p
-            className={styles.errorText}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            role='alert'
-          >
-            {errorMessage}
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-      {isLoading ? (
-        <div className={styles.loading}>Loading cards...</div>
-      ) : (
-        <div className={styles.paymentSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
-              <FontAwesomeIcon
-                icon={faCreditCard}
-                className={styles.sectionIcon}
-              />
-              Cards
-              <span className={styles.sectionCount}>
-                ({paymentMethods.length})
-              </span>
-            </h2>
-          </div>
-          {hasMethods ? (
-            <div className={styles.cardGrid}>
-              {paymentMethods.map((method, index) => renderCard(method, index))}
-            </div>
-          ) : (
-            <div className={styles.emptyState}>
-              <p>No cards saved</p>
-            </div>
+        <AnimatePresence>
+          {successMessage && (
+            <motion.p
+              className={styles.successMessage}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              role='status'
+            >
+              {successMessage}
+            </motion.p>
           )}
-        </div>
-      )}
-    </div>
+          {errorMessage && (
+            <motion.p
+              className={styles.errorText}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              role='alert'
+            >
+              {errorMessage}
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+        {isLoading ? (
+          <div className={styles.loading}>Loading cards...</div>
+        ) : (
+          <div className={styles.paymentSection}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>
+                <FontAwesomeIcon
+                  icon={faCreditCard}
+                  className={styles.sectionIcon}
+                />
+                Cards
+                <span className={styles.sectionCount}>
+                  ({paymentMethods.length})
+                </span>
+              </h2>
+            </div>
+            {hasMethods ? (
+              <div className={styles.cardGrid}>
+                {paymentMethods.map((method, index) =>
+                  renderCard(method, index)
+                )}
+              </div>
+            ) : (
+              <div className={styles.emptyState}>
+                <p>No cards saved</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </main>
   );
 };
 

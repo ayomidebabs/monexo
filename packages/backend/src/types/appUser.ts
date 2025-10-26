@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 
 export interface User {
   name: string;
+  email: string;
   role: 'customer' | 'admin' | 'seller';
   strategy: 'local' | 'google' | 'facebook';
   cart: {
@@ -27,7 +28,6 @@ export interface User {
     viewedAt: Date;
   }[];
   local: {
-    email: string;
     password: string;
     addresses: {
       street: string;

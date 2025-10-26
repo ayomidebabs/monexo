@@ -20,7 +20,7 @@ const connectDB = async () => {
 
     // await Order.create({
     //   user: '68bd45dd6f37749dd19bc036',
-    //   email: 'john@example.com',
+    //   email: 'aoluwayung@gmail.com',
     //   products: [
     //     {
     //       pId: '6892e7a073e2d3c0d111a92c',
@@ -30,7 +30,7 @@ const connectDB = async () => {
     //     },
     //   ],
     //   total: 1999.98,
-    //   status: 'pending',
+    //   status:  'delivered',
     //   paymentDetails: { method: 'card', transactionId: 'txn_123' },
     //   currency: 'USD',
     // });
@@ -112,6 +112,3 @@ redis.on('error', (err) => {
 });
 
 export default connectDB;
-// 'https://res.cloudinary.com/ddmupiyzm/image/upload/v1756162437/ecommerce/products/xdleqsj8zpmrjmdvrfi4.webp',
-//   'https://res.cloudinary.com/ddmupiyzm/image/upload/v1756162450/ecommerce/products/htqcyieftxxn18lx09cz.webp',
-//   'https://res.cloudinary.com/ddmupiyzm/image/upload/v1756162463/ecommerce/products/nsjm30bujabryt08ak1q.webp';

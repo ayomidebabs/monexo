@@ -16,8 +16,7 @@ import {
 } from '@stripe/react-stripe-js';
 import PaystackPop from '@paystack/inline-js';
 import {
-  useCreatePaymentIntentForRegisteredUserMutation,
-  useCreatePaymentIntentForGuestMutation,
+  useCreatePaymentIntentMutation,
   useChargeStripeSavedPaymentMethodMutation,
 } from '../../features/Payment/Stripe/stripeAPI';
 import {
@@ -32,7 +31,6 @@ import { modalContext } from '../../context/modalContext';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../app/store';
-import type { ApiError } from '../../app/apiSlice';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import styles from '../../styles/pages/checkout.module.scss';
 
@@ -115,9 +113,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   const user = useAppSelector((state) => state.auth.user);
   const cart = useAppSelector(selectAllCartItems);
   const [createPaymentIntentForRegisteredUser] =
-    useCreatePaymentIntentForRegisteredUserMutation();
-  const [createPaymentIntentForGuest] =
-    useCreatePaymentIntentForGuestMutation();
+    useCreatePaymentIntentMutation();
   const [initializePaystackTransaction] =
     useInitializePaystackTransactionMutation();
   const [chargeStripeSavedPaymentMethod] =
@@ -167,7 +163,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
           if (paymentIntentStatus === 'requires_action') {
             if (!stripe) {
-              setErrorMessage('Payment provider not initialized');
+              setErrorMessage('Something seems to be wrong');
               setIsProcessing(false);
               return;
             }
@@ -178,34 +174,38 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             );
 
             if (error) {
-              throw new Error(error.message || 'Payment confirmation failed');
+              throw new Error('Payment confirmation failed');
             }
 
             if (paymentIntent?.status === 'succeeded') {
-              setAppModalMessage('Payment successful, redirecting...');
-              setShowAppModal(true);
-              setTimeout(() => {
-                setShowAppModal(false);
-                navigate('/order-confirmation');
-              }, 3000);
-            } else if (paymentIntent?.status === 'processing') {
               setAppModalMessage(
-                'Payment pending ⏳. Check your order status.'
+                'Payment successful, you are being redirected to verify your order...'
               );
               setShowAppModal(true);
               setTimeout(() => {
                 setShowAppModal(false);
-                navigate('/order-status');
+                navigate('/orders');
+              }, 3000);
+            } else if (paymentIntent?.status === 'processing') {
+              setAppModalMessage(
+                "Payment pending ⏳. When it's settled you'll be notified and your order will be reflected..."
+              );
+              setShowAppModal(true);
+              setTimeout(() => {
+                setShowAppModal(false);
+                navigate('/orders');
               }, 3000);
             } else {
               throw new Error('Payment failed');
             }
           } else if (success) {
-            setAppModalMessage('Payment successful, redirecting...');
+            setAppModalMessage(
+              'Payment successful, you are being redirected to verify your order...'
+            );
             setShowAppModal(true);
             setTimeout(() => {
               setShowAppModal(false);
-              navigate('/order-confirmation');
+              navigate('/orders');
             }, 3000);
           } else {
             throw new Error('Payment failed');
@@ -222,11 +222,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             }).unwrap();
 
           if (success) {
-            setAppModalMessage('Payment successful, redirecting...');
+            setAppModalMessage(
+              'Payment successful, you are being redirected to verify your order...'
+            );
             setShowAppModal(true);
             setTimeout(() => {
               setShowAppModal(false);
-              navigate('/order-confirmation');
+              navigate('/orders');
             }, 3000);
           } else if (paused) {
             const popup = new PaystackPop();
@@ -246,29 +248,36 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     `/paystack/verify-payment/${response.reference}`
                   );
                   if (status === 'success') {
-                    setAppModalMessage('Payment successful, redirecting...');
-                    setShowAppModal(true);
-                    setTimeout(() => {
-                      setShowAppModal(false);
-                      navigate('/order-confirmation');
-                    }, 3000);
-                  } else if (status === 'pending') {
                     setAppModalMessage(
-                      'Payment pending ⏳. Check your order status.'
+                      'Payment successful, you are being redirected to verify your order...'
                     );
                     setShowAppModal(true);
                     setTimeout(() => {
                       setShowAppModal(false);
-                      navigate('/order-status');
+                      navigate('/orders');
+                    }, 3000);
+                  } else if (status === 'pending') {
+                    setAppModalMessage(
+                      "Payment pending ⏳. When it's settled you'll be notified and your order will be reflected..."
+                    );
+                    setShowAppModal(true);
+                    setTimeout(() => {
+                      setShowAppModal(false);
+                      navigate('/orders');
                     }, 3000);
                   } else {
-                    throw new Error('Payment verification failed');
+                    setErrorMessage('Payment failed');
                   }
                 } catch (error) {
-                  throw new Error(
-                    (error as ApiError)?.data?.message ||
-                      'Payment verification failed'
+                  void error;
+                  setAppModalMessage(
+                    'Payment verification failed, you are being redirected to verify your order...'
                   );
+                  setShowAppModal(true);
+                  setTimeout(() => {
+                    setShowAppModal(false);
+                    navigate('/orders');
+                  }, 3000);
                 }
               },
               onCancel: () => {
@@ -283,31 +292,23 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
       } else {
         if (provider === 'stripe') {
           if (!stripe || !elements) {
-            setErrorMessage('Payment provider not initialized');
+            setErrorMessage('Something seems to be wrong');
             setIsProcessing(false);
             return;
           }
 
-          const { clientSecret } = user
-            ? await createPaymentIntentForRegisteredUser({
-                products: cart.map((item) => ({
-                  pId: item.pId,
-                  quantity: item.quantity,
-                })),
-                email,
-                savePayment,
-              }).unwrap()
-            : await createPaymentIntentForGuest({
-                products: cart.map((item) => ({
-                  pId: item.pId,
-                  quantity: item.quantity,
-                })),
-                email,
-              }).unwrap();
+          const { clientSecret } = await createPaymentIntentForRegisteredUser({
+            products: cart.map((item) => ({
+              pId: item.pId,
+              quantity: item.quantity,
+            })),
+            email,
+            savePayment,
+          }).unwrap();
 
           const cardElement = elements.getElement(CardElement);
           if (!cardElement) {
-            throw new Error('Card element not found');
+            throw new Error('Something seems to be wrong');
           }
 
           const { error, paymentIntent } = await stripe.confirmCardPayment(
@@ -322,26 +323,26 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
           );
 
           if (error) {
-            throw new Error(error.message || 'Payment confirmation failed');
+            throw new Error('Payment confirmation failed');
           }
 
           if (paymentIntent?.status === 'succeeded') {
             setAppModalMessage(
-              savePayment
-                ? 'Payment successful, payment method saved, redirecting...'
-                : 'Payment successful, redirecting...'
+              'Payment successful, you are being redirected to verify your order...'
             );
             setShowAppModal(true);
             setTimeout(() => {
               setShowAppModal(false);
-              navigate('/order-confirmation');
+              navigate('/orders');
             }, 3000);
           } else if (paymentIntent?.status === 'processing') {
-            setAppModalMessage('Payment pending ⏳. Check your order status.');
+            setAppModalMessage(
+              "Payment pending ⏳. When it's settled you'll be notified and your order will be reflected..."
+            );
             setShowAppModal(true);
             setTimeout(() => {
               setShowAppModal(false);
-              navigate('/order-status');
+              navigate('/orders');
             }, 3000);
           } else {
             throw new Error('Payment failed');
@@ -375,48 +376,61 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
                 if (status === 'success') {
                   if (savePayment && authorization?.reusable) {
-                    await apiClient.post('/paystack/save-payment-method', {
-                      authorizationCode: authorization.authorization_code,
-                      customerCode: customer.customer_code,
-                      email: customer.email,
-                      cardType: authorization.card_type,
-                      last4: authorization.last4,
-                      expMonth: authorization.exp_month,
-                      expYear: authorization.exp_year,
-                    });
-                    setAppModalMessage(
-                      'Payment successful, payment method saved, redirecting...'
-                    );
+                    try {
+                      await apiClient.post('/paystack/save-payment-method', {
+                        authorizationCode: authorization.authorization_code,
+                        customerCode: customer.customer_code,
+                        email: customer.email,
+                        cardType: authorization.card_type,
+                        last4: authorization.last4,
+                        expMonth: authorization.exp_month,
+                        expYear: authorization.exp_year,
+                      });
+                      setAppModalMessage(
+                        'Payment successful and payment method saved, you are being redirected to verify your order...'
+                      );
+                    } catch (error) {
+                      void error;
+                      setAppModalMessage(
+                        "Payment successful but your payment method couldn't be saved, you are being redirected to verify your order..."
+                      );
+                    }
                   } else if (savePayment && !authorization?.reusable) {
                     setAppModalMessage(
-                      'Payment successful, but your chosen method is not reusable. Redirecting...'
+                      'Payment successful but your chosen method is not reusable, you are being redirected to verify your order...'
                     );
                   } else {
-                    setAppModalMessage('Payment successful, redirecting...');
+                    setAppModalMessage(
+                      'Payment successful, you are being redirected to verify your order...'
+                    );
                   }
                   setShowAppModal(true);
                   setTimeout(() => {
                     setShowAppModal(false);
-                    navigate('/order-confirmation');
+                    navigate('/orders');
                   }, 3000);
                 } else if (status === 'pending') {
                   setAppModalMessage(
-                    'Payment pending ⏳. Check your order status.'
+                    "Payment pending ⏳. When it's settled you'll be notified and your order will be reflected..."
                   );
                   setShowAppModal(true);
                   setTimeout(() => {
                     setShowAppModal(false);
-                    navigate('/order-status');
+                    navigate('/orders');
                   }, 3000);
                 } else {
-                  throw new Error('Payment verification failed');
+                  setErrorMessage('Payment failed');
                 }
               } catch (error) {
-                setErrorMessage(
-                  (error as ApiError)?.data?.message ||
-                    'Payment verification failed'
+                void error;
+                setAppModalMessage(
+                  'Payment verification failed, you are being redirected to verify your order...'
                 );
-                console.error('Paystack verification error:', error);
+                setShowAppModal(true);
+                setTimeout(() => {
+                  setShowAppModal(false);
+                  navigate('/orders');
+                }, 3000);
               } finally {
                 setIsProcessing(false);
               }
@@ -429,12 +443,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
         }
       }
     } catch (error) {
+      void error;
       setErrorMessage(
-        (error as ApiError)?.data?.message ||
-          (error as Error).message ||
-          'An unexpected error occurred'
+        (error as Error).message || 'An unexpected error occurred'
       );
-      console.error('Payment error:', error);
       setIsProcessing(false);
     }
   };
@@ -524,12 +536,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   ]);
 
   useEffect(() => {
-    if (fetchStripeMethodsError || fetchPaystackMethodsError) {
-      const error = (fetchStripeMethodsError ||
-        fetchPaystackMethodsError) as ApiError;
-      setErrorMessage(error?.data?.message || 'Failed to load payment methods');
-    }
-  }, [fetchStripeMethodsError, fetchPaystackMethodsError]);
+    if (provider === 'stripe' && fetchStripeMethodsError)
+      setErrorMessage('Failed to load payment methods');
+    else if (provider === 'paystack' && fetchPaystackMethodsError)
+      setErrorMessage('Failed to load payment methods');
+  }, [fetchStripeMethodsError, fetchPaystackMethodsError, provider]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -537,8 +548,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
-
-  console.log(showCardInput);
 
   return (
     <div className={styles.paymentForm}>
@@ -582,16 +591,15 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             <motion.button
               className={styles.newCardButton}
               onClick={handleNewCardClick}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               aria-label='Add new payment method'
+              disabled={provider === 'stripe' && !stripe}
             >
               <FontAwesomeIcon icon={faPlus} /> Use A New Card
             </motion.button>
           </div>
         )}
 
-      {showCardInput && !availableMethods.length && (
+      {showCardInput && (
         <motion.div
           className={styles.newCardSection}
           initial={{ opacity: 0, height: 0 }}
@@ -633,7 +641,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
         </motion.div>
       )}
 
-      {showCardInput && !availableMethods.length && user && (
+      {showCardInput && user && (
         <label className={styles.savePayment}>
           <input
             type='checkbox'
@@ -641,6 +649,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             onChange={() => setSavePayment(!savePayment)}
             disabled={isProcessing}
             aria-label='Save payment method for future use'
+            className={styles.checkBox}
           />
           Save payment method for future use
         </label>
@@ -656,8 +665,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
           (!showCardInput && !selectedMethod && availableMethods.length > 0) ||
           (provider === 'stripe' && !stripe)
         }
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
         aria-label={`Pay ${
           currencySymbols[currency]
         } ${usdTotalOrEquivalent.toLocaleString(undefined, {

@@ -6,7 +6,6 @@ import { validateGetProduct } from '../inputValidation/Product/getProduct.js';
 import { ProductQuery } from '../types/product.js';
 import { validatePid } from '../inputValidation/pId.js';
 import { Types } from 'mongoose';
-import { pid } from 'process';
 
 export const getProduct = [
   ...validatePid,
@@ -14,10 +13,6 @@ export const getProduct = [
     const { pId } = matchedData(req, { locations: ['params'] });
 
     try {
-      if (!Types.ObjectId.isValid(pId)) {
-        return res.status(400).send({ message: 'Invalid product ID' });
-      }
-
       const productId = new Types.ObjectId(pId);
 
       const [product] = await Product.aggregate([
@@ -112,7 +107,6 @@ export const getProduct = [
       if (!product) {
         return res.status(404).send({ message: 'Product not found' });
       }
-
       res.send(product);
     } catch (error) {
       next(new AppError((error as Error).message));

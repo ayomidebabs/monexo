@@ -19,11 +19,6 @@ import {
 import getCsrfToken from '../../utils/getCsrfToken';
 import styles from '../../styles/components/AuthModal.module.scss';
 
-interface ApiError {
-  status: number;
-  data: { message: string };
-}
-
 const notificationVariants = {
   hidden: { opacity: 0, y: -20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
@@ -96,18 +91,17 @@ const SignInModal: React.FC<SignInModalProps> = ({
       clearLocalRecentlyViewedProducts();
       onSignInSuccess();
     } catch (error) {
-      setFormError(
-        (error as ApiError).data.message || 'An error occurred, try again...'
-      );
+      setFormError('An error occurred, try again...');
+      void error;
     }
   };
 
   const handleGoogleSignIn = () => {
-    window.location.href = 'http://localhost:5000/auth/google';
+    window.location.href = 'http://localhost:5000/auth/signin/google';
   };
 
   const handleFacebookSignIn = () => {
-    window.location.href = 'http://localhost:5000/auth/facebook';
+    window.location.href = 'http://localhost:5000/auth/signin/facebook';
   };
 
   return (

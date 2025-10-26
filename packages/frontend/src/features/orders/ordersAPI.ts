@@ -37,14 +37,15 @@ export interface ordersQuery {
   search: string;
   sortBy: string;
   sortOrder: 'asc' | 'desc';
+  status: string;
 }
 
 export const ordersApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUserOrders: builder.query<OrdersResponse, Partial<ordersQuery>>({
-      query: ({ page = 1, limit = 10 }) => ({
+      query: ({ page, limit, sortBy, sortOrder, status }) => ({
         url: '/orders/myorders',
-        params: { page, limit },
+        params: { page, limit, sortBy, sortOrder, status },
       }),
       providesTags: ['Orders'],
     }),

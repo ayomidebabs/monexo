@@ -8,7 +8,7 @@ const router = Router();
 router
   .route('/:pId/reviews')
   .get(getReviews)
+  .post(authMiddleware, addReview)
   .delete(authMiddleware, removeReview);
-router.post('/reviews', authMiddleware, apiLimiter, addReview);
 
 export default router;

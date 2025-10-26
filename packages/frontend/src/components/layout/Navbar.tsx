@@ -67,11 +67,6 @@ const itemVariants: Variants = {
   exit: { opacity: 0, x: '-0.5rem', transition: { duration: 0.15 } },
 };
 
-const categories = [
-  { name: 'Fashion', link: '/products?category=Fashion' },
-  { name: 'Furniture', link: '/products?category=Furniture' },
-  { name: 'Electronics', link: '/products?category=Electronics' },
-];
 const NavBar: React.FC = () => {
   const [search, setSearch] = useState('');
   const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
@@ -101,13 +96,13 @@ const NavBar: React.FC = () => {
   const cartItemCount = useSelector((state: RootState) =>
     selectAllCartItems(state).reduce((sum, item) => sum + item.quantity, 0)
   );
-  console.log(search);
-  const { data: suggestions = [], isFetching } = useGetSearchSuggestionsQuery(
-    { search },
-    {
-      skip: !search,
-    }
-  );
+  const { data: suggestions = [], isFetching: isFetchingSuggestions } =
+    useGetSearchSuggestionsQuery(
+      { search },
+      {
+        skip: !search,
+      }
+    );
 
   const toggleOffcanvas = useCallback(() => {
     setIsOffcanvasOpen((prev) => !prev);
@@ -126,41 +121,14 @@ const NavBar: React.FC = () => {
     setIsSearchDropdownOpen(false);
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setIsSearchDropdownOpen(false);
-      }
-      if (
-        accountDropdownMobileRef.current &&
-        !accountDropdownMobileRef.current.contains(event.target as Node) &&
-        event.target !== accountDropdownOverlayMobileRef.current &&
-        event.target !== accountDropdownOverlayDesktopRef.current
-      ) {
-        setIsAccountOpen(false);
-      }
-      if (
-        accountDropdownDesktopRef.current &&
-        !accountDropdownDesktopRef.current.contains(event.target as Node) &&
-        event.target !== accountDropdownOverlayDesktopRef.current
-      ) {
-        setIsAccountOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const handleSearchFocus = () => {
+    if (!search) return;
     setIsSearchDropdownOpen(true);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    setIsSearchDropdownOpen(!!e.target.value || isSearchDropdownOpen);
+    setIsSearchDropdownOpen(!!e.target.value);
   };
 
   const accountMenu = useMemo(
@@ -265,6 +233,34 @@ const NavBar: React.FC = () => {
     ),
     [isAccountOpen, user]
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchDropdownOpen(false);
+      }
+      if (
+        accountDropdownMobileRef.current &&
+        !accountDropdownMobileRef.current.contains(event.target as Node) &&
+        event.target !== accountDropdownOverlayMobileRef.current &&
+        event.target !== accountDropdownOverlayDesktopRef.current
+      ) {
+        setIsAccountOpen(false);
+      }
+      if (
+        accountDropdownDesktopRef.current &&
+        !accountDropdownDesktopRef.current.contains(event.target as Node) &&
+        event.target !== accountDropdownOverlayDesktopRef.current
+      ) {
+        setIsAccountOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -460,29 +456,7 @@ const NavBar: React.FC = () => {
                     variants={dropdownVariants}
                     onMouseLeave={closeSearchDropdown}
                   >
-                    {search.length === 0 ? (
-                      <ul className={styles.suggestionsList}>
-                        {categories.map((category, i) => (
-                          <motion.li
-                            key={category.name}
-                            className={styles.suggestionItem}
-                            variants={itemVariants}
-                            custom={i}
-                            initial='hidden'
-                            animate='visible'
-                            exit='exit'
-                          >
-                            <Link
-                              to={category.link}
-                              className={styles.suggestionLink}
-                              onClick={closeSearchDropdown}
-                            >
-                              {category.name}
-                            </Link>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    ) : isFetching ? (
+                    {isFetchingSuggestions ? (
                       <div className={styles.loading}>Loading...</div>
                     ) : suggestions.length > 0 ? (
                       <ul className={styles.suggestionsList}>
@@ -620,29 +594,7 @@ const NavBar: React.FC = () => {
                     variants={dropdownVariants}
                     onMouseLeave={closeSearchDropdown}
                   >
-                    {search.length === 0 ? (
-                      <ul className={styles.suggestionsList}>
-                        {categories.map((category, i) => (
-                          <motion.li
-                            key={category.name}
-                            className={styles.suggestionItem}
-                            variants={itemVariants}
-                            custom={i}
-                            initial='hidden'
-                            animate='visible'
-                            exit='exit'
-                          >
-                            <Link
-                              to={category.link}
-                              className={styles.suggestionLink}
-                              onClick={closeSearchDropdown}
-                            >
-                              {category.name}
-                            </Link>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    ) : isFetching ? (
+                    {isFetchingSuggestions ? (
                       <div className={styles.loading}>Loading...</div>
                     ) : suggestions.length > 0 ? (
                       <ul className={styles.suggestionsList}>

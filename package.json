@@ -11,7 +11,7 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
-    "start": "pnpm --filter @ecommerce/backend start"
+    "start": "pnpm --filter @monexo/backend start"
   },
   "keywords": [],
   "author": "",

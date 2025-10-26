@@ -69,7 +69,10 @@ const HorizontalSlider: React.FC<HorizontalSliderProps> = ({
                 )}
                 {slide.price && (
                   <p className={styles['slide-price']}>
-                    ${slide.price.toFixed(2)}
+                    $
+                    {slide.price.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}
                   </p>
                 )}
               </Link>

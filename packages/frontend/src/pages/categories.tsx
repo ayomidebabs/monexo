@@ -20,6 +20,9 @@ const Categories = () => {
 
   return (
     <main className='main'>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Explore categories</h1>
+      </header>
       {categories?.map((category, i) => {
         if (i == 0) {
           return (

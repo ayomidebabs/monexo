@@ -1,6 +1,20 @@
 @use '../utils/functions' as f;
 @use '../utils/mixins' as m;
 
+.header {
+  text-align: center;
+
+  .title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 0;
+    margin-top: f.r(10);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: f.r(0.5);
+  }
+}
+
 .categoriesSlider-container {
   background-color: var(--neutral-white);
   border-radius: f.r(10) f.r(10) 0 0;
@@ -8,4 +22,20 @@
 
 .marginTop {
   margin-top: f.r(10);
+}
+
+@include m.up(sm) {
+  .header {
+    .title {
+      font-size: 1.8rem;
+    }
+  }
+}
+
+@include m.up(md) {
+  .header {
+    .title {
+      font-size: 2rem;
+    }
+  }
 }

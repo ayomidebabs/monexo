@@ -100,17 +100,17 @@
       border-color: var(--accent-primary, #f68b1e);
     }
 
+    &:focus {
+      outline: none;
+    }
+
     &.selected {
       .selectionIndicator {
         color: var(--highlight);
       }
 
-      &:focus {
-        outline: none;
-      }
-
       .defaultBadge {
-        background: var(--bg-secondary, #fff);
+        background: var(--bg-secondary);
         color: var(--accent-primary, #f68b1e);
       }
     }
@@ -167,9 +167,9 @@
 
   .newCardSection {
     padding: f.r(12);
-    border: 1px solid var(--text-secondary, #666);
+    border: 1px solid var(--accent-primary);
     border-radius: f.r(6);
-    background: var(--bg-primary, #f9f9f9);
+    background: var(--bg-secondary);
 
     .sectionTitle {
       font-family: 'Inter', sans-serif;
@@ -197,13 +197,19 @@
 
   .cardInput {
     padding: f.r(12);
-    border: 1px solid var(--text-secondary, #666);
+    border: 1px solid var(--accent-primary);
     border-radius: f.r(4);
     background: var(--bg-secondary, #fff);
     margin-bottom: f.r(12);
+    transition: border-color 0.2s ease-in-out;
 
-    .StripeElement {
-      padding: f.r(8);
+    &:hover {
+      border-color: var(--accent-secondary);
+    }
+
+    * {
+      outline: none;
+      border: none;
     }
   }
 
@@ -247,32 +253,44 @@
   }
 
   .payButton {
-    font-family: 'Inter', sans-serif;
     font-size: f.r(16);
     font-weight: 600;
-    color: var(--bg-secondary, #fff);
-    background-color: var(--accent-primary, #f68b1e);
+    color: var(--bg-secondary);
+    background-color: var(--accent-primary);
     border: none;
     padding: f.r(12) f.r(24);
     border-radius: f.r(6);
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: f.r(8);
-    transition: background-color 0.2s ease-in-out;
+    transition: scale 0.18s ease, background-color 0.3s ease;
 
-    &:hover:not(:disabled) {
-      background-color: var(--accent-secondary, #e07b17);
+    &:hover {
+      background-color: var(--accent-secondary);
+      scale: 1.01;
+    }
+
+    &:active {
+      scale: 0.9999;
+    }
+
+    &:focus {
+      outline: none;
     }
 
     &:disabled {
-      background-color: var(--text-secondary, #666);
-      cursor: not-allowed;
+      opacity: 0.8;
     }
 
     svg {
       font-size: f.r(16);
+    }
+  }
+
+  .checkBox {
+    &:focus {
+      outline: none;
     }
   }
 
@@ -285,15 +303,22 @@
     border: 1px solid var(--accent-primary, #f68b1e);
     padding: f.r(8) f.r(16);
     border-radius: f.r(4);
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: background-color 0.2s ease, color 0.2s ease, scale 0.18s ease;
     display: flex;
     align-items: center;
     gap: f.r(4);
 
     &:hover {
-      background-color: var(--accent-primary, #f68b1e);
+      background-color: var(--accent-secondary);
       color: var(--bg-secondary, #fff);
+    }
+
+    &:active {
+      scale: 0.95;
+    }
+
+    &:focus {
+      outline: none;
     }
   }
 
@@ -450,7 +475,6 @@
   }
 
   @include m.up(xl) {
-    // 1200px
     max-width: f.r(1200);
 
     .header {
@@ -496,6 +520,8 @@
     .payButton {
       font-size: f.r(22);
       padding: f.r(24) f.r(48);
+      width: 90%;
+      margin-inline: auto;
     }
   }
 }

@@ -18,13 +18,10 @@ const Slider: React.FC = () => {
             <p className={styles.offer}>Min. 55% Off</p>
             <p>T-Shirts, Shirts, Jeans...</p>
             <div className={styles.bankOffers}>
-              <div className={styles.bankLogo}></div>
-              <div className={styles.bankLogo}></div>
-              <div className={styles.bankLogo}></div>
-              <p>Up to $5,000 Instant Discount*</p>
+              <p>Up to $5,000 Instant Discount</p>
             </div>
           </div>
-          <div className={styles.slideImage}></div>
+          <div className={styles.slideImage1}></div>
         </div>
       ),
     },
@@ -33,16 +30,15 @@ const Slider: React.FC = () => {
       content: (
         <div className={styles.slideContent}>
           <div className={styles.slideText}>
-            <h2>SUMMER SALE</h2>
-            <p>Brand1, Brand2, Brand3...</p>
-            <p className={styles.offer}>Min. 60% Off</p>
-            <p>Products...</p>
-            <div className={styles.bankOffers}>
-              <div className={styles.bankLogo}></div>
-              <p>Discount Info</p>
-            </div>
+            <h2>SPECIAL OFFER</h2>
+            <p>
+              VelvetDream 3-Seater, ZenRest Platform Bed, LuxeComfort
+              Sectional...
+            </p>
+            <p className={styles.offer}>Up to 70% Off</p>
+            <p>Sofas, Beds...</p>
           </div>
-          <div className={styles.slideImage}></div>
+          <div className={styles.slideImage2}></div>
         </div>
       ),
     },
@@ -51,16 +47,12 @@ const Slider: React.FC = () => {
       content: (
         <div className={styles.slideContent}>
           <div className={styles.slideText}>
-            <h2>SPECIAL OFFER</h2>
-            <p>More Brands...</p>
-            <p className={styles.offer}>Up to 70% Off</p>
-            <p>Items...</p>
-            <div className={styles.bankOffers}>
-              <div className={styles.bankLogo}></div>
-              <p>Bank Offers</p>
-            </div>
+            <h2>SUMMER SALE</h2>
+            <p>TechPro Ultrabook X1, NoteMate Pro, ChronoCraft Classic...</p>
+            <p className={styles.offer}>Min. 60% Off</p>
+            <p>Laptops, Smartphones, Wristwaches...</p>
           </div>
-          <div className={styles.slideImage}></div>
+          <div className={styles.slideImage3}></div>
         </div>
       ),
     },

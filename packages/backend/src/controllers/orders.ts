@@ -5,6 +5,7 @@ import { validateOrderUpdate } from '../inputValidation/Admin/updateOrder.js';
 import { verifyAdmin } from '../middleware/verifyAdmin.js';
 import { matchedData } from 'express-validator';
 import { validateGetUserOrder } from '../inputValidation/getOrder.js';
+import { Types } from 'mongoose';
 
 export const getUserOrders = [
   ...validateGetUserOrder,
@@ -14,7 +15,6 @@ export const getUserOrders = [
         page = 1,
         limit = 10,
         status,
-        search,
         sortBy = 'createdAt',
         sortOrder = 'desc',
       } = matchedData(req, { locations: ['query'] }) as {
@@ -26,9 +26,11 @@ export const getUserOrders = [
         sortOrder?: 'asc' | 'desc';
       };
 
+      const { appUser } = res.locals;
+
       const query: any = {};
+      query.user = new Types.ObjectId(appUser?.id);
       if (status) query.status = status;
-      if (search) query.email = { $regex: search, $options: 'i' };
 
       const sortDirection = sortOrder === 'asc' ? 1 : -1;
       const sortField = sortBy || 'createdAt';
@@ -91,11 +93,6 @@ export const getUserOrders = [
         {
           $project: {
             _id: 1,
-            user: {
-              _id: '$userData._id',
-              name: '$userData.name',
-              email: '$userData.email',
-            },
             email: 1,
             products: {
               $map: {
@@ -130,7 +127,7 @@ export const getUserOrders = [
       ]).exec();
 
       if (!orders.length) {
-        return res.status(404).send({ message: 'No orders found' });
+        return res.status(200).send({ orders });
       }
 
       const total = await Order.countDocuments(query);

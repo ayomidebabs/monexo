@@ -39,9 +39,11 @@ export const getUserOrderSchema = checkSchema(
     sortBy: {
       optional: true,
       isIn: {
-        options: [['name', 'price', 'createdAt', 'updatedAt']],
+        options: [
+          ['name', 'price', 'createdAt', 'updatedAt', 'status', 'total'],
+        ],
         errorMessage:
-          'sortBy must be one of: name, price, createdAt or updatedAt',
+          'sortBy must be one of: name, price, status, total, createdAt or updatedAt',
       },
     },
     sortOrder: {

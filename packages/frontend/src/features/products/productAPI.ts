@@ -42,15 +42,15 @@ export interface ProductsQuery {
 export const productsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query<ProductsResponse, Partial<ProductsQuery>>({
-      query: ({ page = 1, limit = 10, category, search }) => ({
+      query: ({ page, limit, category, search, sortBy, sortOrder }) => ({
         url: '/products',
-        params: { page, limit, category, search },
+        params: { page, limit, category, search, sortBy, sortOrder },
       }),
       providesTags: ['Products'],
     }),
     getProduct: builder.query<Product, string>({
       query: (pId) => `products/${pId}`,
-      providesTags: ['Product'],
+      providesTags: (result, error, pId) => [{ type: 'Product', id: pId }],
     }),
     createProduct: builder.mutation<Product, FormData>({
       query: (formData) => ({
@@ -72,8 +72,8 @@ export const productsApi = apiSlice.injectEndpoints({
       invalidatesTags: ['Products'],
     }),
     deleteProduct: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `/admin/products/${id}`,
+      query: (pId) => ({
+        url: `/admin/products/${pId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Products'],

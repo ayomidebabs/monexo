@@ -1,17 +1,49 @@
 @use '../utils/functions' as f;
 @use '../utils/mixins' as m;
 
-.h2 {
-  margin: 0;
-  color: var(--accent-primary);
+.header {
   text-align: center;
-  margin-top: f.r(10);
-  font-weight: 600;
-  font-size: 1rem;
+
+  .title1 {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 0;
+    margin-top: f.r(10);
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: f.r(0.5);
+  }
+
+  .title2 {
+    font-size: 0.9rem;
+    color: var(--accent-primary);
+    margin: f.r(15) 0 0 0;
+  }
+}
+
+@include m.up(sm) {
+  .header {
+    .title1 {
+      font-size: 1.8rem;
+    }
+    .title2 {
+      font-size: 1rem;
+    }
+  }
 }
 
 @include m.up(md) {
-  .h2 {
-    font-size: 1.5rem;
+  .header {
+    .title1 {
+      font-size: 2rem;
+    }
+  }
+}
+@include
+ m.up(lg) {
+  .header {
+    .title2 {
+      font-size: 1.5rem;
+    }
   }
 }

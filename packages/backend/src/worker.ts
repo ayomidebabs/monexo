@@ -151,7 +151,7 @@ const paystackWebhookWorker = new Worker(
           case 'charge.success':
             const { customer, reference, amount, metadata, currency } =
               paymentData;
-            const { userId, products: productsString } = metadata;
+            const { userId, products: productsString, total } = metadata;
             const products = JSON.parse(productsString);
 
             const existingOrder = await Order.findOne({
@@ -169,7 +169,7 @@ const paystackWebhookWorker = new Worker(
               user: userId,
               email: customer.email,
               products,
-              total: amount,
+              total,
               currency,
               status: 'Processing',
               paymentDetails: {

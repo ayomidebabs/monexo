@@ -21,7 +21,7 @@ interface PaymentMethod {
 
 export const stripeApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createPaymentIntentForRegisteredUser: builder.mutation<
+    createPaymentIntent: builder.mutation<
       { clientSecret: string },
       {
         products: { pId: string; quantity: number }[];
@@ -30,22 +30,9 @@ export const stripeApi = apiSlice.injectEndpoints({
       }
     >({
       query: ({ products, email, savePayment }) => ({
-        url: '/stripe/payment-intent/user',
+        url: '/stripe/payment-intent',
         method: 'POST',
         body: { products, email, savePayment },
-      }),
-    }),
-    createPaymentIntentForGuest: builder.mutation<
-      { clientSecret: string },
-      {
-        products: { pId: string; quantity: number }[];
-        email: string;
-      }
-    >({
-      query: ({ products, email }) => ({
-        url: '/stripe/payment-intent/guest',
-        method: 'POST',
-        body: { products, email },
       }),
     }),
     chargeStripeSavedPaymentMethod: builder.mutation<
@@ -77,7 +64,10 @@ export const stripeApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['StripeSavedPaymentMethods'],
     }),
-    deleteStripePaymentMethod: builder.mutation<void, { paymentMethodId: string }>({
+    deleteStripePaymentMethod: builder.mutation<
+      void,
+      { paymentMethodId: string }
+    >({
       query: ({ paymentMethodId }) => ({
         url: `stripe/payment-methods/${paymentMethodId}`,
         method: 'DELETE',
@@ -89,8 +79,7 @@ export const stripeApi = apiSlice.injectEndpoints({
 
 export const {
   useGetStripePaymentMethodsQuery,
-  useCreatePaymentIntentForRegisteredUserMutation,
-  useCreatePaymentIntentForGuestMutation,
+  useCreatePaymentIntentMutation,
   useChargeStripeSavedPaymentMethodMutation,
   useSetStripeDefaultPaymentMethodMutation,
   useDeleteStripePaymentMethodMutation,

@@ -2,36 +2,30 @@
 @use '../utils/mixins' as m;
 
 .savedPaymentMethods {
-  padding: 1rem;
-  background: var(--bg-primary, #f9f9f9);
-  min-height: 100vh;
+  width: 100%;
 
   .header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 
     .title {
-      font-family: 'Inter', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary, #333);
-      margin: 0 0 0.5rem;
-      line-height: 1.3;
+      font-weight: 600;
+      font-size: 1.4rem;
+      margin: 0;
+      margin-top: f.r(10);
+      color: var(--accent-primary);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: f.r(0.5);
     }
 
     .subtitle {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      color: var(--text-secondary, #666);
-      margin: 0;
-      line-height: 1.4;
+      font-size: 0.8rem;
+      color: var(--accent-primary);
+      margin: 0.2rem 0 0;
     }
   }
 
   .successMessage {
-    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     color: #28a745;
     text-align: center;
@@ -40,7 +34,6 @@
   }
 
   .errorText {
-    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     color: #dc3545;
     text-align: center;
@@ -49,7 +42,6 @@
   }
 
   .loading {
-    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     color: var(--text-secondary, #666);
     text-align: center;
@@ -65,10 +57,9 @@
       align-items: center;
       margin-bottom: 1rem;
       padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--text-secondary, #666);
+      border-bottom: 1px solid var(--accent-primary);
 
       .sectionTitle {
-        font-family: 'Inter', sans-serif;
         font-size: 1.2rem;
         font-weight: 600;
         color: var(--text-primary, #333);
@@ -93,12 +84,11 @@
     .emptyState {
       text-align: center;
       padding: 2rem;
-      background: #fff;
+      background: var(--bg-secondary);
       border-radius: 8px;
-      border: 1px solid var(--text-secondary, #666);
+      border: 1px solid var(--accent-primary);
 
       p {
-        font-family: 'Inter', sans-serif;
         font-size: 1rem;
         color: var(--text-secondary, #666);
         margin-bottom: 1rem;
@@ -114,18 +104,19 @@
   }
 
   .card {
-    background: var(--bg-secondary, #fff);
+    background: var(--bg-secondary);
     border-radius: f.r(8);
     box-shadow: 0 f.r(2) f.r(8) rgba(0, 0, 0, 0.1);
     padding: f.r(16);
     display: flex;
     flex-direction: column;
     gap: f.r(12);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+    transition: background-color 0.2s ease-in-out, scale 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out;
 
     &:hover {
-      box-shadow: 0 f.r(6) f.r(12) rgba(0, 0, 0, 0.15);
-      transform: translateY(f.r(-4));
+      box-shadow: 0 f.r(3) f.r(12) rgba(0, 0, 0, 0.12);
     }
 
     .cardDetails {
@@ -135,7 +126,7 @@
 
       .cardIcon {
         font-size: 1.5rem;
-        color: var(--accent-primary, #f68b1e);
+        color: var(--accent-primary);
         transition: transform 0.2s ease-in-out;
 
         &:hover {
@@ -147,7 +138,6 @@
         flex: 1;
 
         .cardBrand {
-          font-family: 'Inter', sans-serif;
           font-size: 1rem;
           font-weight: 600;
           color: var(--text-primary, #333);
@@ -155,27 +145,20 @@
         }
 
         .cardExpiry {
-          font-family: 'Inter', sans-serif;
           font-size: 0.85rem;
           color: var(--text-secondary, #666);
           margin: f.r(4) 0 0 0;
         }
 
         .defaultBadge {
-          font-family: 'Inter', sans-serif;
           font-size: 0.8rem;
           color: #28a745;
-          background: #d4edda;
           padding: f.r(2) f.r(8);
           border-radius: f.r(4);
           display: inline-flex;
           align-items: center;
           gap: f.r(2);
-          margin-top: f.r(8);
-
-          svg {
-            font-size: 0.9rem;
-          }
+          margin-top: f.r(4);
         }
       }
     }
@@ -187,63 +170,52 @@
 
       .setDefault,
       .delete {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 600;
-        padding: f.r(6) f.r(16);
+        padding: f.r(6) f.r(14);
         border-radius: f.r(4);
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
-          transform 0.2s ease-in-out;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
         touch-action: manipulation;
         border: 1px solid transparent;
       }
 
       .setDefault {
         background-color: transparent;
-        color: var(--accent-primary, #f68b1e);
-        border-color: var(--accent-primary, #f68b1e);
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
 
         &:hover:not(:disabled) {
-          background-color: var(--accent-primary, #f68b1e);
-          color: var(--bg-secondary, #fff);
-          transform: translateY(f.r(-2));
+          background-color: var(--accent-primary);
+          color: var(--bg-secondary);
         }
 
         &:disabled {
           opacity: 0.7;
-          cursor: not-allowed;
         }
       }
 
       .delete {
-        background-color: transparent;
-        color: #dc3545;
-        border-color: #dc3545;
+        svg {
+          font-size: 1.1rem;
+        }
+
+        color: var(--accent-primary);
+        border-color: var(--accent-secondary);
 
         &:hover:not(:disabled) {
-          background-color: #dc3545;
-          color: var(--bg-secondary, #fff);
-          transform: translateY(f.r(-2));
+          background-color: var(--accent-secondary);
+          color: var(--neutral-white);
         }
 
         &:disabled {
           opacity: 0.7;
-          cursor: not-allowed;
         }
       }
     }
   }
 
   @include m.up(sm) {
-    // 576px
-    padding: f.r(24);
-
     .header {
-      margin-bottom: f.r(32);
-
       .title {
-        font-size: 1.75rem;
+        font-size: 1.8rem;
       }
 
       .subtitle {
@@ -274,7 +246,7 @@
           }
 
           .defaultBadge {
-            font-size: 0.85rem;
+            font-size: 1rem;
           }
         }
       }
@@ -282,8 +254,13 @@
       .cardActions {
         .setDefault,
         .delete {
-          font-size: 0.85rem;
-          padding: f.r(8) f.r(20);
+          padding: f.r(8) f.r(16);
+        }
+
+        .delete {
+          svg {
+            font-size: 1.15em;
+          }
         }
       }
     }
@@ -294,17 +271,13 @@
   }
 
   @include m.up(md) {
-    // 768px
-    padding: f.r(32);
-
     .header {
       .title {
         font-size: 2rem;
-        letter-spacing: f.r(2);
       }
 
       .subtitle {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
     }
 
@@ -332,34 +305,14 @@
           }
 
           .defaultBadge {
-            font-size: 0.9rem;
             padding: f.r(4) f.r(12);
           }
-        }
-      }
-
-      .cardActions {
-        .setDefault,
-        .delete {
-          font-size: 0.9rem;
-          padding: f.r(10) f.r(24);
         }
       }
     }
   }
 
   @include m.up(lg) {
-    // 992px
-    .header {
-      .title {
-        font-size: 2.25rem;
-      }
-
-      .subtitle {
-        font-size: 1.2rem;
-      }
-    }
-
     .cardGrid {
       grid-template-columns: repeat(auto-fit, minmax(f.r(320), 1fr));
     }
@@ -380,32 +333,11 @@
           }
         }
       }
-
-      .cardActions {
-        .setDefault,
-        .delete {
-          font-size: 0.95rem;
-        }
-      }
     }
   }
 
   @include m.up(xl) {
-    // 1200px
     max-width: f.r(1200);
-    margin: 0 auto;
-    padding: f.r(40);
-
-    .header {
-      .title {
-        font-size: 2.5rem;
-        letter-spacing: f.r(3);
-      }
-
-      .subtitle {
-        font-size: 1.3rem;
-      }
-    }
 
     .cardGrid {
       gap: f.r(24);
@@ -427,18 +359,6 @@
           .cardExpiry {
             font-size: 1.2rem;
           }
-
-          .defaultBadge {
-            font-size: 1rem;
-          }
-        }
-      }
-
-      .cardActions {
-        .setDefault,
-        .delete {
-          font-size: 1rem;
-          padding: f.r(12) f.r(28);
         }
       }
     }
@@ -449,10 +369,6 @@
   }
 
   @include m.up(xxl) {
-    // 1400px
-    max-width: f.r(1400);
-    padding: f.r(48);
-
     .header {
       .title {
         font-size: 2.75rem;
@@ -484,18 +400,6 @@
           .cardExpiry {
             font-size: 1.3rem;
           }
-
-          .defaultBadge {
-            font-size: 1.1rem;
-          }
-        }
-      }
-
-      .cardActions {
-        .setDefault,
-        .delete {
-          font-size: 1.1rem;
-          padding: f.r(14) f.r(32);
         }
       }
     }

@@ -19,6 +19,7 @@ import {
 import { useGetProductQuery } from '../../features/products/productAPI';
 import {
   useAddReviewMutation,
+  useGetReviewsQuery,
   useRemoveReviewMutation,
 } from '../../features/Reviews/reviewApi';
 import { store, type AppDispatch, type RootState } from '../../app/store';
@@ -72,24 +73,38 @@ const ProductDetailPage: React.FC = () => {
     isLoading: productLoading,
     error: productError,
   } = useGetProductQuery(pId!, { skip: !pId });
+
+  const {
+    data: reviews,
+    isLoading: reviewsLoading,
+    error: loadingReviewsError,
+  } = useGetReviewsQuery(pId!, { skip: !pId });
+  const [addReview, { isLoading: isAddingReview, error: addReviewError }] =
+    useAddReviewMutation();
+  const [ReviewError, setReviewError] = useState('');
+  const [removeReview, { isLoading: isRemovingReview }] =
+    useRemoveReviewMutation();
+
   const dispatch = useDispatch<AppDispatch>();
   const { setShowSignInModal } = useContext(modalContext);
+  const user = useSelector((state: RootState) => state.auth.user);
+
   const guestWishlistIntent = useSelector(
     (state: RootState) => state.wishlist.wishlistIntent
   );
   const [getWishlist] = useLazyGetWishlistQuery();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const [addReview, { isLoading: isAddingReview, error: addReviewError }] =
-    useAddReviewMutation();
-  const [removeReview, { isLoading: isRemovingReview }] =
-    useRemoveReviewMutation();
-  const [addRecentlyViewedProductServer] = useAddRecentlyViewedMutation();
-  const [updateServerCart, { isLoading: isUpdatingCart }] =
-    useUpdateCartMutation();
   const [addToWishlist, { isLoading: isAddingWishlist }] =
     useAddToWishlistMutation();
   const [removeFromWishlist, { isLoading: isRemovingWishlist }] =
     useRemoveFromWishlistMutation();
+  const [wishlistIcon, setWishlistIcon] = useState(false);
+
+  const [updateServerCart, { isLoading: isUpdatingCart }] =
+    useUpdateCartMutation();
+  const cart = useSelector(selectAllCartItems);
+  const [isCartItem, setIsCartItem] = useState<CartItem>();
+
+  const [addRecentlyViewedProductServer] = useAddRecentlyViewedMutation();
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
     RecentlyViewedProduct[]
   >([]);
@@ -97,9 +112,7 @@ const ProductDetailPage: React.FC = () => {
     getServerRecentlyViewedProducts,
     { isLoading: loadingRecentlyViewed, error: recentlyViewedError },
   ] = useLazyGetRecentlyViewedQuery();
-  const [wishlistIcon, setWishlistIcon] = useState(false);
-  const cart = useSelector(selectAllCartItems);
-  const [isCartItem, setIsCartItem] = useState<CartItem>();
+
   const [quantity, setQuantity] = useState(1);
   const [StockLimitReached, setStockLimitReached] = useState<boolean>(false);
   const [error, setError] = useState('');
@@ -118,7 +131,6 @@ const ProductDetailPage: React.FC = () => {
 
   const handleAddToCart = useCallback(async () => {
     if (!product) return;
-
     dispatch(
       addToCart({
         pId: product._id,
@@ -301,6 +313,15 @@ const ProductDetailPage: React.FC = () => {
     setStockLimitReached(cartItem.quantity >= product.stock);
   }, [product?._id, cart, product?.stock, product]);
 
+  useEffect(() => {
+    if (addReviewError) {
+      setReviewError(
+        (addReviewError as ApiError)?.data?.message || 'Failed to submit review'
+      );
+      setTimeout(() => setReviewError(''), 3000);
+    }
+  }, [addReviewError]);
+
   if (productLoading) return <p>Loading...</p>;
   if (productError || !product) return <p>Product not found</p>;
 
@@ -342,7 +363,12 @@ const ProductDetailPage: React.FC = () => {
               <FontAwesomeIcon icon={wishlistIcon ? faHeart : faHeartRegular} />
             </button>
           </div>
-          <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
+          <p className={styles.productPrice}>
+            $
+            {product.price.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })}
+          </p>
           <p className={styles.productCategory}>Category: {product.category}</p>
           {product.stock < 30 && (
             <em className={styles.itemsLeft}>
@@ -393,7 +419,12 @@ const ProductDetailPage: React.FC = () => {
                   />
                 </button>
               </div>
-              <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
+              <p className={styles.productPrice}>
+                $
+                {product.price.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })}
+              </p>
               <p className={styles.productCategory}>
                 Category: {product.category}
               </p>
@@ -475,15 +506,17 @@ const ProductDetailPage: React.FC = () => {
 
       <div className={styles.reviewsSection}>
         <h2 className={styles.reviewsTitle}>Product Reviews</h2>
-        {productLoading && <p>Loading reviews...</p>}
-        {!productLoading &&
-        (!product.reviews || product.reviews.length === 0) ? (
+        {productLoading || reviewsLoading ? (
+          <p>Loading reviews...</p>
+        ) : loadingReviewsError ? (
+          <p>An error occured while loading reviews</p>
+        ) : !productLoading && reviews && reviews.length === 0 ? (
           <p>No reviews yet</p>
         ) : (
-          product.reviews.map((review) => (
+          reviews!.map((review) => (
             <div key={review._id} className={styles.reviewCard}>
               <div className={styles.reviewHeader}>
-                <span>{review.user?.name}</span>
+                <span>{review.user.name}</span>
                 <span>{new Date(review.createdAt).toLocaleDateString()}</span>
               </div>
               <div
@@ -493,10 +526,10 @@ const ProductDetailPage: React.FC = () => {
                 {renderStars(review.rating)}
               </div>
               <p className={styles.cardText}>{review.comment}</p>
-              {user?.id === review.user?._id && (
+              {user?.id === review.user._id && (
                 <button
                   className={styles.deleteReview}
-                  onClick={() => handleRemoveReview(review._id)}
+                  onClick={() => handleRemoveReview(product._id)}
                   disabled={isRemovingReview}
                   aria-label={`Delete review for ${product.name}`}
                 >
@@ -513,13 +546,7 @@ const ProductDetailPage: React.FC = () => {
             onSubmit={handleSubmit(handleSubmitReview)}
           >
             <h3>Add Your Review</h3>
-            {addReviewError && (
-              <p className={styles.errorText}>
-                {(addReviewError as ApiError)?.data?.message ||
-                  'Failed to submit review'}
-              </p>
-            )}
-
+            {ReviewError && <p className={styles.errorText}>{ReviewError}</p>}
             <div className={styles.formGroup}>
               <label htmlFor='rating'>Rating:</label>
               <Controller

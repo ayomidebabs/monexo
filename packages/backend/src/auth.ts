@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { Request } from 'express';
 import Google from '@auth/express/providers/google';
+import Facebook from '@auth/express/providers/facebook';
 import Credentials from '@auth/express/providers/credentials';
 import type { AuthConfig, Session } from '@auth/core/types';
 import type { OAuthConfig, Provider } from '@auth/core/providers';
@@ -14,17 +15,22 @@ import { userInfo } from 'os';
 
 dotenv.config();
 
-const { GOOGLE_ID, GOOGLE_SECRET, AUTH_SECRET } = process.env;
+const { GOOGLE_ID, GOOGLE_SECRET, FACEBOOK_ID, FACEBOOK_SECRET, AUTH_SECRET } =
+  process.env;
 if (
   !GOOGLE_ID ||
   !GOOGLE_SECRET ||
+  !FACEBOOK_ID ||
+  !FACEBOOK_SECRET ||
   !AUTH_SECRET ||
   typeof GOOGLE_ID !== 'string' ||
   typeof GOOGLE_SECRET !== 'string' ||
+  typeof FACEBOOK_ID !== 'string' ||
+  typeof FACEBOOK_SECRET !== 'string' ||
   typeof AUTH_SECRET !== 'string'
 ) {
   throw new Error(
-    'Missing or invalid required environment variables for Google OAuth'
+    'Missing or invalid required environment variables for Google or Facebook OAuth'
   );
 }
 
@@ -51,6 +57,9 @@ export const authConfig: AuthConfig = {
           if (!user)
             user = await User.create({
               name: profile.displayName,
+              email:
+                profile.emails?.[0]?.value ||
+                `google-${profile.id}@example.com`,
               google: {
                 id: profile.id,
                 avatar: profile.photos?.[0].value,
@@ -65,6 +74,36 @@ export const authConfig: AuthConfig = {
           name: user.name,
           role: user.role,
         };
+      },
+    }) as OAuthConfig<any>,
+    Facebook({
+      clientId: FACEBOOK_ID,
+      clientSecret: FACEBOOK_SECRET,
+      async profile(profile) {
+        let user = await User.findOne({ 'facebook.id': profile.id });
+        try {
+          if (!user) {
+            user = await User.create({
+              name:
+                profile.displayName ||
+                `${profile.first_name} ${profile.last_name}`,
+              email: profile.email || `facebook-${profile.id}@example.com`,
+              facebook: {
+                id: profile.id,
+                avatar: profile.picture?.data?.url,
+              },
+              strategy: 'facebook',
+            });
+          }
+          return {
+            id: user.id.toString(),
+            name: user.name,
+            role: user.role,
+            email: user.email,
+          };
+        } catch (error) {
+          throw new AppError((error as Error).message);
+        }
       },
     }) as OAuthConfig<any>,
     Credentials({
@@ -96,7 +135,7 @@ export const authConfig: AuthConfig = {
           }
 
           const user = await User.findOne({
-            'local.email': credentials.email,
+            email: credentials.email,
           });
           if (!user) {
             return null;
@@ -122,7 +161,7 @@ export const authConfig: AuthConfig = {
           return {
             id: user.id.toString(),
             name: user.name,
-            email: user.local.email,
+            email: user.email,
           };
         } catch (error) {
           throw new AppError((error as Error).message);

@@ -2,10 +2,13 @@ import { apiSlice } from '../../app/apiSlice';
 
 interface Review {
   _id: string;
-  user: string;
+  user: {
+    _id: string;
+    name: string;
+  };
   rating: number;
   comment: string;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 interface AddReview {
@@ -26,14 +29,20 @@ export const productsApi = apiSlice.injectEndpoints({
         method: 'POST',
         body: { rating, comment },
       }),
-      invalidatesTags: ['Reviews'],
+      invalidatesTags: (result, error, { pId }) => [
+        { type: 'Product', id: pId },
+        'Reviews',
+      ],
     }),
     removeReview: builder.mutation<{ message: string }, string>({
       query: (pId) => ({
         url: `/${pId}/reviews`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Reviews'],
+      invalidatesTags: (result, error, pId) => [
+        { type: 'Product', id: pId },
+        'Reviews',
+      ],
     }),
   }),
 });

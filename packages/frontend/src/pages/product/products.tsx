@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductGrid from '../../components/common/productGrid';
 import styles from '../../styles/pages/ProductsPage.module.scss';
@@ -6,12 +6,13 @@ import styles from '../../styles/pages/ProductsPage.module.scss';
 interface QueryParams {
   category?: string;
   search?: string;
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
 }
 
 const ProductsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [totalProducts, setTotalProducts] = useState<number>();
 
   const queryParams = useMemo<QueryParams>(() => {
     const limitParam = searchParams.get('limit');
@@ -22,34 +23,48 @@ const ProductsPage: React.FC = () => {
     return {
       category: categoryParam || undefined,
       search: searchParam || undefined,
-      limit: limitParam ? Math.max(1, parseInt(limitParam)) : 10,
-      page: pageParam ? Math.max(1, parseInt(pageParam)) : 1,
+      limit: limitParam ? parseInt(limitParam) : undefined,
+      page: pageParam ? parseInt(pageParam) : undefined,
     };
   }, [searchParams]);
 
   const effectiveCategory = queryParams.category;
   const effectiveSearch = queryParams.search;
 
-  const handlePageChange = (newPage: number) => {
-    setSearchParams({
-      ...Object.fromEntries(searchParams),
-      page: newPage.toString(),
-    });
+  const handlePageChange = (newPage: number, totalPages: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setSearchParams({
+        ...Object.fromEntries(searchParams),
+        page: newPage.toString(),
+      });
+    }
   };
 
   return (
     <main className='main'>
-      <h4 className={styles.h2}>
-        {effectiveSearch
-          ? `Search Results for "${effectiveSearch}"`
-          : `${effectiveCategory}`}
-      </h4>
+      <header className={styles.header}>
+        {(() => {
+          if (effectiveSearch && effectiveCategory) {
+            if (totalProducts)
+              return (
+                <h1 className={styles.title2}>
+                  Search {totalProducts > 1 ? 'Results' : 'Result'} for{' '}
+                  {`"${effectiveSearch}"`}
+                </h1>
+              );
+          } else if (effectiveCategory) {
+            return <h1 className={styles.title1}>{effectiveCategory}</h1>;
+          }
+        })()}
+      </header>
+
       <ProductGrid
         category={effectiveCategory}
         search={effectiveSearch}
         limit={queryParams.limit}
         page={queryParams.page}
-        onPageChange={handlePageChange}
+        handlePageChange={handlePageChange}
+        setTotalProducts={setTotalProducts}
       />
     </main>
   );

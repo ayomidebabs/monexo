@@ -24,6 +24,16 @@ const ShoppingCart: React.FC = () => {
   const cartTotal = useSelector((state: RootState) => state.cart.total);
   const navigate = useNavigate();
 
+  const handleCheckout = () => {
+    if (!user) {
+      return setShowSignInModal(true);
+    }
+    if (email && region) {
+      return navigate('/checkout');
+    }
+    setShowCheckoutModal(true);
+  };
+
   if (!cart.length) {
     return (
       <main className='main'>
@@ -68,7 +78,12 @@ const ShoppingCart: React.FC = () => {
           <h4 className={styles.title}>Shopping Cart</h4>
           <div className={styles.subtotal}>
             <span>Subtotal {`( ${cartItemCount} items )`}</span>
-            <span className={styles.price}>${cartTotal.toFixed(2)}</span>
+            <span className={styles.price}>
+              $
+              {cartTotal.toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              })}
+            </span>
           </div>
           <hr />
         </div>
@@ -84,15 +99,22 @@ const ShoppingCart: React.FC = () => {
           transition={{ duration: 0.5 }}
         >
           {cart.map((item) => {
-            const totalPrice = (item.price * item.quantity).toFixed(2);
-            const unitPrice = `${item.price.toFixed(2)} ✖ ${item.quantity}`;
+            const totalPrice = (item.price * item.quantity).toLocaleString(
+              undefined,
+              {
+                maximumFractionDigits: 2,
+              }
+            );
+            const unitPrice = `${item.price.toLocaleString(undefined, {
+              maximumFractionDigits: 2,
+            })} ✖ ${item.quantity}`;
             return (
               <CartItem
                 key={item.pId}
                 {...item}
                 totalPrice={totalPrice}
                 unitPrice={unitPrice}
-                badge={'EcommerceNOW'}
+                badge={'Monexo'}
               />
             );
           })}
@@ -120,15 +142,7 @@ const ShoppingCart: React.FC = () => {
           </div>
         </div>
 
-        <button
-          className={styles['checkout-link']}
-          onClick={() => {
-            if (email && region) {
-              return navigate('/checkout');
-            }
-            setShowCheckoutModal(true);
-          }}
-        >
+        <button className={styles['checkout-link']} onClick={handleCheckout}>
           Continue to Checkout
         </button>
       </motion.div>

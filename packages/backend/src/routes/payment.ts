@@ -12,8 +12,7 @@ import {
   deletePaymentMethod,
 } from '../controllers/paystack.js';
 import {
-  createPaymentIntentForRegisteredUser,
-  createPaymentIntentForGuest,
+  createPaymentIntent,
   fetchSavedPaymentMethods as fetchStripeSavedPaymentMethods,
   chargeSavedPaymentMethod as chargeStripeSavedPaymentMethod,
   stripeWebhook,
@@ -24,15 +23,7 @@ import {
 
 const router = Router();
 
-router.post(
-  '/stripe/payment-intent/user',
-  authMiddleware,
-  createPaymentIntentForRegisteredUser
-);
-router.post(
-  '/stripe/payment-intent/guest',
-  createPaymentIntentForRegisteredUser
-);
+router.post('/stripe/payment-intent', authMiddleware, createPaymentIntent);
 router.post(
   '/stripe/payment-methods/set-default',
   authMiddleware,

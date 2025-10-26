@@ -127,7 +127,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, forWishlist }) => {
         </h3>
         <div>
           <div className={styles['price-container']}>
-            <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
+            <p className={styles.productPrice}>
+              $
+              {product.price.toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              })}
+            </p>
             {forWishlist && (
               <button
                 className={styles['removeFromWishlist']}

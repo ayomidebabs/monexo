@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faShoppingCart,
-  faChevronLeft,
-  faChevronRight,
-} from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import {
   useGetUserOrdersQuery,
   type Order,
@@ -13,12 +9,9 @@ import {
 import styles from '../styles/pages/orderHistory.module.scss';
 
 const OrderHistory: React.FC = () => {
-  console.log(Boolean());
-  console.log(Number(true));
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [status, setStatus] = useState<string | undefined>(undefined);
-  const [search, setSearch] = useState<string | undefined>(undefined);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -28,8 +21,8 @@ const OrderHistory: React.FC = () => {
     error: fetchOrdersError,
   } = useGetUserOrdersQuery({
     page,
+    status,
     limit,
-    search,
     sortBy,
     sortOrder,
   });
@@ -50,11 +43,6 @@ const OrderHistory: React.FC = () => {
     setPage(1);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value || undefined);
-    setPage(1);
-  };
-
   const handleSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortBy(e.target.value);
     setPage(1);
@@ -72,7 +60,6 @@ const OrderHistory: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
-      whileHover={{ scale: 1.02 }}
     >
       <div className={styles.orderDetails}>
         <FontAwesomeIcon icon={faShoppingCart} className={styles.orderIcon} />
@@ -99,10 +86,14 @@ const OrderHistory: React.FC = () => {
             </ul>
           </div>
           <p className={styles.orderPayment}>
-            Payment: {order.paymentDetails.method}{' '}
-            {order.paymentDetails.transactionId
-              ? `(${order.paymentDetails.transactionId.slice(-4)})`
-              : ''}
+            <p>Email: {order.email}</p>
+            Payment method: {order.paymentDetails.method}
+            <p>
+              transaction ID:{' '}
+              {order.paymentDetails.transactionId
+                ? order.paymentDetails.transactionId
+                : ''}
+            </p>
           </p>
         </div>
       </div>
@@ -110,119 +101,116 @@ const OrderHistory: React.FC = () => {
   );
 
   return (
-    <div className={styles.orderHistory}>
-      <motion.div
-        className={styles.header}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className={styles.title}>Order History</h1>
-        <p className={styles.subtitle}>View and manage your past orders</p>
-      </motion.div>
+    <main className='main'>
+      <div className={styles.orderHistory}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>Order History</h1>
+          <p className={styles.subtitle}>View and manage your past orders</p>
+        </header>
 
-      <div className={styles.filters}>
-        <div className={styles.filterGroup}>
-          <label htmlFor='statusFilter'>Filter by Status:</label>
-          <select
-            id='statusFilter'
-            onChange={handleStatusFilter}
-            value={status || ''}
-          >
-            <option value=''>All</option>
-            <option value='pending'>Pending</option>
-            <option value='processing'>Processing</option>
-            <option value='shipped'>Shipped</option>
-            <option value='delivered'>Delivered</option>
-          </select>
+        <div className={styles.filters}>
+          <div className={styles.filterGroup}>
+            <label htmlFor='statusFilter'>Filter by Status:</label>
+            <select
+              id='statusFilter'
+              className={styles.select}
+              onChange={handleStatusFilter}
+              value={status || ''}
+            >
+              <option value=''>All</option>
+              <option value='pending'>Pending</option>
+              <option value='processing'>Processing</option>
+              <option value='shipped'>Shipped</option>
+              <option value='delivered'>Delivered</option>
+            </select>
+          </div>
+          <div className={styles.filterGroup}>
+            <label htmlFor='sortBy'>Sort by:</label>
+            <select
+              className={styles.select}
+              id='sortBy'
+              onChange={handleSortBy}
+              value={sortBy}
+            >
+              <option value='createdAt'>Date</option>
+              <option value='total'>Total</option>
+              <option value='status'>Status</option>
+            </select>
+          </div>
+          <div className={styles.filterGroup}>
+            <label htmlFor='sortOrder'>Order:</label>
+            <select
+              className={styles.select}
+              id='sortOrder'
+              onChange={handleSortOrder}
+              value={sortOrder}
+            >
+              <option value='desc'>Descending</option>
+              <option value='asc'>Ascending</option>
+            </select>
+          </div>
         </div>
-        <div className={styles.filterGroup}>
-          <label htmlFor='searchFilter'>Search by Email:</label>
-          <input
-            id='searchFilter'
-            type='text'
-            placeholder='Enter email...'
-            onChange={handleSearch}
-            value={search || ''}
-          />
-        </div>
-        <div className={styles.filterGroup}>
-          <label htmlFor='sortBy'>Sort by:</label>
-          <select id='sortBy' onChange={handleSortBy} value={sortBy}>
-            <option value='createdAt'>Date</option>
-            <option value='total'>Total</option>
-            <option value='status'>Status</option>
-          </select>
-        </div>
-        <div className={styles.filterGroup}>
-          <label htmlFor='sortOrder'>Order:</label>
-          <select id='sortOrder' onChange={handleSortOrder} value={sortOrder}>
-            <option value='desc'>Descending</option>
-            <option value='asc'>Ascending</option>
-          </select>
-        </div>
+
+        <AnimatePresence>
+          {isLoadingOrders ? (
+            <div className={styles.loading}>Loading orders...</div>
+          ) : fetchOrdersError ? (
+            <motion.p
+              className={styles.errorText}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              role='alert'
+            >
+              Failed to load orders
+            </motion.p>
+          ) : orders.length > 0 ? (
+            <div className={styles.orderSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>
+                  <FontAwesomeIcon
+                    icon={faShoppingCart}
+                    className={styles.sectionIcon}
+                  />
+                  Orders
+                  <span className={styles.sectionCount}>
+                    ({data?.total || 0})
+                  </span>
+                </h2>
+              </div>
+              <div className={styles.orderGrid}>
+                {orders.map((order, index) => renderOrderCard(order, index))}
+              </div>
+
+              <div className={styles.pagination}>
+                <p>
+                  Page {data?.page} of {totalPages}
+                </p>
+                <button
+                  onClick={() => handlePageChange((data?.page as number) - 1)}
+                  disabled={!hasPrevPage}
+                  aria-label='Previous page'
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => handlePageChange((data?.page as number) + 1)}
+                  disabled={!hasNextPage}
+                  aria-label='Next page'
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <p>No orders found</p>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
-
-      <AnimatePresence>
-        {fetchOrdersError && (
-          <motion.p
-            className={styles.errorText}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            role='alert'
-          >
-            Failed to load orders
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-      {isLoadingOrders ? (
-        <div className={styles.loading}>Loading orders...</div>
-      ) : orders.length > 0 ? (
-        <div className={styles.orderSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
-              <FontAwesomeIcon
-                icon={faShoppingCart}
-                className={styles.sectionIcon}
-              />
-              Orders
-              <span className={styles.sectionCount}>({data?.total || 0})</span>
-            </h2>
-          </div>
-          <div className={styles.orderGrid}>
-            {orders.map((order, index) => renderOrderCard(order, index))}
-          </div>
-          <div className={styles.pagination}>
-            <button
-              className={styles.pageButton}
-              onClick={() => handlePageChange(page - 1)}
-              disabled={!hasPrevPage}
-              aria-label='Previous page'
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
-            <span className={styles.pageInfo}>
-              Page {page} of {totalPages}
-            </span>
-            <button
-              className={styles.pageButton}
-              onClick={() => handlePageChange(page + 1)}
-              disabled={!hasNextPage}
-              aria-label='Next page'
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className={styles.emptyState}>
-          <p>No orders found</p>
-        </div>
-      )}
-    </div>
+    </main>
   );
 };
 

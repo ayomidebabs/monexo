@@ -100,18 +100,6 @@ h6 {
   overflow-wrap: break-word;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 700;
-  font-family: t.$font-family-heading;
-  line-height: t.$line-height-heading;
-  margin-block-end: s.$spacing;
-}
-
 :focus {
   outline: 0.12rem solid var(--accent-secondary);
   outline-offset: 0.125rem;

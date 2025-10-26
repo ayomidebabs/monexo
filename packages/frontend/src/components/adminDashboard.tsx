@@ -251,29 +251,3 @@ export default AdminDashboard;
 
 
 
-
-
-// {productsData?.products.map((product) => (
-//                 <tr key={product._id}>
-//                   <td>{product.name}</td>
-//                   <td>${product.price.toFixed(2)}</td>
-//                   <td>{product.stock}</td>
-//                   <td>
-//                     <Button
-//                       variant="warning"
-//                       onClick={() => {
-//                         /* Implement update logic */
-//                       }}
-                      
-//                     >
-//                       Edit
-//                     </Button>{' '}
-//                     <Button
-//                       variant="danger"
-//                       onClick={() => deleteProduct(product._id)}
-//                     >
-//                       Delete
-//                     </Button>
-//                   </td>
-//                 </tr>
-//               ))}

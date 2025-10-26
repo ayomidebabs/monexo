@@ -1,19 +1,19 @@
 import { Schema, Document, model, Model } from 'mongoose';
 import { User } from '../types/appUser.js';
-import { type } from 'os';
+import { hashPassword } from '../utils/pswdEncryption.js';
 export interface IUserDocument extends User, Document {}
 export interface IUserModel extends Model<IUserDocument> {}
 
 const UserSchema: Schema = new Schema<IUserDocument>(
   {
     name: { type: String, required: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     local: {
-      email: {
-        type: String,
-        required: true,
-        unique: true,
-      },
-      password: { type: String, required: true },
+      password: { type: String },
       addresses: [
         {
           street: { type: String },
@@ -93,5 +93,33 @@ const UserSchema: Schema = new Schema<IUserDocument>(
   },
   { timestamps: true }
 );
+
+UserSchema.pre('validate', function (this: IUserDocument, next) {
+  if (this.strategy === 'local' && !this.local.password) {
+    return next(new Error('Password is required for local strategy'));
+  }
+  if (this.strategy === 'google' && !this.google.id) {
+    return next(new Error('Google ID is required for google strategy'));
+  }
+  if (this.strategy === 'facebook' && !this.facebook.id) {
+    return next(new Error('Facebook ID is required for facebook strategy'));
+  }
+  next();
+});
+
+UserSchema.pre('save', async function (this: IUserDocument, next) {
+  if (this.email) {
+    this.email = this.email.toLowerCase();
+  }
+
+  if (
+    this.strategy === 'local' &&
+    this.local.password &&
+    this.isModified('local.password')
+  ) {
+    this.local.password = await hashPassword(this.local.password);
+  }
+  next();
+});
 
 export default model<IUserDocument, IUserModel>('User', UserSchema);

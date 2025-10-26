@@ -93,8 +93,9 @@ export const initializeTransaction = [
             amount: Math.round(formatTotal(total, currency)),
             currency,
             metadata: {
-              ...(appUser?.id && { userId: appUser.id as string }),
+              userId: appUser?.id as string,
               products: JSON.stringify(validatedItems),
+              total,
             },
           },
           {

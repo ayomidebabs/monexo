@@ -51,58 +51,6 @@ const Footer: React.FC = () => {
                 </NavLink>
               </motion.div>
             </li>
-            <li>
-              <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
-                <NavLink
-                  to='/shop'
-                  className={({ isActive }) =>
-                    `${styles.footerLink} ${isActive ? styles.active : ''}`
-                  }
-                  aria-current='page'
-                >
-                  Shop
-                </NavLink>
-              </motion.div>
-            </li>
-            <li>
-              <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
-                <NavLink
-                  to='/about'
-                  className={({ isActive }) =>
-                    `${styles.footerLink} ${isActive ? styles.active : ''}`
-                  }
-                  aria-current='page'
-                >
-                  About
-                </NavLink>
-              </motion.div>
-            </li>
-            <li>
-              <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
-                <NavLink
-                  to='/contact'
-                  className={({ isActive }) =>
-                    `${styles.footerLink} ${isActive ? styles.active : ''}`
-                  }
-                  aria-current='page'
-                >
-                  Contact
-                </NavLink>
-              </motion.div>
-            </li>
-            <li>
-              <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
-                <NavLink
-                  to='/privacy'
-                  className={({ isActive }) =>
-                    `${styles.footerLink} ${isActive ? styles.active : ''}`
-                  }
-                  aria-current='page'
-                >
-                  Privacy Policy
-                </NavLink>
-              </motion.div>
-            </li>
           </ul>
         </div>
 
@@ -191,19 +139,13 @@ const Footer: React.FC = () => {
         <div className={styles.footerSection}>
           <h3 className={styles.footerTitle}>Contact Us</h3>
           <p className={styles.footerText}>
-            Email:{' '}
-            <a href='mailto:support@yourecommerce.com'>
-              support@yourecommerce.com
-            </a>
+            Email: <a href='mailto:support@monexo.com'>support@monexo.com</a>
           </p>
           <p className={styles.footerText}>Phone: +1 (800) 123-4567</p>
         </div>
       </div>
       <div className={`${styles.footerBottom} container`}>
-        <p>
-          &copy; {new Date().getFullYear()} Your E-Commerce. All rights
-          reserved.
-        </p>
+        <p>&copy; {new Date().getFullYear()} Monexo. All rights reserved.</p>
       </div>
     </footer>
   );

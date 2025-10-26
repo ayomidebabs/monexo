@@ -26,7 +26,7 @@ const webhookQueue = new Queue('stripe-webhook-queue', {
   },
 });
 
-export const createPaymentIntentForRegisteredUser = [
+export const createPaymentIntent = [
   ...validatePaymentIntentCreation,
   async (req: Request, res: Response, next: NextFunction) => {
     const {
@@ -104,72 +104,6 @@ export const createPaymentIntentForRegisteredUser = [
             }),
           metadata: {
             userId: appUser?.id as string,
-            email,
-            products: JSON.stringify(validatedItems),
-            total,
-          },
-        },
-        { idempotencyKey: uuid() }
-      );
-
-      return res.status(200).json({
-        clientSecret: paymentIntent.client_secret,
-      });
-    } catch (error) {
-      next(new AppError((error as Error).message, 500));
-    }
-  },
-];
-
-export const createPaymentIntentForGuest = [
-  ...validatePaymentIntentCreation,
-  async (req: Request, res: Response, next: NextFunction) => {
-    const {
-      products,
-      email,
-    }: {
-      products: { pId: string; quantity: number }[];
-      email: string;
-    } = matchedData(req);
-
-    try {
-      const productIds = products.map((item) => item.pId);
-      const foundProducts = await Product.find({
-        _id: { $in: productIds },
-      }).lean();
-
-      if (foundProducts.length !== products.length) {
-        const missingIds = productIds.filter(
-          (id) => !foundProducts.some((p) => p._id.toString() === id)
-        );
-        return res
-          .status(400)
-          .send({ message: `Products not found: ${missingIds.join(', ')}` });
-      }
-
-      const validatedItems = foundProducts.map((product) => {
-        const item = products.find((i) => i.pId === product._id.toString());
-        if (!item || product.stock < item.quantity) {
-          throw new AppError(`Insufficient stock for ${product.name}`);
-        }
-        return {
-          pId: product._id,
-          name: product.name,
-          quantity: item.quantity,
-          price: product.price,
-        };
-      });
-
-      const total = validatedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      );
-
-      const paymentIntent = await stripe.paymentIntents.create(
-        {
-          amount: Math.round(total * 100),
-          currency: 'usd',
-          metadata: {
             email,
             products: JSON.stringify(validatedItems),
             total,

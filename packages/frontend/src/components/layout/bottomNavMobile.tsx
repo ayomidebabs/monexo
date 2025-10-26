@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome } from '@fortawesome/free-regular-svg-icons';
-import { faTh, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { LuShoppingCart } from 'react-icons/lu';
 import { RiHome9Line } from 'react-icons/ri';
 import { NavLink } from 'react-router-dom';
