@@ -96,12 +96,66 @@ const SignInModal: React.FC<SignInModalProps> = ({
     }
   };
 
-  const handleGoogleSignIn = () => {
-    window.location.href = 'http://localhost:5000/auth/signin/google';
+  const handleGoogleSignIn = async () => {
+    try {
+      const csrfToken = await getCsrfToken();
+      if (!csrfToken) {
+        throw new Error('Failed to fetch CSRF token');
+      }
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `${import.meta.env.VITE_BASE_URL}/auth/signin/google`;
+
+      const csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = 'csrfToken';
+      csrfInput.value = csrfToken;
+
+      const callbackInput = document.createElement('input');
+      callbackInput.type = 'hidden';
+      callbackInput.name = 'callbackUrl';
+      callbackInput.value = 'http://localhost:5173/';
+
+      form.appendChild(csrfInput);
+      form.appendChild(callbackInput);
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (error) {
+      void error;
+    }
   };
 
-  const handleFacebookSignIn = () => {
-    window.location.href = 'http://localhost:5000/auth/signin/facebook';
+  const handleFacebookSignIn = async () => {
+    try {
+      const csrfToken = await getCsrfToken();
+      if (!csrfToken) {
+        throw new Error('Failed to fetch CSRF token');
+      }
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `${import.meta.env.VITE_BASE_URL}/auth/signin/facebook`;
+
+      const csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = 'csrfToken';
+      csrfInput.value = csrfToken;
+
+      const callbackInput = document.createElement('input');
+      callbackInput.type = 'hidden';
+      callbackInput.name = 'callbackUrl';
+      callbackInput.value = 'http://localhost:5173/';
+
+      form.appendChild(csrfInput);
+      form.appendChild(callbackInput);
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (error) {
+      void error;
+    }
   };
 
   return (

@@ -13,13 +13,12 @@
 
   .header {
     text-align: center;
-    margin-bottom: f.r(24);
+    margin-bottom: 1.5rem;
 
     .title {
-      font-family: 'Inter', sans-serif;
       font-size: f.r(24);
       font-weight: 700;
-      color: var(--text-primary, #333);
+      color: var(--accent-primary);
       margin: 0;
       line-height: 1.2;
       text-transform: uppercase;

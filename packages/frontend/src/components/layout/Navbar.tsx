@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { NavLink, Outlet, Link, ScrollRestoration } from 'react-router-dom';
+import { NavLink, Outlet, Link } from 'react-router-dom';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,19 +16,19 @@ import {
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { useGetSearchSuggestionsQuery } from '../../features/search/searchApi';
-import CreateAccountModal from '../../components/authModals/signUpModal';
+import CreateAccountModal from '../authModals/SignUpModal';
 import SignInModal from '../../components/authModals/SignInModal';
-import SignInSuccessModal from '../../components/authModals/signInSuccessModal';
+import SignInSuccessModal from '../authModals/SignInSuccessModal';
 import { setTheme } from '../../features/theme/themeSlice';
 import { modalContext } from '../../context/modalContext';
 import type { RootState } from '../../app/store';
-import Offcanvas from '../common/OffCanvas';
+import Offcanvas from '../others/OffCanvas';
 import { selectAllCartItems } from '../../features/cart/cartSlice';
 import SignoutButton from '../Buttons/SignoutButton';
-import AppModal from '../common/appModal';
+import AppModal from '../others/AppModal';
 import Footer from './Footer';
 import BottomNav from './bottomNavMobile';
-import CheckoutInfoModal from '../checkoutInfoModal';
+import CheckoutInfoModal from '../others/CheckoutInfoModal';
 import styles from '../../styles/components/Navbar.module.scss';
 
 const dropdownVariants: Variants = {
@@ -264,7 +264,6 @@ const NavBar: React.FC = () => {
 
   return (
     <>
-      <ScrollRestoration />
       <motion.header
         className={`${styles.mobileHeader} header`}
         initial={{ y: -100 }}

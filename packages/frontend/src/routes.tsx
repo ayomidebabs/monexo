@@ -1,7 +1,10 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  ScrollRestoration,
+} from 'react-router-dom';
 import Homepage from './pages/home/Home';
 import CartPage from './pages/cart/CartPage';
-import AdminPage from './pages/admin/adminPage';
 import NotFound from './pages/not-found/NotFound';
 import NavBar from './components/layout/Navbar';
 import ProductDetailPage from './pages/product/ProductDetail';
@@ -17,6 +20,7 @@ import CheckoutPage from './pages/payment/checkout';
 import WishlistPage from './pages/wishlist';
 import SavedPaymentMethods from './pages/payment/savedPaymentMethods';
 import OrderHistory from './pages/orderHistory';
+import ScrollToTop from './components/others/ScrollToTop';
 
 const AppRoutes: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -41,7 +45,12 @@ const AppRoutes: React.FC = () => {
 
   const router = createBrowserRouter([
     {
-      element: <NavBar />,
+      element: (
+        <ScrollToTop>
+          <ScrollRestoration />
+          <NavBar />
+        </ScrollToTop>
+      ),
       children: [
         {
           path: '/',
@@ -68,10 +77,6 @@ const AppRoutes: React.FC = () => {
           element: <OrderHistory />,
         },
         {
-          path: '/admin',
-          element: <AdminPage />,
-        },
-        {
           path: '/checkout',
           element: <CheckoutPage />,
         },
@@ -95,19 +100,3 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
-
-{
-  /* <>
-  <Routes>
-    <Route path='/' element={<NavBar />}>
-      <Route index element={<Home />} />
-      <Route path='cart' element={<CartPage />} />
-      <Route path='product-detail/:pId' element={<ProductDetailPage />} />
-      <Route path='products' element={<ProductsPage />} />
-      <Route path='checkout' element={<CheckoutPage />} />
-      <Route path='admin' element={<AdminPage />} />
-      <Route path='*' element={<NotFound />} />
-    </Route>
-  </Routes>
-</>; */
-}

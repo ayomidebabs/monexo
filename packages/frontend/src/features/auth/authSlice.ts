@@ -85,7 +85,7 @@ export const signIn = createAsyncThunk(
 );
 
 export const signOut = createAsyncThunk(
-  'auth/signOut',
+  '/auth/signOut',
   async (csrfToken: string, { rejectWithValue }) => {
     try {
       const res = await axios.post(

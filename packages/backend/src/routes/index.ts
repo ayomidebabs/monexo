@@ -12,7 +12,7 @@ import wishlistRoutes from './wishlist.js';
 import authRoutes from './auth.js';
 import paymentRoutes from './payment.js';
 import exchangeRatesRoute from './exchangeRates.js';
-// import catchAllRoutes from './catchall.js';
+import catchAllRoutes from './catchAll.js';
 
 const router = Router();
 
@@ -31,6 +31,6 @@ router.use('/api/orders', orderRoutes);
 router.use('/api/admin', adminRoutes);
 router.use('/api/user', themeRoutes, recentlyViewedRoutes);
 router.use('/api/cart', cartRoutes);
-// router.use('*', catchAllRoutes);
+router.use('*', catchAllRoutes);
 
 export default router;

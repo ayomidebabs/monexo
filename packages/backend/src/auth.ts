@@ -6,12 +6,16 @@ import Credentials from '@auth/express/providers/credentials';
 import type { AuthConfig, Session } from '@auth/core/types';
 import type { OAuthConfig, Provider } from '@auth/core/providers';
 import type { JWT } from '@auth/core/jwt';
-
 import User from './models/User.js';
 import { validatePassword } from './utils/pswdEncryption.js';
 import { updateLockout } from './utils/updateLockout.js';
 import { AppError } from './middleware/GlobalErrorHandler.js';
-import { userInfo } from 'os';
+import { type User as user } from './types/appUser.js';
+
+interface CustomUser extends Partial<user> {
+  id?: string;
+  _id?: string;
+}
 
 dotenv.config();
 
@@ -42,27 +46,27 @@ interface CustomSession extends Session {
 }
 
 export const authConfig: AuthConfig = {
+  secret: AUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
     updateAge: 24 * 60 * 60,
   },
+
   providers: [
     Google({
       clientId: GOOGLE_ID,
       clientSecret: GOOGLE_SECRET,
       async profile(profile) {
-        let user = await User.findOne({ 'google.id': profile.id });
+        let user = await User.findOne({ 'google.id': profile.sub });
         try {
           if (!user)
             user = await User.create({
-              name: profile.displayName,
-              email:
-                profile.emails?.[0]?.value ||
-                `google-${profile.id}@example.com`,
+              name: profile.name,
+              email: profile.email || `google-${profile.sub}@example.com`,
               google: {
-                id: profile.id,
-                avatar: profile.photos?.[0].value,
+                id: profile.sub,
+                avatar: profile.picture,
               },
               strategy: 'google',
             });
@@ -71,22 +75,22 @@ export const authConfig: AuthConfig = {
         }
         return {
           id: user.id.toString(),
+          _id: user.id.toString(),
           name: user.name,
-          role: user.role,
+          email: user.email,
         };
       },
     }) as OAuthConfig<any>,
     Facebook({
       clientId: FACEBOOK_ID,
       clientSecret: FACEBOOK_SECRET,
+      authorization: { params: { scope: '' } },
       async profile(profile) {
         let user = await User.findOne({ 'facebook.id': profile.id });
         try {
           if (!user) {
             user = await User.create({
-              name:
-                profile.displayName ||
-                `${profile.first_name} ${profile.last_name}`,
+              name: profile.name,
               email: profile.email || `facebook-${profile.id}@example.com`,
               facebook: {
                 id: profile.id,
@@ -97,8 +101,8 @@ export const authConfig: AuthConfig = {
           }
           return {
             id: user.id.toString(),
+            _id: user.id.toString(),
             name: user.name,
-            role: user.role,
             email: user.email,
           };
         } catch (error) {
@@ -169,15 +173,18 @@ export const authConfig: AuthConfig = {
       },
     }),
   ],
-  secret: AUTH_SECRET,
+
   callbacks: {
     async signIn({ user, account }) {
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { user: any; token: JWT }) {
       if (user) {
-        token.id = user.id;
+        const dbId = user._id?.toString() ?? user.id?.toString();
+        token.id = dbId;
+        token.sub = dbId;
       }
+
       return token;
     },
     async session({
@@ -222,15 +229,12 @@ export const authConfig: AuthConfig = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url.includes('/signin')) {
-        return baseUrl + '/signin-success';
-      }
-      if (url.includes('/signout')) {
-        return baseUrl + '/signout-success';
-      }
-      return '';
+      if (url.includes('/signin')) return baseUrl + '/signin-success';
+      if (url.includes('/signout')) return baseUrl + '/signout-success';
+
+      return process.env.FRONT_END_URL as string;
     },
   },
-};
 
-authConfig.providers = authConfig.providers as Provider[];
+  trustHost: true,
+};

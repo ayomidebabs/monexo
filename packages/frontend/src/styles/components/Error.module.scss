@@ -1,0 +1,33 @@
+.error-container {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #e74c3c;
+}
+
+.retry-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background-color: var(--accent-primary);
+  color: var(--neutral-white);
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, scale 0.12s ease;
+
+  &:hover {
+    background: #2980b9;
+  }
+
+  &:hover {
+    background-color: var(--accent-secondary);
+    scale: 1.02;
+  }
+
+  &:active {
+    scale: 0.99;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}

@@ -5,12 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch } from 'react-redux';
-import { type AppDispatch } from '../app/store';
+import { type AppDispatch } from '../../app/store';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { setCheckoutInfo } from '../features/Payment/checkout/checkOutSlice';
-import type { ApiError } from '../app/apiSlice';
+import { setCheckoutInfo } from '../../features/Payment/checkout/checkOutSlice';
+import type { ApiError } from '../../app/apiSlice';
 import { useNavigate } from 'react-router-dom';
-import styles from '../styles/components/AuthModal.module.scss';
+import styles from '../../styles/components/AuthModal.module.scss';
 
 const notificationVariants = {
   hidden: { opacity: 0, y: -20 },

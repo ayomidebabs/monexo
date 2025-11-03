@@ -59,12 +59,11 @@ export const getReviews = [
           },
         },
       ]);
-
+      console.log(products);
       if (!products.length) {
-        return res.status(404).send({ message: 'Product not found' });
+        return res.send([]);
       }
 
-      console.log(products[0].reviews);
       res.send(products[0].reviews);
     } catch (error) {
       next(new AppError((error as Error).message));

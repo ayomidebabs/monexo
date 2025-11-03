@@ -1,7 +1,7 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 import { v2 as cloudinary } from 'cloudinary';
-import path from "path";
+import path from 'path';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -11,7 +11,13 @@ cloudinary.config({
 
 export const productImageTransformations = {
   transformation: [
-    { width: 800, height: 800, crop: 'limit', quality: 'auto', fetch_format: 'webp' },
+    {
+      width: 800,
+      height: 800,
+      crop: 'limit',
+      quality: 'auto',
+      fetch_format: 'webp',
+    },
     { fetch_format: 'auto' },
   ],
   folder: 'ecommerce/products',

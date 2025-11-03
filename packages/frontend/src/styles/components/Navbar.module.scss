@@ -43,6 +43,7 @@
     width: 100%;
     gap: 0.5rem;
   }
+
   .logoLink {
     display: flex;
     position: absolute;
@@ -60,7 +61,7 @@
 
   .logo {
     object-fit: cover;
-    width: 6.5rem;
+    width: 7rem;
     height: auto;
     display: block;
   }
@@ -78,6 +79,11 @@
     font-weight: 400;
     font-size: 0.875rem;
     transition: color 0.3s ease;
+
+    svg {
+      font-size: f.r(17.5);
+    }
+
     &:hover {
       svg {
         color: var(--accent-secondary);
@@ -101,6 +107,10 @@
     color: var(--accent-primary);
     &:hover {
       color: var(--accent-secondary);
+    }
+
+    svg {
+      font-size: f.r(17.5);
     }
   }
 
@@ -324,12 +334,19 @@
   .themeToggle {
     background: none;
     border: none;
-    padding: f.r(4);
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .themeIcon {
+      width: 1.8rem;
+      height: 1.8rem;
+      color: var(--accent-primary);
+      transition: color 0.3s ease;
+    }
+
     &:hover {
-      svg {
+      .themeIcon {
         color: var(--accent-secondary);
       }
     }
@@ -337,13 +354,6 @@
     &:focus {
       outline: none;
     }
-  }
-
-  .themeIcon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: var(--accent-primary);
-    transition: color 0.3s ease;
   }
 
   .accountDropdown {
@@ -360,6 +370,7 @@
     inset: 0;
     z-index: 10;
   }
+
   .accountMenu {
     position: absolute;
     top: 100%;

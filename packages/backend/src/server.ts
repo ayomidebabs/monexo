@@ -5,7 +5,7 @@ import connectDB from './config/db.js';
 
 const PORT = process.env.PORT;
 connectDB().then(() => {
-  app.listen(Number(PORT), 'localhost', () =>
+  app.listen(Number(PORT), '0.0.0.0', () =>
     console.log(`Listening on port ${PORT}`)
   );
 });

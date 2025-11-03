@@ -4,15 +4,12 @@ import { Link } from 'react-router-dom';
 import styles from '../../styles/components/SectionHeader.module.scss';
 
 interface SectionHeaderProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   link?: string;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({
-  title,
-  link,
-}) => {
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title, link }) => {
   return (
     <motion.div
       className={styles.sectionHeader}

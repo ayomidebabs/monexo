@@ -1,0 +1,24 @@
+.error {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #e74c3c;
+  background: #fdf2f2;
+  border-radius: 12px;
+  margin: 2rem 1rem;
+}
+
+.retry {
+  margin-top: 1rem;
+  padding: 0.6rem 1.8rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #2980b9;
+  }
+}

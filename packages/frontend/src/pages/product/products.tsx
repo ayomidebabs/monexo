@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import ProductGrid from '../../components/common/productGrid';
+import ProductGrid from '../../components/product/ProductGrid';
 import styles from '../../styles/pages/ProductsPage.module.scss';
+import Seo from '../../components/others/Seo';
 
 interface QueryParams {
   category?: string;
@@ -47,13 +48,29 @@ const ProductsPage: React.FC = () => {
           if (effectiveSearch && effectiveCategory) {
             if (totalProducts)
               return (
-                <h1 className={styles.title2}>
-                  Search {totalProducts > 1 ? 'Results' : 'Result'} for{' '}
-                  {`"${effectiveSearch}"`}
-                </h1>
+                <>
+                  <Seo
+                    title={`Shop ${effectiveSearch} in ${effectiveCategory} - Best Deals Online | Monexo`}
+                    description={`Browse the best ${effectiveCategory} products with exclusive deals at Monexo.`}
+                    keywords={`${effectiveSearch} ${effectiveCategory}, monexo, shop online, deals`}
+                  />
+                  <h1 className={styles.title2}>
+                    Search {totalProducts > 1 ? 'Results' : 'Result'} for{' '}
+                    {`"${effectiveSearch}"`}
+                  </h1>
+                </>
               );
           } else if (effectiveCategory) {
-            return <h1 className={styles.title1}>{effectiveCategory}</h1>;
+            return (
+              <>
+                <Seo
+                  title={`Shop ${effectiveCategory} - Best Deals Online | Monexo`}
+                  description={`Browse the best ${effectiveCategory} products with exclusive deals at Monexo.`}
+                  keywords={`${effectiveCategory}, monexo, shop online, deals`}
+                />
+                <h1 className={styles.title1}>{effectiveCategory}</h1>
+              </>
+            );
           }
         })()}
       </header>

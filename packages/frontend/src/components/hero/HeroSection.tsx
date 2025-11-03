@@ -1,8 +1,7 @@
-// src/components/HeroSection.tsx
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import HeroTextAnimation from './HeroTextAnimation';
+import HeroTextAnimation from '../hero/HeroTextAnimation';
 import { useGetProductQuery } from '../../features/products/productAPI';
 import styles from '../../styles/components/HeroSection.module.scss';
 

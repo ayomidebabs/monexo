@@ -27,20 +27,6 @@ const BottomNav: React.FC = () => {
   return (
     <nav className={`${styles.bottomNav} ${visible ? styles.visible : ''}`}>
       <NavLink
-        to={'/categories'}
-        className={({ isActive }) =>
-          isActive
-            ? `${styles['active-link']} ${styles.section}`
-            : styles.section
-        }
-        aria-label='View categories'
-        end
-      >
-        <BiCategory />
-        <div className={styles.sectionText}>Categories</div>
-      </NavLink>
-
-      <NavLink
         to={'/'}
         className={({ isActive }) =>
           isActive
@@ -52,6 +38,20 @@ const BottomNav: React.FC = () => {
       >
         <RiHome9Line />
         <div className={styles.sectionText}>Home</div>
+      </NavLink>
+
+      <NavLink
+        to={'/categories'}
+        className={({ isActive }) =>
+          isActive
+            ? `${styles['active-link']} ${styles.section}`
+            : styles.section
+        }
+        aria-label='View categories'
+        end
+      >
+        <BiCategory />
+        <div className={styles.sectionText}>Categories</div>
       </NavLink>
 
       <NavLink

@@ -40,6 +40,10 @@
       border: none;
       font-size: 1.3rem;
       color: var(--text-primary);
+
+      &:focus {
+        outline: none;
+      }
     }
   }
 }

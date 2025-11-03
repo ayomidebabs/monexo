@@ -18,6 +18,7 @@ import {
   useDeletePaystackPaymentMethodMutation,
 } from '../../features/Payment/Paystack/paystackAPI';
 import styles from '../../styles/pages/SavedPaymentMethods.module.scss';
+import Seo from '../../components/others/Seo';
 
 interface PaymentMethod {
   id: string;
@@ -187,71 +188,78 @@ const SavedPaymentMethods: React.FC = () => {
   }, [successMessage]);
 
   return (
-    <main className='main'>
-      <div className={styles.savedPaymentMethods}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>Saved Cards</h1>
-          <p className={styles.subtitle}>Manage your saved cards securely</p>
-        </header>
+    <>
+      <Seo
+        title='Manage Payment Methods | Monexo'
+        description='Securely manage your payment methods for easy checkout at Monexo.'
+        keywords='monexo, payment methods, secure payment, checkout'
+      />
+      <main className='main'>
+        <div className={styles.savedPaymentMethods}>
+          <header className={styles.header}>
+            <h1 className={styles.title}>Saved Cards</h1>
+            <p className={styles.subtitle}>Manage your saved cards securely</p>
+          </header>
 
-        <AnimatePresence>
-          {successMessage && (
-            <motion.p
-              className={styles.successMessage}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              role='status'
-            >
-              {successMessage}
-            </motion.p>
-          )}
-          {errorMessage && (
-            <motion.p
-              className={styles.errorText}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              role='alert'
-            >
-              {errorMessage}
-            </motion.p>
-          )}
-        </AnimatePresence>
-
-        {isLoading ? (
-          <div className={styles.loading}>Loading cards...</div>
-        ) : (
-          <div className={styles.paymentSection}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>
-                <FontAwesomeIcon
-                  icon={faCreditCard}
-                  className={styles.sectionIcon}
-                />
-                Cards
-                <span className={styles.sectionCount}>
-                  ({paymentMethods.length})
-                </span>
-              </h2>
-            </div>
-            {hasMethods ? (
-              <div className={styles.cardGrid}>
-                {paymentMethods.map((method, index) =>
-                  renderCard(method, index)
-                )}
-              </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <p>No cards saved</p>
-              </div>
+          <AnimatePresence>
+            {successMessage && (
+              <motion.p
+                className={styles.successMessage}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                role='status'
+              >
+                {successMessage}
+              </motion.p>
             )}
-          </div>
-        )}
-      </div>
-    </main>
+            {errorMessage && (
+              <motion.p
+                className={styles.errorText}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                role='alert'
+              >
+                {errorMessage}
+              </motion.p>
+            )}
+          </AnimatePresence>
+
+          {isLoading ? (
+            <div className={styles.loading}>Loading cards...</div>
+          ) : (
+            <div className={styles.paymentSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>
+                  <FontAwesomeIcon
+                    icon={faCreditCard}
+                    className={styles.sectionIcon}
+                  />
+                  Cards
+                  <span className={styles.sectionCount}>
+                    ({paymentMethods.length})
+                  </span>
+                </h2>
+              </div>
+              {hasMethods ? (
+                <div className={styles.cardGrid}>
+                  {paymentMethods.map((method, index) =>
+                    renderCard(method, index)
+                  )}
+                </div>
+              ) : (
+                <div className={styles.emptyState}>
+                  <p>No cards saved</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
+    </>
   );
 };
 

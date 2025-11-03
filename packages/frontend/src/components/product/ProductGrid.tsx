@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import ProductCard from '../product/ProductCard';
+import ProductCard from './ProductCard';
 import { useGetProductsQuery } from '../../features/products/productAPI';
 import styles from '../../styles/components/ProductGrid.module.scss';
 
 interface ProductGridProps {
-  category?: string;
-  search?: string;
+  category: string;
+  search: string;
   limit: number;
   page: number;
   handlePageChange: (newPage: number, totalPages: number) => void;

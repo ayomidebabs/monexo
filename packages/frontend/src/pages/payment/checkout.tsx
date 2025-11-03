@@ -32,8 +32,9 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../app/store';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
-import styles from '../../styles/pages/checkout.module.scss';
 import type { ApiError } from '../../app/apiSlice';
+import Seo from '../../components/others/Seo';
+import styles from '../../styles/pages/checkout.module.scss';
 
 type Currency = 'USD' | 'EUR' | 'GBP' | 'NGN' | 'ZAR' | 'GHS';
 type PaymentProvider = 'stripe' | 'paystack';
@@ -784,31 +785,38 @@ const Checkout: React.FC = () => {
   }
 
   return (
-    <main className={styles.main}>
-      <div className={styles.checkout}>
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className={styles.title}>Checkout</h1>
-        </motion.div>
+    <>
+      <Seo
+        title='Secure Checkout - Complete Your Order | Monexo'
+        description="Complete your purchase securely with Monexo's fast and easy checkout process."
+        keywords='monexo, checkout, secure payment, online shopping'
+      />
+      <main className={styles.main}>
+        <div className={styles.checkout}>
+          <motion.div
+            className={styles.header}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1 className={styles.title}>Checkout</h1>
+          </motion.div>
 
-        <div className={styles.checkoutContent}>
-          <div className={styles.paymentSection}>
-            <Elements stripe={stripePromise}>
-              <CheckoutForm
-                provider={paymentProvider}
-                email={email}
-                usdTotalOrEquivalent={usdTotalOrEquivalent}
-                currency={currency as Currency}
-              />
-            </Elements>
+          <div className={styles.checkoutContent}>
+            <div className={styles.paymentSection}>
+              <Elements stripe={stripePromise}>
+                <CheckoutForm
+                  provider={paymentProvider}
+                  email={email}
+                  usdTotalOrEquivalent={usdTotalOrEquivalent}
+                  currency={currency as Currency}
+                />
+              </Elements>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 

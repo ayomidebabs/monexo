@@ -5,8 +5,10 @@ import { store } from './app/store';
 import AppRoutes from './routes';
 import { fetchCurrentUser } from './features/auth/authSlice';
 import './styles/main.scss';
-import CustomCursor from './components/common/customCursor';
-import ThemeProvider from './components/common/themeProvider';
+import CustomCursor from './components/others/customCursor';
+import ThemeProvider from './components/others/ThemeProvider';
+import { HelmetProvider } from 'react-helmet-async';
+import ErrorBoundary from './components/others/ErrorBoundary';
 store.dispatch(fetchCurrentUser());
 
 createRoot(document.getElementById('root')!).render(
@@ -14,7 +16,11 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <ThemeProvider>
         <CustomCursor />
-        <AppRoutes></AppRoutes>
+        <HelmetProvider>
+          <ErrorBoundary>
+            <AppRoutes />
+          </ErrorBoundary>
+        </HelmetProvider>
       </ThemeProvider>
     </Provider>
   </StrictMode>

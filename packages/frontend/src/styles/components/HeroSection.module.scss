@@ -51,6 +51,10 @@
   &:hover {
     background-color: var(--accent-tertiary);
   }
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .preview {

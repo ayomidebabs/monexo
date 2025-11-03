@@ -2,9 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import styles from '../../styles/components/customCursor.module.scss';
 
-
-
-
 const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -18,7 +15,9 @@ const CustomCursor: React.FC = () => {
     const handleMouseOver = (e: MouseEvent) => {
       if (
         e.target instanceof HTMLElement &&
-        e.target.closest('a, button, [role="button"], .hotspot, .carouselButton, .thumbnailButton, .navLink')
+        e.target.closest(
+          'a, button, [role="button"], .hotspot, .carouselButton, .thumbnailButton, .navLink'
+        )
       ) {
         setIsHovering(true);
       }
@@ -27,7 +26,9 @@ const CustomCursor: React.FC = () => {
     const handleMouseOut = (e: MouseEvent) => {
       if (
         e.target instanceof HTMLElement &&
-        e.target.closest('a, button, [role="button"], .hotspot, .carouselButton, .thumbnailButton, .navLink')
+        e.target.closest(
+          'a, button, [role="button"], .hotspot, .carouselButton, .thumbnailButton, .navLink'
+        )
       ) {
         setIsHovering(false);
       }
@@ -44,7 +45,8 @@ const CustomCursor: React.FC = () => {
     };
   }, []);
 
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isTouchDevice =
+    'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
   if (isTouchDevice) return null;
 
@@ -63,4 +65,3 @@ const CustomCursor: React.FC = () => {
 };
 
 export default CustomCursor;
-

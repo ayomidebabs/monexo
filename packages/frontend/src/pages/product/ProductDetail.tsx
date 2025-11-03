@@ -32,7 +32,7 @@ import {
   addLocalRecentlyViewedProduct,
   getLocalRecentlyViewedProducts,
 } from '../../utils/recentlyViewed';
-import Carousel from '../../components/common/Carousel';
+import Carousel from '../../components/others/Carousel';
 import { updateLocalCart } from '../../utils/localCartManager';
 import { useUpdateCartMutation } from '../../features/cart/cartAPI';
 import {
@@ -46,10 +46,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DOMPurify from 'dompurify';
-import SectionHeader from '../../components/common/SectionHeader';
-import HorizontalSlider from '../../components/common/HorizontalSlider';
+import HorizontalSlider from '../../components/others/HorizontalSlider';
 import type { ApiError } from '../../app/apiSlice';
+import Seo from '../../components/others/Seo';
 import styles from '../../styles/pages/productDetail.module.scss';
+import RecentlyViewedSkeleton from '../../components/skeletons/RecentlyViewedSkeleton';
+import Error from '../../components/others/Error';
 
 const reviewSchema = z.object({
   rating: z
@@ -326,312 +328,332 @@ const ProductDetailPage: React.FC = () => {
   if (productError || !product) return <p>Product not found</p>;
 
   return (
-    <main className={`main ${styles.main}`}>
-      <div className={styles.productDetails}>
-        <div className={styles['carousel-detail-mobile']}>
-          <Carousel
-            images={product.images.map((image) => ({
-              imageSrc: image,
-              imageAlt: product.description,
-            }))}
-            aria-label={`Images of ${product.name}`}
-          />
-          <p className={styles.productTitle}>{product.name}</p>
-          <div className={styles['rating-wishlist-container']}>
-            <div
-              className={styles.productRatingSummary}
-              aria-label={`Average rating: ${product.averageRating} stars`}
-            >
-              {renderStars(product.averageRating)}
-              <span className={styles.reviewCount}>
-                ({product.reviewCount}{' '}
-                {product.reviewCount < 2 ? 'rating' : 'ratings'})
-              </span>
-            </div>
-            <button
-              className={styles.wishlistButton}
-              onClick={
-                wishlistIcon ? handleRemoveFromWishlist : handleAddToWishlist
-              }
-              disabled={isAddingWishlist || isRemovingWishlist}
-              aria-label={
-                wishlistIcon
-                  ? `Remove ${product.name} from wishlist`
-                  : `Add ${product.name} to wishlist`
-              }
-            >
-              <FontAwesomeIcon icon={wishlistIcon ? faHeart : faHeartRegular} />
-            </button>
-          </div>
-          <p className={styles.productPrice}>
-            $
-            {product.price.toLocaleString(undefined, {
-              maximumFractionDigits: 2,
-            })}
-          </p>
-          <p className={styles.productCategory}>Category: {product.category}</p>
-          {product.stock < 30 && (
-            <em className={styles.itemsLeft}>
-              {product.stock} {product.stock > 1 ? 'items' : 'item'} left.
-            </em>
-          )}
-          <p className={styles.productDescription}>{product.description}</p>
-        </div>
+    <>
+      <Seo
+        title={`${product.name} - ${product.category} | Monexo`}
+        description={product.description}
+        keywords={`${product.name}, ${product.category}, monexo, buy online`}
+        ogImage={product.images[0]}
+      />
 
-        <div className={styles['carousel-detail-desktop']}>
-          <Carousel
-            images={product.images.map((image) => ({
-              imageSrc: image,
-              imageAlt: product.description,
-            }))}
-            aria-label={`Images of ${product.name}`}
-          />
-          <div className={styles['detail-desktop']}>
+      <main className={`main ${styles.main}`}>
+        <div className={styles.productDetails}>
+          <div className={styles['carousel-detail-mobile']}>
+            <Carousel
+              images={product.images.map((image) => ({
+                imageSrc: image,
+                imageAlt: product.description,
+              }))}
+              aria-label={`Images of ${product.name}`}
+            />
             <p className={styles.productTitle}>{product.name}</p>
-            <div>
-              <div className={styles['rating-wishlist-container']}>
-                <div
-                  className={styles.productRatingSummary}
-                  aria-label={`Average rating: ${product.averageRating} stars`}
-                >
-                  {renderStars(product.averageRating)}
-                  <span className={styles.reviewCount}>
-                    ({product.reviewCount}{' '}
-                    {product.reviewCount < 2 ? 'rating' : 'ratings'})
-                  </span>
-                </div>
-                <button
-                  className={styles.wishlistButton}
-                  onClick={
-                    wishlistIcon
-                      ? handleRemoveFromWishlist
-                      : handleAddToWishlist
-                  }
-                  disabled={isAddingWishlist || isRemovingWishlist}
-                  aria-label={
-                    wishlistIcon
-                      ? `Remove ${product.name} from wishlist`
-                      : `Add ${product.name} to wishlist`
-                  }
-                >
-                  <FontAwesomeIcon
-                    icon={wishlistIcon ? faHeart : faHeartRegular}
-                  />
-                </button>
+            <div className={styles['rating-wishlist-container']}>
+              <div
+                className={styles.productRatingSummary}
+                aria-label={`Average rating: ${product.averageRating} stars`}
+              >
+                {renderStars(product.averageRating)}
+                <span className={styles.reviewCount}>
+                  ({product.reviewCount}{' '}
+                  {product.reviewCount < 2 ? 'rating' : 'ratings'})
+                </span>
               </div>
-              <p className={styles.productPrice}>
-                $
-                {product.price.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}
-              </p>
-              <p className={styles.productCategory}>
-                Category: {product.category}
-              </p>
-              {product.stock < 30 && (
-                <em className={styles.itemsLeft}>
-                  {product.stock} {product.stock > 1 ? 'items' : 'item'} left.
-                </em>
-              )}
-              <p className={styles.productDescription}>{product.description}</p>
+              <button
+                className={styles.wishlistButton}
+                onClick={
+                  wishlistIcon ? handleRemoveFromWishlist : handleAddToWishlist
+                }
+                disabled={isAddingWishlist || isRemovingWishlist}
+                aria-label={
+                  wishlistIcon
+                    ? `Remove ${product.name} from wishlist`
+                    : `Add ${product.name} to wishlist`
+                }
+              >
+                <FontAwesomeIcon
+                  icon={wishlistIcon ? faHeart : faHeartRegular}
+                />
+              </button>
+            </div>
+            <p className={styles.productPrice}>
+              $
+              {product.price.toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              })}
+            </p>
+            <p className={styles.productCategory}>
+              Category: {product.category}
+            </p>
+            {product.stock < 30 && (
+              <em className={styles.itemsLeft}>
+                {product.stock} {product.stock > 1 ? 'items' : 'item'} left.
+              </em>
+            )}
+            <p className={styles.productDescription}>{product.description}</p>
+          </div>
+
+          <div className={styles['carousel-detail-desktop']}>
+            <Carousel
+              images={product.images.map((image) => ({
+                imageSrc: image,
+                imageAlt: product.description,
+              }))}
+              aria-label={`Images of ${product.name}`}
+            />
+            <div className={styles['detail-desktop']}>
+              <p className={styles.productTitle}>{product.name}</p>
+              <div>
+                <div className={styles['rating-wishlist-container']}>
+                  <div
+                    className={styles.productRatingSummary}
+                    aria-label={`Average rating: ${product.averageRating} stars`}
+                  >
+                    {renderStars(product.averageRating)}
+                    <span className={styles.reviewCount}>
+                      ({product.reviewCount}{' '}
+                      {product.reviewCount < 2 ? 'rating' : 'ratings'})
+                    </span>
+                  </div>
+                  <button
+                    className={styles.wishlistButton}
+                    onClick={
+                      wishlistIcon
+                        ? handleRemoveFromWishlist
+                        : handleAddToWishlist
+                    }
+                    disabled={isAddingWishlist || isRemovingWishlist}
+                    aria-label={
+                      wishlistIcon
+                        ? `Remove ${product.name} from wishlist`
+                        : `Add ${product.name} to wishlist`
+                    }
+                  >
+                    <FontAwesomeIcon
+                      icon={wishlistIcon ? faHeart : faHeartRegular}
+                    />
+                  </button>
+                </div>
+                <p className={styles.productPrice}>
+                  $
+                  {product.price.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+                <p className={styles.productCategory}>
+                  Category: {product.category}
+                </p>
+                {product.stock < 30 && (
+                  <em className={styles.itemsLeft}>
+                    {product.stock} {product.stock > 1 ? 'items' : 'item'} left.
+                  </em>
+                )}
+                <p className={styles.productDescription}>
+                  {product.description}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className={styles['addtocart-quantity']}>
-          <div className={styles.quantitySelector}>
-            <label htmlFor='quantity'>Quantity</label>
-            <input
-              type='number'
-              id='quantity'
-              onChange={(e) => {
-                if (isCartItem) {
-                  const difference = product.stock - isCartItem.quantity;
-                  if (parseInt(e.target.value) > difference) {
+          <div className={styles['addtocart-quantity']}>
+            <div className={styles.quantitySelector}>
+              <label htmlFor='quantity'>Quantity</label>
+              <input
+                type='number'
+                id='quantity'
+                onChange={(e) => {
+                  if (isCartItem) {
+                    const difference = product.stock - isCartItem.quantity;
+                    if (parseInt(e.target.value) > difference) {
+                      return setQuantity(NaN);
+                    }
+                  } else if (parseInt(e.target.value) > product.stock) {
                     return setQuantity(NaN);
                   }
-                } else if (parseInt(e.target.value) > product.stock) {
-                  return setQuantity(NaN);
-                }
-                console.log(parseInt(e.target.value), 'setting');
-                setQuantity(parseInt(e.target.value));
+                  console.log(parseInt(e.target.value), 'setting');
+                  setQuantity(parseInt(e.target.value));
+                }}
+                value={quantity ? quantity : ''}
+                className={styles.quantityInput}
+                readOnly={StockLimitReached}
+                aria-label={`Quantity for ${product.name}`}
+                aria-describedby='quantity-error'
+              />
+            </div>
+            <button
+              className={styles.addToCart}
+              onClick={() => {
+                handleAddToCart();
+                setQuantity(1);
               }}
-              value={quantity ? quantity : ''}
-              className={styles.quantityInput}
-              readOnly={StockLimitReached}
-              aria-label={`Quantity for ${product.name}`}
-              aria-describedby='quantity-error'
+              disabled={
+                quantity < 1 ||
+                quantity > product.stock ||
+                !Number(quantity) ||
+                isUpdatingCart ||
+                StockLimitReached
+              }
+              aria-label={`Add ${product.name} to cart`}
+            >
+              {StockLimitReached ? 'All stock added to cart' : 'Add to Cart'}
+            </button>
+          </div>
+          {(quantity < 1 || quantity > product.stock || !Number(quantity)) && (
+            <p className={styles.stockNotifier} id='quantity-error'>
+              {product.stock === 1
+                ? `You can only input a quantity of 1`
+                : isCartItem
+                ? `You can only input a quantity ${
+                    product.stock - isCartItem.quantity === 1
+                      ? 'of 1'
+                      : `from 1 to ${product.stock - isCartItem.quantity}`
+                  } `
+                : `You can only input a quantity ${
+                    product.stock === 1 ? 'of 1' : `from 1 to ${product.stock}`
+                  } `}
+            </p>
+          )}
+          {error &&
+            (() => {
+              setTimeout(() => {
+                setError('');
+              }, 4000);
+              return <p className={styles.errorText}>{error}</p>;
+            })()}
+        </div>
+
+        <div className={styles.reviewsSection}>
+          <h2 className={styles.reviewsTitle}>Product Reviews</h2>
+          {productLoading || reviewsLoading ? (
+            <p>Loading reviews...</p>
+          ) : loadingReviewsError ? (
+            <p>An error occured while loading reviews</p>
+          ) : !productLoading && reviews && reviews.length === 0 ? (
+            <p>No reviews yet</p>
+          ) : (
+            reviews!.map((review) => (
+              <div key={review._id} className={styles.reviewCard}>
+                <div className={styles.reviewHeader}>
+                  <span>{review.user.name}</span>
+                  <span>{new Date(review.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div
+                  className={styles.reviewRating}
+                  aria-label={`Rating: ${review.rating} stars`}
+                >
+                  {renderStars(review.rating)}
+                </div>
+                <p className={styles.cardText}>{review.comment}</p>
+                {user?.id === review.user._id && (
+                  <button
+                    className={styles.deleteReview}
+                    onClick={() => handleRemoveReview(product._id)}
+                    disabled={isRemovingReview}
+                    aria-label={`Delete review for ${product.name}`}
+                  >
+                    {isRemovingReview ? 'Deleting...' : 'Delete'}
+                  </button>
+                )}
+              </div>
+            ))
+          )}
+
+          {user ? (
+            <form
+              className={styles.reviewForm}
+              onSubmit={handleSubmit(handleSubmitReview)}
+            >
+              <h3>Add Your Review</h3>
+              {ReviewError && <p className={styles.errorText}>{ReviewError}</p>}
+              <div className={styles.formGroup}>
+                <label htmlFor='rating'>Rating:</label>
+                <Controller
+                  name='rating'
+                  control={control}
+                  render={({ field }) => (
+                    <select
+                      id='rating'
+                      {...field}
+                      value={field.value}
+                      onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      className={styles.formControl}
+                      aria-describedby='rating-error'
+                    >
+                      <option value={0}>Select rating</option>
+                      <option value={1}>1 Star</option>
+                      <option value={2}>2 Stars</option>
+                      <option value={3}>3 Stars</option>
+                      <option value={4}>4 Stars</option>
+                      <option value={5}>5 Stars</option>
+                    </select>
+                  )}
+                />
+                {errors.rating && (
+                  <p className={styles.errorText} id='rating-error'>
+                    {errors.rating.message}
+                  </p>
+                )}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor='comment'>Comment:</label>
+                <Controller
+                  name='comment'
+                  control={control}
+                  render={({ field }) => (
+                    <textarea
+                      id='comment'
+                      rows={4}
+                      {...field}
+                      placeholder='Write your review...'
+                      className={styles.formControl}
+                      aria-describedby='comment-error'
+                    />
+                  )}
+                />
+                {errors.comment && (
+                  <p className={styles.errorText} id='comment-error'>
+                    {errors.comment.message}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type='submit'
+                className={styles.submitReview}
+                disabled={isSubmitting || isAddingReview}
+                aria-label='Submit review'
+              >
+                {isSubmitting || isAddingReview
+                  ? 'Submitting...'
+                  : 'Submit Review'}
+              </button>
+            </form>
+          ) : (
+            <button
+              className={styles.signInToReview}
+              onClick={() => setShowSignInModal(true)}
+              aria-label='Sign in to add a review'
+            >
+              Sign in to add a review
+            </button>
+          )}
+        </div>
+        {loadingRecentlyViewed ? (
+          <RecentlyViewedSkeleton />
+        ) : recentlyViewedProducts && recentlyViewedProducts.length ? (
+          <div className={styles['HorizontalSlider-container']}>
+            <HorizontalSlider
+              slides={recentlyViewedProducts}
+              title='Recently Viewed'
             />
           </div>
-          <button
-            className={styles.addToCart}
-            onClick={() => {
-              handleAddToCart();
-              setQuantity(1);
-            }}
-            disabled={
-              quantity < 1 ||
-              quantity > product.stock ||
-              !Number(quantity) ||
-              isUpdatingCart ||
-              StockLimitReached
-            }
-            aria-label={`Add ${product.name} to cart`}
-          >
-            {StockLimitReached ? 'All stock added to cart' : 'Add to Cart'}
-          </button>
-        </div>
-        {(quantity < 1 || quantity > product.stock || !Number(quantity)) && (
-          <p className={styles.stockNotifier} id='quantity-error'>
-            {product.stock === 1
-              ? `You can only input a quantity of 1`
-              : isCartItem
-              ? `You can only input a quantity ${
-                  product.stock - isCartItem.quantity === 1
-                    ? 'of 1'
-                    : `from 1 to ${product.stock - isCartItem.quantity}`
-                } `
-              : `You can only input a quantity ${
-                  product.stock === 1 ? 'of 1' : `from 1 to ${product.stock}`
-                } `}
-          </p>
-        )}
-        {error &&
-          (() => {
-            setTimeout(() => {
-              setError('');
-            }, 4000);
-            return <p className={styles.errorText}>{error}</p>;
-          })()}
-      </div>
-
-      <div className={styles.reviewsSection}>
-        <h2 className={styles.reviewsTitle}>Product Reviews</h2>
-        {productLoading || reviewsLoading ? (
-          <p>Loading reviews...</p>
-        ) : loadingReviewsError ? (
-          <p>An error occured while loading reviews</p>
-        ) : !productLoading && reviews && reviews.length === 0 ? (
-          <p>No reviews yet</p>
-        ) : (
-          reviews!.map((review) => (
-            <div key={review._id} className={styles.reviewCard}>
-              <div className={styles.reviewHeader}>
-                <span>{review.user.name}</span>
-                <span>{new Date(review.createdAt).toLocaleDateString()}</span>
-              </div>
-              <div
-                className={styles.reviewRating}
-                aria-label={`Rating: ${review.rating} stars`}
-              >
-                {renderStars(review.rating)}
-              </div>
-              <p className={styles.cardText}>{review.comment}</p>
-              {user?.id === review.user._id && (
-                <button
-                  className={styles.deleteReview}
-                  onClick={() => handleRemoveReview(product._id)}
-                  disabled={isRemovingReview}
-                  aria-label={`Delete review for ${product.name}`}
-                >
-                  {isRemovingReview ? 'Deleting...' : 'Delete'}
-                </button>
-              )}
-            </div>
-          ))
-        )}
-
-        {user ? (
-          <form
-            className={styles.reviewForm}
-            onSubmit={handleSubmit(handleSubmitReview)}
-          >
-            <h3>Add Your Review</h3>
-            {ReviewError && <p className={styles.errorText}>{ReviewError}</p>}
-            <div className={styles.formGroup}>
-              <label htmlFor='rating'>Rating:</label>
-              <Controller
-                name='rating'
-                control={control}
-                render={({ field }) => (
-                  <select
-                    id='rating'
-                    {...field}
-                    value={field.value}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    className={styles.formControl}
-                    aria-describedby='rating-error'
-                  >
-                    <option value={0}>Select rating</option>
-                    <option value={1}>1 Star</option>
-                    <option value={2}>2 Stars</option>
-                    <option value={3}>3 Stars</option>
-                    <option value={4}>4 Stars</option>
-                    <option value={5}>5 Stars</option>
-                  </select>
-                )}
-              />
-              {errors.rating && (
-                <p className={styles.errorText} id='rating-error'>
-                  {errors.rating.message}
-                </p>
-              )}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor='comment'>Comment:</label>
-              <Controller
-                name='comment'
-                control={control}
-                render={({ field }) => (
-                  <textarea
-                    id='comment'
-                    rows={4}
-                    {...field}
-                    placeholder='Write your review...'
-                    className={styles.formControl}
-                    aria-describedby='comment-error'
-                  />
-                )}
-              />
-              {errors.comment && (
-                <p className={styles.errorText} id='comment-error'>
-                  {errors.comment.message}
-                </p>
-              )}
-            </div>
-
-            <button
-              type='submit'
-              className={styles.submitReview}
-              disabled={isSubmitting || isAddingReview}
-              aria-label='Submit review'
-            >
-              {isSubmitting || isAddingReview
-                ? 'Submitting...'
-                : 'Submit Review'}
-            </button>
-          </form>
-        ) : (
-          <button
-            className={styles.signInToReview}
-            onClick={() => setShowSignInModal(true)}
-            aria-label='Sign in to add a review'
-          >
-            Sign in to add a review
-          </button>
-        )}
-      </div>
-      {loadingRecentlyViewed ? (
-        <div>"loading recently viewed products</div>
-      ) : recentlyViewedProducts && recentlyViewedProducts.length ? (
-        <div className={styles['HorizontalSlider-container']}>
-          <SectionHeader title='Recently Viewed' />
-          <HorizontalSlider slides={recentlyViewedProducts} />
-        </div>
-      ) : recentlyViewedError ? (
-        <div>"An error occured while loading recently viewed products</div>
-      ) : null}
-    </main>
+        ) : recentlyViewedError ? (
+          <Error
+            message='Failed to load recently viewed products. Please try again later'
+            onRetry={() => window.location.reload()}
+          />
+        ) : null}
+      </main>
+    </>
   );
 };
 

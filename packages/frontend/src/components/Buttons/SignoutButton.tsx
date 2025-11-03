@@ -30,7 +30,7 @@ const SignoutButton: React.FC<signoutBtnProps> = ({
       setShowAppModal(true);
       setTimeout(() => {
         setShowAppModal(false);
-        navigate('/');
+        navigate('/', { replace: true, state: { signedOut: true } });
       }, 2000);
     } catch (error) {
       setAppModalMessage('An error occured while signing out');

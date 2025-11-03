@@ -126,7 +126,6 @@ export const getProducts = [
         sortBy = 'createdAt',
         sortOrder = 'desc',
       } = matchedData(req, { locations: ['query'] }) as ProductQuery;
-
       const query: any = {};
       if (category) query.category = category;
       if (search) query.name = { $regex: search, $options: 'i' };
