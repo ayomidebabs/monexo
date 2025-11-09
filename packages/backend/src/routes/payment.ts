@@ -1,6 +1,5 @@
 import Express, { Router } from 'express';
 import authMiddleware from '../middleware/auth.js';
-import { apiLimiter } from '../middleware/rateLimiter.js';
 import {
   fetchSavedPaymentMethods,
   initializeTransaction,
@@ -20,6 +19,7 @@ import {
   setDefaultPaymentMethod as setStripeDefaultPaymentMethod,
   deletePaymentMethod as deleteStripePaymentMethod,
 } from '../controllers/stripe.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 

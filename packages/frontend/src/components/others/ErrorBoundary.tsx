@@ -1,21 +1,24 @@
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
-import styles from '../../styles/components/ErrorBoundary.module.scss';
+import PageError from './PageError';
+import SectionError from './SectionError';
 
 interface Props {
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
   children: ReactNode;
+  message?: string;
 }
 
 interface State {
   hasError: boolean;
   error?: Error;
+  key: number;
 }
 
 export default class ErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false };
+  state: State = { hasError: false, key: 0 };
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): Partial<State> | null {
     return { hasError: true, error };
   }
 
@@ -24,26 +27,31 @@ export default class ErrorBoundary extends Component<Props, State> {
     console.error('[ErrorBoundary]', error, errorInfo);
   }
 
-  handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
+  resetError = () => {
+    this.setState({
+      hasError: false,
+      error: undefined,
+      key: this.state.key + 1,
+    });
   };
 
   render() {
     if (this.state.hasError) {
-      // Prefer section-specific fallback, otherwise use global one
-      if (this.props.fallback) return this.props.fallback;
-
-      return (
-        <div className={styles.error}>
-          <h2>Oops! Something went wrong.</h2>
-          <p>We’re having trouble loading this section.</p>
-          <button onClick={this.handleRetry} className={styles.retry}>
-            Try Again
-          </button>
-        </div>
-      );
+      if (this.props.fallback) {
+        return (
+          <SectionError
+            message={this.props.message}
+            onRetry={this.resetError}
+          />
+        );
+      }
+      return <PageError onRetry={this.resetError} />;
     }
 
-    return this.props.children;
+    return (
+      <React.Fragment key={this.state.key}>
+        {this.props.children}
+      </React.Fragment>
+    );
   }
 }

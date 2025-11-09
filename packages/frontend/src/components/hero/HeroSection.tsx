@@ -67,7 +67,7 @@ const HeroSection: React.FC = () => {
                   >
                     <img
                       src={product.images?.[0]}
-                      alt={product.description}
+                      alt={product.name}
                       className={styles.previewImage}
                       loading='lazy'
                     />

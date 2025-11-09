@@ -24,7 +24,7 @@
 .footerText {
   font-size: 0.9rem;
   margin: f.r(8) 0;
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 .footerText a {
@@ -91,6 +91,10 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
 
+  &::placeholder {
+    color: #999;
+  }
+
   &:focus {
     outline: none;
     border-color: var(--accent-secondary);
@@ -114,13 +118,22 @@
 
   &:disabled {
     opacity: 0.5;
-    cursor: none;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 
-.newsletterMessage {
+.newsletterSuccessMessage {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--highlight);
+  margin-top: f.r(8);
+}
+
+.newsletterFailureMessage {
+  font-size: 0.9rem;
+  color: red;
   margin-top: f.r(8);
 }
 
@@ -134,7 +147,7 @@
 @include m.up(sm) {
   .footerContent {
     grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+    gap: f.r(32);
   }
 
   .footerTitle {
@@ -150,8 +163,8 @@
   }
 
   .socialIcon {
-    width: 28px;
-    height: 28px;
+    width: f.r(28);
+    height: f.r(28);
   }
 }
 
@@ -173,8 +186,8 @@
   }
 
   .socialIcon {
-    width: 30px;
-    height: 30px;
+    width: f.r(30);
+    height: f.r(30);
   }
 
   .newsletterForm {
@@ -186,7 +199,7 @@
   }
 
   .newsletterButton {
-    padding: 8px 24px;
+    padding: f.r(8) f.r(24);
   }
 }
 
@@ -204,7 +217,7 @@
   }
 
   .socialIcon {
-    width: 32px;
-    height: 32px;
+    width: f.r(32);
+    height: f.r(32);
   }
 }

@@ -73,7 +73,7 @@
 
   &.active {
     opacity: 1;
-    border: 2px solid var(--accent-tertiary);
+    border: f.r(2) solid var(--accent-tertiary);
     border-radius: f.r(4);
   }
 
@@ -89,28 +89,28 @@
   border-radius: f.r(4);
 }
 
-@media (min-width: f.r(576)) {
+@include m.up(sm) {
   .carouselImage {
     height: f.r(250);
   }
 }
 
-@media (min-width: f.r(768)) {
+@include m.up(md) {
   .carouselWrapper {
-    max-width: 960px;
+    max-width: f.r(960);
   }
 
   .carouselImage {
-    height: 300px;
+    height: f.r(300);
   }
 
   .thumbnailImage {
-    width: 50px;
-    height: 50px;
+    width: f.r(50);
+    height: f.r(50);
   }
 }
 
-@media (min-width: 992px) {
+@include m.up(lg) {
   .carouselWrapper {
     width: f.r(600);
     margin: 0;
@@ -135,14 +135,14 @@
   }
 }
 
-@media (min-width: f.r(1200)) {
+@include m.up(xl) {
   .carouselButton {
-    padding: 14px;
+    padding: f.r(14);
   }
 
   .carouselButtonIcon {
-    width: 22px;
-    height: 22px;
+    width: f.r(22);
+    height: f.r(22);
   }
 
   .thumbnailImage {
@@ -151,18 +151,18 @@
   }
 }
 
-@media (min-width: f.r(1400)) {
+@include m.up(xxl) {
   .carouselButton {
-    padding: 16px;
+    padding: f.r(16);
   }
 
   .carouselButtonIcon {
-    width: 24px;
-    height: 24px;
+    width: f.r(24);
+    height: f.r(24);
   }
 
   .thumbnailImage {
-    width: 80px;
-    height: 80px;
+    width: f.r(80);
+    height: f.r(80);
   }
 }

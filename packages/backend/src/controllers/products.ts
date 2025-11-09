@@ -246,11 +246,10 @@ export const getProducts = [
       ]).exec();
 
       if (!products.length) {
-        return res.status(404).send({ message: 'No products found' });
+        return res.status(200).send({ products });
       }
 
       const total = await Product.countDocuments(query);
-
       const totalPages = Math.ceil(total / Number(limit));
       const hasNextPage = Number(page) < totalPages;
       const hasPrevPage = Number(page) > 1;

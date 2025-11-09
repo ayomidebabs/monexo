@@ -30,11 +30,7 @@
 }
 
 .slideContent {
-  background: linear-gradient(
-    135deg,
-    rgba(246, 139, 30, 0.2),
-    rgba(255, 205, 97, 0.2)
-  );
+  background: var(--slider-bg);
   backdrop-filter: blur(f.r(10));
   -webkit-backdrop-filter: blur(f.r(10));
   border-radius: f.r(10);
@@ -45,7 +41,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 f.r(4) f.r(15) rgba(0, 0, 0, 0.1);
 }
 
 .slideText {
@@ -54,16 +50,18 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-right: 20px;
+  padding-right: f.r(20);
 
   h2 {
     font-size: f.r(14);
-    color: var(--accent-primary);
+    color: #fffaf5;
+    text-shadow: 0 f.r(1) f.r(2) rgba(0, 0, 0, 0.15);
     margin: 0;
   }
 
   p {
     font-size: f.r(12);
+    color: rgba(255, 250, 245, 0.85);
   }
 }
 
@@ -75,14 +73,14 @@
 .bankOffers {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: f.r(10);
 
   .bankLogo {
-    margin-right: 10px;
+    margin-right: f.r(10);
     background-color: var(--accent-primary);
 
-    width: 40px;
-    height: 20px;
+    width: f.r(40);
+    height: f.r(20);
   }
 }
 
@@ -90,12 +88,12 @@
 .slideImage2,
 .slideImage3 {
   flex: 0.8;
-  width: 165px;
-  height: 140px;
-  border-radius: 10px;
+  width: f.r(165);
+  height: f.r(140);
+  border-radius: f.r(10);
   display: inline-block;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: f.r(2) solid rgba(255, 250, 245);
   box-shadow: s.$soft;
 }
 
@@ -117,7 +115,7 @@
   background-image: url('https://res.cloudinary.com/ddmupiyzm/image/upload/v1754462798/ecommerce/products/whpk6yrdagfhrrmyzj3x.webp');
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: -50px 0;
+  background-position: f.r(-50) 0;
 
   @media screen and (min-width: f.r(450)) {
     background-position: center;
@@ -131,17 +129,17 @@
   background: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
-  padding: 10px;
+  padding: f.r(10);
   cursor: pointer;
   z-index: 2;
 }
 
 .prev {
-  left: 10px;
+  left: f.r(10);
 }
 
 .next {
-  right: 10px;
+  right: f.r(10);
 }
 
 .navDots {
@@ -149,7 +147,7 @@
   justify-content: center;
   gap: f.r(8);
   z-index: 2;
-  padding: 10px 0;
+  padding: f.r(10) 0;
 }
 
 .dot {
@@ -211,12 +209,12 @@
   .slideImage1,
   .slideImage2,
   .slideImage3 {
-    width: 165px;
-    height: 165px;
+    width: f.r(165);
+    height: f.r(165);
   }
 }
 
-@media (min-width: 576px) {
+@include m.up(sm) {
   .slideText {
     h2 {
       font-size: f.r(20);
@@ -230,7 +228,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@include m.up(md) {
   .slide {
     height: f.r(280);
   }
@@ -269,7 +267,7 @@
   }
 }
 
-@media (min-width: f.r(992)) {
+@include m.up(lg) {
   .slide {
     height: f.r(300);
   }
@@ -297,7 +295,7 @@
   }
 }
 
-@media (min-width: 1200px) {
+@include m.up(xl) {
   .slide {
     height: f.r(320);
   }
@@ -325,7 +323,7 @@
   }
 }
 
-@media (min-width: f.r(1400)) {
+@include m.up(xxl) {
   .slide {
     height: f.r(350);
   }

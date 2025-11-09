@@ -5,10 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash, faTimes } from '@fortawesome/free-solid-svg-icons';
-import styles from '../../styles/components/AuthModal.module.scss';
 import type { AppDispatch } from '../../app/store';
 import { useDispatch } from 'react-redux';
 import { signUp } from '../../features/auth/authSlice';
+import styles from '../../styles/components/AuthModal.module.scss';
 
 const notificationVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -18,38 +18,43 @@ const notificationVariants = {
 
 const passwordSchema = z
   .string()
-  .min(8, { message: 'Password must be at least 8 characters long' })
+  .min(8, { message: 'Password must be 8 characters long' })
   .refine((val) => /[a-z]/.test(val), {
-    message: 'Password must contain at least one lowercase letter',
+    message: 'Password must contain one lowercase letter',
   })
   .refine((val) => /[A-Z]/.test(val), {
-    message: 'Password must contain at least one uppercase letter',
+    message: 'Password must contain one uppercase letter',
   })
   .refine((val) => /[0-9]/.test(val), {
-    message: 'Password must contain at least one digit',
+    message: 'Password must contain one digit',
   })
   .refine((val) => /[!@#$%^&*(),.?":{}|<>]/.test(val), {
-    message: 'Password must contain at least one symbol',
+    message: 'Password must contain one symbol',
   });
 
-const signUpSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: 'Name must be at least 3 characters' })
-    .max(32, { message: 'Name must not exceed 32 characters' })
-    .transform((value) => value.trim())
-    .refine((value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value), {
-      message: 'Name must not contain special characters',
-    }),
-  email: z
-    .string()
-    .email({ message: 'Enter a valid email address' })
-    .nonempty({ message: 'Email is required' }),
-  password: passwordSchema,
-  confirmPassword: z
-    .string()
-    .min(8, { message: 'Password must be at least 8 characters long' }),
-});
+const signUpSchema = z
+  .object({
+    name: z
+      .string()
+      .min(3, { message: 'Name must be above 3 characters' })
+      .max(32, { message: 'Name must not exceed 32 characters' })
+      .transform((value) => value.trim())
+      .refine((value) => !/[!@#$%^&*(),.?":{}|<>]/.test(value), {
+        message: 'Name must not contain special characters',
+      }),
+
+    email: z
+      .string()
+      .email({ message: 'Enter a valid email address' })
+      .nonempty({ message: 'Email is required' }),
+
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  });
 
 type signUpFormData = z.infer<typeof signUpSchema>;
 
@@ -59,7 +64,7 @@ interface signInModalProps {
   onSignInIntent: () => void;
 }
 
-const SignInModal: React.FC<signInModalProps> = ({
+const SignUpModal: React.FC<signInModalProps> = ({
   onHide,
   onSignUpSuccess,
   onSignInIntent,
@@ -98,8 +103,6 @@ const SignInModal: React.FC<signInModalProps> = ({
     setShowConfirmPassword((v) => !v);
 
   const onSubmit: SubmitHandler<signUpFormData> = async (data) => {
-    console.log('Signing up with:', data);
-
     try {
       await dispatch(signUp(data)).unwrap();
       setFormSuccess('Signed up successfully!');
@@ -107,11 +110,7 @@ const SignInModal: React.FC<signInModalProps> = ({
         onSignUpSuccess();
       }, 1000);
     } catch (error) {
-      setFormError(
-        error instanceof Error
-          ? error.message
-          : 'An error occurred, try again...'
-      );
+      setFormError((error as string) ?? 'An error occurred, try again...');
     }
   };
 
@@ -214,13 +213,15 @@ const SignInModal: React.FC<signInModalProps> = ({
               )}
             </div>
 
-            <div className={`${styles.inputGroup} ${styles.passwordGroup}`}>
+            <div
+              className={`${styles.inputGroup} ${styles.passwordGroup} ${styles.confirmPassword}`}
+            >
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder='Confirm Password'
                 {...register('confirmPassword')}
                 className={`${styles.input} ${
-                  errors.password ? styles.inputError : ''
+                  errors.confirmPassword ? styles.inputError : ''
                 }`}
                 aria-required='true'
               />
@@ -237,8 +238,10 @@ const SignInModal: React.FC<signInModalProps> = ({
                   e.key === 'Enter' && toggleConfirmPasswordVisibility()
                 }
               />
-              {errors.password && (
-                <p className={styles.errorMessage}>{errors.password.message}</p>
+              {errors.confirmPassword && (
+                <p className={styles.errorMessage}>
+                  {errors.confirmPassword.message}
+                </p>
               )}
             </div>
             <button type='submit' className={styles.submitButton}>
@@ -261,4 +264,4 @@ const SignInModal: React.FC<signInModalProps> = ({
   );
 };
 
-export default SignInModal;
+export default SignUpModal;

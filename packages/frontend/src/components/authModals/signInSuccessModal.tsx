@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import styles from '../../styles/components/AuthModal.module.scss';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../app/store';
+import styles from '../../styles/components/AuthModal.module.scss';
 
 const SignInSuccessModal: React.FC<{ onHide: () => void }> = ({ onHide }) => {
   const { pathname } = useLocation();

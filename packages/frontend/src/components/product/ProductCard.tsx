@@ -14,8 +14,8 @@ import { store, type AppDispatch, type RootState } from '../../app/store';
 import { addToCart, selectAllCartItems } from '../../features/cart/cartSlice';
 import { useUpdateCartMutation } from '../../features/cart/cartAPI';
 import { updateLocalCart } from '../../utils/localCartManager';
-import styles from '../../styles/components/ProductCard.module.scss';
 import { useRemoveFromWishlistMutation } from '../../features/wishlist/wishlistAPI';
+import styles from '../../styles/components/ProductCard.module.scss';
 
 interface ProductCardProps {
   product: Product;

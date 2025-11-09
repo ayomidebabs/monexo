@@ -38,7 +38,7 @@
       label {
         font-size: f.r(14);
         font-weight: 500;
-        color: #333;
+        color: var(--text-primary);
       }
 
       .quantity {
@@ -53,18 +53,18 @@
 
         &:focus-within {
           border-color: var(--accent-tertiary);
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          box-shadow: 0 0 0 f.r(3) rgba(37, 99, 235, 0.1);
         }
 
         input {
           position: absolute;
           inset: 0;
-          padding-left: 35px;
-          padding-right: 24px;
+          padding-left: f.r(35);
+          padding-right: f.r(24);
           border-radius: f.r(6);
           font-size: f.r(13.5);
           background-color: var(--neutral-white);
-          color: #1f2937;
+          color: var(--text-primary);
           -moz-appearance: textfield;
           appearance: textfield;
           &::-webkit-outer-spin-button,
@@ -85,7 +85,7 @@
           height: 100%;
           background-color: var(--neutral-white);
           padding: f.r(3) f.r(5);
-          color: #374151;
+          color: var(--text-primary);
           border: none;
           z-index: 5;
           font-size: f.r(13.5);
@@ -113,7 +113,7 @@
         .reduce-quantity {
           border-right: f.r(1.5) solid #e5e7eb;
           border-radius: f.r(4) 0 0 f.r(4);
-          left: -0.1px;
+          left: f.r(-0.1);
         }
       }
     }
@@ -413,8 +413,8 @@
 
           input {
             font-size: f.r(16);
-            padding-left: 45px;
-            padding-right: 24px;
+            padding-left: f.r(45);
+            padding-right: f.r(24);
           }
 
           button {
@@ -462,8 +462,8 @@
 
           input {
             font-size: f.r(16);
-            padding-left: 45px;
-            padding-right: 24px;
+            padding-left: f.r(45);
+            padding-right: f.r(24);
           }
 
           button {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { getSession } from '@auth/express';
-import { authConfig } from '../auth.js';
+import { authConfig } from '../config/auth.js';
 
 export default async function authMiddleware(
   req: Request,

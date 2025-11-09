@@ -3,7 +3,7 @@ import User from '../models/User.js';
 import { AppError } from '../middleware/GlobalErrorHandler.js';
 import { validateAddRecentlyViewed } from '../inputValidation/recentlyViewed/addRecentlyViewed.js';
 import { matchedData } from 'express-validator';
-import { validateMergeRecentlyViewed } from '../inputValidation/recentlyViewed/meregeRecentlyViewed.js';
+import { validateMergeRecentlyViewed } from '../inputValidation/recentlyViewed/mergeRecentlyViewed.js';
 
 export const getRecentlyViewedProducts = async (
   req: Request,

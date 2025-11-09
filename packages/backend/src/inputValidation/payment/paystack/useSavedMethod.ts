@@ -1,7 +1,7 @@
 import { checkSchema, validationResult } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 
-const supportedCurrencies = ['ngn', 'ghs', 'zar'];
+const supportedCurrencies = ['NGN', 'GHS', 'ZAR'];
 
 const useSavedMethodSchema = checkSchema({
   products: {
@@ -38,7 +38,6 @@ const useSavedMethodSchema = checkSchema({
       errorMessage: 'Currency is required',
     },
     trim: true,
-    toLowerCase: true,
     isLength: {
       options: { min: 3, max: 3 },
       errorMessage: 'Currency must be a 3-letter code',

@@ -8,6 +8,7 @@
   justify-content: space-between;
   border-bottom: f.r(1.8) solid var(--accent-primary);
   margin-bottom: f.r(4);
+  background-color: var(--neutral-white);
 
   .title {
     font-size: f.r(14);
@@ -42,7 +43,7 @@
   }
 }
 
-@media (min-width: f.r(768)) {
+@include m.up(md) {
   .sectionHeader {
     padding: f.r(14) f.r(10);
 
@@ -52,7 +53,7 @@
   }
 }
 
-@media (min-width: f.r(1200)) {
+@include m.up(xl) {
   .sectionHeader {
     .title {
       font-size: f.r(20);

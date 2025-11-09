@@ -46,7 +46,7 @@ export const createPaymentIntent = [
       if (appUser?.id && savePayment) {
         const user = await User.findById(appUser.id);
         if (!user) {
-          return res.status(404).json({
+          return res.status(404).send({
             success: false,
             error: 'User not found',
             statusCode: 404,
@@ -112,7 +112,7 @@ export const createPaymentIntent = [
         { idempotencyKey: uuid() }
       );
 
-      return res.status(200).json({
+      return res.status(200).send({
         clientSecret: paymentIntent.client_secret,
       });
     } catch (error) {
@@ -137,7 +137,7 @@ export const chargeSavedPaymentMethod = [
 
     try {
       if (!appUser?.id) {
-        return res.status(401).json({
+        return res.status(401).send({
           success: false,
           error: 'Unauthorized: User not authenticated',
           statusCode: 401,
@@ -146,7 +146,7 @@ export const chargeSavedPaymentMethod = [
 
       const user = await User.findById(appUser.id);
       if (!user?.stripeCustomerId) {
-        return res.status(404).json({
+        return res.status(404).send({
           success: false,
           error: 'No saved payment method found',
           statusCode: 404,
@@ -159,7 +159,7 @@ export const chargeSavedPaymentMethod = [
       });
 
       if (!paymentMethods.data.length) {
-        return res.status(404).json({
+        return res.status(404).send({
           success: false,
           error: 'No saved payment methods available',
           statusCode: 404,
@@ -171,7 +171,7 @@ export const chargeSavedPaymentMethod = [
       );
 
       if (!validMethod) {
-        return res.status(404).json({
+        return res.status(404).send({
           success: false,
           error: 'Invalid payment method',
           statusCode: 404,
@@ -229,7 +229,7 @@ export const chargeSavedPaymentMethod = [
         { idempotencyKey: uuid() }
       );
 
-      return res.status(200).json({
+      return res.status(200).send({
         success: paymentIntent.status === 'succeeded',
         data: {
           paymentIntentStatus: paymentIntent.status,
@@ -254,9 +254,7 @@ export const fetchSavedPaymentMethods = async (
   try {
     const user = await User.findById(appUser?.id);
     if (!user?.stripeCustomerId) {
-      return res.status(404).json({
-        message: 'No Stripe customer ID found for user',
-      });
+      return res.status(200).send([]);
     }
 
     const paymentMethods = await stripe.paymentMethods.list({
@@ -266,8 +264,8 @@ export const fetchSavedPaymentMethods = async (
 
     let defaultPaymentMethodId: string | null = null;
     const customer = await stripe.customers.retrieve(user.stripeCustomerId);
-    defaultPaymentMethodId = (customer as Stripe.Customer)
-      .default_source as string;
+    defaultPaymentMethodId = (customer as Stripe.Customer).invoice_settings
+      .default_payment_method as string;
 
     const formattedMethods = paymentMethods.data.map((method) => ({
       id: method.id,
@@ -278,7 +276,8 @@ export const fetchSavedPaymentMethods = async (
       created: method.created,
       isDefault: method.id === defaultPaymentMethodId,
     }));
-    return res.status(200).json(formattedMethods);
+
+    return res.status(200).send(formattedMethods);
   } catch (error) {
     console.error('Fetch saved payment methods error:', error);
     next(new AppError((error as Error).message, 500));
@@ -295,7 +294,7 @@ export const deletePaymentMethod = [
 
     try {
       if (!appUser?.id) {
-        return res.status(401).json({
+        return res.status(401).send({
           success: false,
           error: 'Unauthorized: User not authenticated',
           statusCode: 401,
@@ -304,7 +303,7 @@ export const deletePaymentMethod = [
 
       const user = await User.findById(appUser.id);
       if (!user?.stripeCustomerId) {
-        return res.status(404).json({
+        return res.status(404).send({
           success: false,
           error: 'No Stripe customer ID found for user',
           statusCode: 404,
@@ -315,7 +314,7 @@ export const deletePaymentMethod = [
         paymentMethodId
       );
       if (paymentMethod.customer !== user.stripeCustomerId) {
-        return res.status(403).json({
+        return res.status(403).send({
           success: false,
           error: 'Payment method does not belong to this user',
           statusCode: 403,
@@ -324,7 +323,7 @@ export const deletePaymentMethod = [
 
       await stripe.paymentMethods.detach(paymentMethodId);
 
-      return res.status(200).json({
+      return res.status(200).send({
         message: 'Payment method deleted successfully',
       });
     } catch (error) {
@@ -343,7 +342,7 @@ export const setDefaultPaymentMethod = [
     try {
       const user = await User.findById(appUser?.id);
       if (!user?.stripeCustomerId) {
-        return res.status(404).json({
+        return res.status(404).send({
           message: 'No Stripe customer ID found for user',
         });
       }
@@ -352,7 +351,7 @@ export const setDefaultPaymentMethod = [
         paymentMethodId
       );
       if (paymentMethod.customer !== user.stripeCustomerId) {
-        return res.status(403).json({
+        return res.status(403).send({
           message: 'Payment method does not belong to this user',
         });
       }
@@ -362,7 +361,7 @@ export const setDefaultPaymentMethod = [
         },
       });
 
-      return res.status(200).json({
+      return res.status(200).send({
         message: 'Default payment method updated successfully',
       });
     } catch (error) {
@@ -458,14 +457,14 @@ export const stripeWebhook = async (
     event = stripe.webhooks.constructEvent(req.body, signature, webhookSecret!);
   } catch (err: any) {
     console.error(`Webhook signature verification failed: ${err.message}`);
-    return res.status(400).json({
+    return res.status(400).send({
       success: false,
       error: 'Webhook signature verification failed',
       statusCode: 400,
     });
   }
 
-  res.status(200).json({
+  res.status(200).send({
     success: true,
     data: 'Event received',
     statusCode: 200,

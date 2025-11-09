@@ -1,0 +1,53 @@
+/* src/components/ui/Loader.module.scss */
+@use '../../styles/utils/functions' as f;
+@use '../../styles/utils/mixins' as m;
+
+.loader {
+  --margin-top: var(--margin-top);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: f.r(12);
+  margin-top: var(--margin-top);
+
+  .spinner {
+    --size: var(--loader-size);
+    --color: var(--loader-color);
+
+    width: var(--size);
+    height: var(--size);
+    border: calc(var(--size) * 0.12) solid rgba(0, 0, 0, 0.07);
+    border-top-color: var(--color);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  .loaderText {
+    margin: 0;
+    font-size: f.r(14);
+    color: var(--text-secondary);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include m.up(sm) {
+  .loader {
+    gap: f.r(16);
+  }
+}
+
+@include m.up(lg) {
+  .loader {
+    .loaderText {
+      margin: 0;
+      font-size: f.r(16);
+      color: var(--text-secondary);
+    }
+  }
+}

@@ -70,7 +70,10 @@ export const paystackApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['PaystackSavedPaymentMethods'],
     }),
-    deletePaystackPaymentMethod: builder.mutation<void, { paymentMethodId: string }>({
+    deletePaystackPaymentMethod: builder.mutation<
+      void,
+      { paymentMethodId: string }
+    >({
       query: ({ paymentMethodId }) => ({
         url: `/paystack/payment-methods/${paymentMethodId}`,
         method: 'DELETE',

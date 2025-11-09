@@ -2,26 +2,30 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSubscribeNewsletterMutation } from '../../features/newsletter/newsletterAPI';
+import type { ApiError } from '../../app/apiSlice';
 import styles from '../../styles/components/footer.module.scss';
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [subscribeNewsletter, { isLoading }] = useSubscribeNewsletterMutation();
+  const [newsletterSubscriptionSuccess, setNewsletterSubscriptionSuccess] =
+    useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await subscribeNewsletter({ email }).unwrap();
-      setMessage('Subscribed successfully!');
+      const data = await subscribeNewsletter({ email }).unwrap();
+      setMessage(data.message);
+      setNewsletterSubscriptionSuccess(true);
       setEmail('');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage(
-        error instanceof Error
-          ? error.message
-          : 'Failed to subscribe. Try again.'
+        (error as ApiError).data?.message ?? 'Failed to subscribe. Try again.'
       );
+      setNewsletterSubscriptionSuccess(false);
+      setTimeout(() => setMessage(''), 5000);
     }
   };
 
@@ -133,7 +137,12 @@ const Footer: React.FC = () => {
               Subscribe
             </motion.button>
           </form>
-          {message && <p className={styles.newsletterMessage}>{message}</p>}
+          {message && newsletterSubscriptionSuccess && (
+            <p className={styles.newsletterSuccessMessage}>{message}</p>
+          )}
+          {message && !newsletterSubscriptionSuccess && (
+            <p className={styles.newsletterFailureMessage}>{message}</p>
+          )}
         </div>
 
         <div className={styles.footerSection}>

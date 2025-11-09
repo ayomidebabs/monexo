@@ -235,8 +235,12 @@
     font-weight: 400;
     font-size: 0.75rem;
     background-color: var(--bg-primary);
-    color: var(--text-secondary);
+    color: var(--text-primary);
     transition: border-color 0.3s ease;
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
 
     &:focus {
       border-color: var(--accent-secondary);
@@ -387,22 +391,27 @@
   .accountItem {
     padding-top: f.r(3);
     padding-inline: f.r(5);
-    text-align: left;
     cursor: none;
     transition: background-color 0.1s;
 
     a {
       font-size: 1rem;
-      transition: transform 0.2s ease-in-out;
       display: block;
+      width: 100%;
+      text-align: start;
       color: var(--text-primary);
+      transition: transform 0.2s ease-in-out;
+      outline: none;
     }
 
     button {
       font-size: 1rem;
       display: block;
+      width: 100%;
+      text-align: start;
       color: var(--text-primary);
       transition: transform 0.2s ease-in-out;
+      outline: none;
     }
 
     &:hover {
@@ -482,7 +491,7 @@
       position: absolute;
       bottom: f.r(-24);
       display: block;
-      left: 0;
+      left: f.r(-10);
     }
 
     .logo {
@@ -560,23 +569,31 @@
       flex-direction: row;
       align-items: center;
       gap: f.r(8);
-
-      svg {
-        color: var(--accent-primary);
-      }
     }
 
     .navLink {
       position: relative;
       display: flex;
+      gap: f.r(8);
       align-items: center;
       padding: f.r(8) f.r(12);
       background: none;
       border: none;
-      color: var(--text-primary);
+      color: var(--accent-primary);
       text-decoration: none;
       font-size: 1rem;
       transition: color 0.3s ease;
+
+      .userSvg {
+        font-size: 1.3rem;
+      }
+      .cartSvg {
+        font-size: 1.5rem;
+      }
+
+      svg {
+        color: var(--accent-primary);
+      }
 
       &:hover {
         color: var(--accent-secondary);
@@ -659,7 +676,7 @@
       list-style: none;
       padding: 0;
       margin: f.r(4) 0 0 0;
-      min-width: 200px;
+      min-width: f.r(200);
       z-index: 1000;
       box-shadow: 0 f.r(2) f.r(5) rgba(0, 0, 0, 0.1);
       max-height: f.r(200);
@@ -696,6 +713,10 @@
       color: var(--text-primary);
       transition: border-color 0.3s ease;
 
+      &::placeholder {
+        color: var(--text-secondary);
+      }
+
       &:focus {
         border-color: var(--accent-secondary);
         outline: none;
@@ -722,6 +743,9 @@
       }
 
       &:hover {
+        .navLink {
+          color: var(--accent-secondary);
+        }
         svg {
           color: var(--accent-secondary);
         }
@@ -730,7 +754,7 @@
 
     .accountMenu {
       position: absolute;
-      top: 130%;
+      top: 100%;
       right: f.r(-105);
       background-color: var(--bg-primary);
       border: f.r(1) solid var(--accent-secondary);
@@ -744,7 +768,6 @@
     .accountItem {
       padding-inline: f.r(10);
       padding-top: f.r(5);
-      text-align: left;
       color: var(--text-primary);
       transition: background-color 0.1s;
       cursor: none;
@@ -753,14 +776,20 @@
         font-size: 1.2rem;
         transition: transform 0.3s ease-in-out;
         display: block;
+        width: 100%;
+        text-align: start;
         color: var(--text-primary);
+        outline: none;
       }
 
       button {
         font-size: 1.2rem;
         display: block;
+        width: 100%;
+        text-align: start;
         color: var(--text-primary);
         transition: transform 0.2s ease-in-out;
+        outline: none;
       }
 
       &:hover {
@@ -789,8 +818,8 @@
       background-color: var(--highlight);
       color: #fff;
       border-radius: 50%;
-      width: 1.2rem;
-      height: 1.2rem;
+      width: 1.1rem;
+      height: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -807,6 +836,10 @@
       align-items: center;
       justify-content: center;
 
+      svg {
+        color: var(--accent-primary);
+      }
+
       &:hover {
         svg {
           color: var(--accent-secondary);
@@ -815,10 +848,33 @@
     }
 
     .themeIcon {
-      width: f.r(24);
-      height: f.r(24);
+      width: f.r(28);
+      height: f.r(28);
       color: var(--text-primary);
       transition: color 0.3s ease;
+    }
+
+    @include m.down(lg) {
+      .logoLink {
+        left: f.r(-20);
+      }
+
+      .logo {
+        width: 13rem;
+      }
+
+      .searchForm {
+        margin: 0 0 0 f.r(125);
+      }
+
+      .navLink {
+        .userSvg {
+          font-size: 1.2rem;
+        }
+        .cartSvg {
+          font-size: 1.4rem;
+        }
+      }
     }
 
     @include m.up(lg) {
@@ -832,8 +888,7 @@
       .dropdownToggle,
       .dropdownItem,
       .searchInput,
-      .searchButton,
-      .navLink {
+      .searchButton {
         font-size: 1.2rem;
       }
       .themeIcon {

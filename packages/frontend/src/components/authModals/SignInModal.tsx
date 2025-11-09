@@ -4,7 +4,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons';
+// import { faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faEye, faEyeSlash, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';
 import { fetchCurrentUser, signIn } from '../../features/auth/authSlice';
@@ -96,67 +96,67 @@ const SignInModal: React.FC<SignInModalProps> = ({
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const csrfToken = await getCsrfToken();
-      if (!csrfToken) {
-        throw new Error('Failed to fetch CSRF token');
-      }
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     const csrfToken = await getCsrfToken();
+  //     if (!csrfToken) {
+  //       throw new Error('Failed to fetch CSRF token');
+  //     }
 
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = `${import.meta.env.VITE_BASE_URL}/auth/signin/google`;
+  //     const form = document.createElement('form');
+  //     form.method = 'POST';
+  //     form.action = `${import.meta.env.VITE_BASE_URL}/auth/signin/google`;
 
-      const csrfInput = document.createElement('input');
-      csrfInput.type = 'hidden';
-      csrfInput.name = 'csrfToken';
-      csrfInput.value = csrfToken;
+  //     const csrfInput = document.createElement('input');
+  //     csrfInput.type = 'hidden';
+  //     csrfInput.name = 'csrfToken';
+  //     csrfInput.value = csrfToken;
 
-      const callbackInput = document.createElement('input');
-      callbackInput.type = 'hidden';
-      callbackInput.name = 'callbackUrl';
-      callbackInput.value = 'http://localhost:5173/';
+  //     const callbackInput = document.createElement('input');
+  //     callbackInput.type = 'hidden';
+  //     callbackInput.name = 'callbackUrl';
+  //     callbackInput.value = 'http://localhost:5173/';
 
-      form.appendChild(csrfInput);
-      form.appendChild(callbackInput);
+  //     form.appendChild(csrfInput);
+  //     form.appendChild(callbackInput);
 
-      document.body.appendChild(form);
-      form.submit();
-    } catch (error) {
-      void error;
-    }
-  };
+  //     document.body.appendChild(form);
+  //     form.submit();
+  //   } catch (error) {
+  //     void error;
+  //   }
+  // };
 
-  const handleFacebookSignIn = async () => {
-    try {
-      const csrfToken = await getCsrfToken();
-      if (!csrfToken) {
-        throw new Error('Failed to fetch CSRF token');
-      }
+  // const handleFacebookSignIn = async () => {
+  //   try {
+  //     const csrfToken = await getCsrfToken();
+  //     if (!csrfToken) {
+  //       throw new Error('Failed to fetch CSRF token');
+  //     }
 
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = `${import.meta.env.VITE_BASE_URL}/auth/signin/facebook`;
+  //     const form = document.createElement('form');
+  //     form.method = 'POST';
+  //     form.action = `${import.meta.env.VITE_BASE_URL}/auth/signin/facebook`;
 
-      const csrfInput = document.createElement('input');
-      csrfInput.type = 'hidden';
-      csrfInput.name = 'csrfToken';
-      csrfInput.value = csrfToken;
+  //     const csrfInput = document.createElement('input');
+  //     csrfInput.type = 'hidden';
+  //     csrfInput.name = 'csrfToken';
+  //     csrfInput.value = csrfToken;
 
-      const callbackInput = document.createElement('input');
-      callbackInput.type = 'hidden';
-      callbackInput.name = 'callbackUrl';
-      callbackInput.value = 'http://localhost:5173/';
+  //     const callbackInput = document.createElement('input');
+  //     callbackInput.type = 'hidden';
+  //     callbackInput.name = 'callbackUrl';
+  //     callbackInput.value = 'http://localhost:5173/';
 
-      form.appendChild(csrfInput);
-      form.appendChild(callbackInput);
+  //     form.appendChild(csrfInput);
+  //     form.appendChild(callbackInput);
 
-      document.body.appendChild(form);
-      form.submit();
-    } catch (error) {
-      void error;
-    }
-  };
+  //     document.body.appendChild(form);
+  //     form.submit();
+  //   } catch (error) {
+  //     void error;
+  //   }
+  // };
 
   return (
     <AnimatePresence>
@@ -243,7 +243,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
               Sign In
             </button>
           </form>
-          <div className={styles.separator}>OR</div>
+          {/* <div className={styles.separator}>OR</div>
           <div className={styles.socialSignIn}>
             <button
               onClick={handleGoogleSignIn}
@@ -260,7 +260,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
             >
               <FontAwesomeIcon icon={faFacebook} /> Sign in with Facebook
             </button>
-          </div>
+          </div> */}
           <div className={styles['signup-prompt']}>
             <span>Don't have an account?</span>
             <button

@@ -56,7 +56,7 @@
   }
 }
 
-@media screen and (min-width: f.r(768)) {
+@include m.up(md) {
   .bottomNav {
     display: none;
   }

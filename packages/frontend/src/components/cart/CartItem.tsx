@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -29,7 +35,7 @@ import styles from '../../styles/components/CartItem.module.scss';
 
 interface CartItemProps extends cartItem {
   totalPrice: string;
-  unitPrice: string;
+  unitPrice: ReactNode;
   badge: string;
 }
 
@@ -122,7 +128,6 @@ const CartItem: React.FC<CartItemProps> = (cartItem) => {
           product: null,
         })
       );
-      console.log('setting wishlist for guest');
     }
   }, [dispatch, guestWishlistIntent, handleAddToWishlist, user, cartItem.pId]);
 
@@ -147,7 +152,6 @@ const CartItem: React.FC<CartItemProps> = (cartItem) => {
 
   const handleDecreaseQuantity = () => {
     const newQuantity = quantity - 1;
-    console.log(newQuantity);
 
     if (newQuantity < 1) {
       setQuantityError(
@@ -236,8 +240,7 @@ const CartItem: React.FC<CartItemProps> = (cartItem) => {
             </Link>
           </h2>
           <div className={styles.prices}>
-            <div className={styles.totalPrice}>${cartItem.totalPrice}</div>
-            <div className={styles.unitPrice}>${cartItem.unitPrice}</div>
+            {cartItem.unitPrice}
             <div className={styles.badge}>
               {cartItem.badge} <FontAwesomeIcon icon={faPlaneArrival} />
             </div>

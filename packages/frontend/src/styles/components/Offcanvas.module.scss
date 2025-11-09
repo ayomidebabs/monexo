@@ -12,7 +12,7 @@
   z-index: 1050;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 f.r(-2) f.r(10) rgba(0, 0, 0, 0.1);
 }
 
 .offcanvas-header {
@@ -59,7 +59,7 @@
     font-size: 1rem;
     font-weight: 500;
     color: var(--text-primary);
-    border-bottom: 1px solid var(--F0E6D2);
+    border-bottom: f.r(1) solid var(--F0E6D2);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -79,7 +79,7 @@
   }
 }
 
-@media (min-width: f.r(768)) {
+@include m.up(md) {
   .offcanvas {
     display: none;
   }

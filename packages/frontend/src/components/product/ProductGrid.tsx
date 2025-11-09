@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import ProductCard from './ProductCard';
 import { useGetProductsQuery } from '../../features/products/productAPI';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 import styles from '../../styles/components/ProductGrid.module.scss';
 
 interface ProductGridProps {
@@ -9,7 +12,7 @@ interface ProductGridProps {
   limit: number;
   page: number;
   handlePageChange: (newPage: number, totalPages: number) => void;
-  setTotalProducts: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setTotalProducts: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const ProductGrid: React.FC<Partial<ProductGridProps>> = ({
@@ -37,6 +40,7 @@ const ProductGrid: React.FC<Partial<ProductGridProps>> = ({
 
   const products = data?.products || [];
   const totalPages = data?.totalPages || 1;
+  const totalProducts = data?.total || 0;
   const hasNextPage = data?.hasNextPage || false;
   const hasPrevPage = data?.hasPrevPage || false;
 
@@ -54,25 +58,13 @@ const ProductGrid: React.FC<Partial<ProductGridProps>> = ({
     return <div className={styles.loading}>Loading products...</div>;
   }
 
-  if (fetchProductsError) {
-    return (
-      <div className={styles.error}>
-        Failed to load products. Please try again.
-      </div>
-    );
+  if (fetchProductsError || !data) {
+    throw fetchProductsError || new Error('Failed to load products');
   }
 
-  if (!data || !data.products.length) {
-    return (
-      <div className={styles.empty}>
-        No products found{search ? ` for "${search}"` : ''}.
-      </div>
-    );
-  }
+  setTotalProducts!(totalProducts);
 
-  setTotalProducts!(data.total);
-
-  return (
+  return products.length > 0 ? (
     <>
       <div className={styles.filters}>
         <div className={styles.filterGroup}>
@@ -126,6 +118,14 @@ const ProductGrid: React.FC<Partial<ProductGridProps>> = ({
         </button>
       </div>
     </>
+  ) : (
+    <div className={styles.emptyState}>
+      <h2 className={styles['emptyTitle']}>No products found</h2>
+      <Link to='/' className={styles['continue-shopping']}>
+        <FontAwesomeIcon icon={faArrowLeft} />
+        <span>Continue Shopping</span>
+      </Link>
+    </div>
   );
 };
 

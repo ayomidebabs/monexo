@@ -1,14 +1,14 @@
 import React, { lazy } from 'react';
+import { motion } from 'framer-motion';
 import HeroSection from '../../components/hero/HeroSection';
-// import Carousel from '../../components/common/Carousel';
 import Slider from '../../components/others/Slider';
 import CategoryGrid from '../../components/category/CategoryGrid';
 import SectionFooter from '../../components/others/SectionFooter';
 import ProductSection from '../../components/product/ProductSection';
 import ErrorBoundary from '../../components/others/ErrorBoundary';
-import Error from '../../components/others/Error';
-import styles from '../../styles/pages/home.module.scss';
 import Seo from '../../components/others/Seo';
+import styles from '../../styles/pages/home.module.scss';
+
 const RecentlyViewedSection = lazy(
   () => import('../../components/others/RecentlyViewedSection')
 );
@@ -88,16 +88,14 @@ const Home: React.FC = () => {
         description='Discover premium products and exclusive deals at Monexo, your trusted online store.'
         keywords='monexo, shopping, online store, deals, premium products'
       />
-      <main className='main'>
+      <motion.main
+        className='main'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
         <HeroSection />
-        <ErrorBoundary
-          fallback={
-            <Error
-              message='Failed to load Fashion. Please try again later'
-              onRetry={() => window.location.reload()}
-            />
-          }
-        >
+        <ErrorBoundary message='Unable to load Fashion.' fallback>
           <ProductSection
             title='Explore Fashion Trends'
             category='Fashion'
@@ -112,14 +110,7 @@ const Home: React.FC = () => {
           <SectionFooter title='Explore categories' link='/categories' />
         </div>
 
-        <ErrorBoundary
-          fallback={
-            <Error
-              message='Failed to load Electronics. Please try again later'
-              onRetry={() => window.location.reload()}
-            />
-          }
-        >
+        <ErrorBoundary message='Unable to load Electronics.' fallback>
           <ProductSection
             title="Discover Top Pc's"
             category='Electronics'
@@ -128,18 +119,12 @@ const Home: React.FC = () => {
         </ErrorBoundary>
 
         <ErrorBoundary
-          fallback={
-            <Error
-              message='Failed to load recently viewed products. Please try again later'
-              onRetry={() => window.location.reload()}
-            />
-          }
+          message='Unable to load recently viewed products.'
+          fallback
         >
           <RecentlyViewedSection />
         </ErrorBoundary>
-
-        {/* <Carousel images={fashionSlides} /> */}
-      </main>
+      </motion.main>
     </>
   );
 };

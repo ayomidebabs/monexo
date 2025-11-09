@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import Category from '../models/Category.js';
 import { AppError } from '../middleware/GlobalErrorHandler.js';
 import User from '../models/User.js';
 import { validateSaveCart } from '../inputValidation/saveCart.js';

@@ -8,7 +8,7 @@ export const cartApi = apiSlice.injectEndpoints({
       providesTags: ['Cart'],
     }),
 
-    updateCart: builder.mutation<{ message: string; }, CartItem[]>({
+    updateCart: builder.mutation<{ message: string }, CartItem[]>({
       query: (cart) => ({
         url: '/cart',
         method: 'POST',
@@ -19,4 +19,5 @@ export const cartApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetCartQuery, useLazyGetCartQuery, useUpdateCartMutation } = cartApi;
+export const { useGetCartQuery, useLazyGetCartQuery, useUpdateCartMutation } =
+  cartApi;

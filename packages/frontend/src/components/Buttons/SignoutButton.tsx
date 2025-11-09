@@ -4,7 +4,6 @@ import { store, type AppDispatch } from '../../app/store';
 import { signOut } from '../../features/auth/authSlice';
 import getCsrfToken from '../../utils/getCsrfToken';
 import { updateLocalCart } from '../../utils/localCartManager';
-import { useNavigate } from 'react-router-dom';
 import { selectAllCartItems } from '../../features/cart/cartSlice';
 
 interface signoutBtnProps {
@@ -16,7 +15,6 @@ const SignoutButton: React.FC<signoutBtnProps> = ({
   setAppModalMessage,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
 
   const handlesignout = async () => {
     try {
@@ -30,7 +28,6 @@ const SignoutButton: React.FC<signoutBtnProps> = ({
       setShowAppModal(true);
       setTimeout(() => {
         setShowAppModal(false);
-        navigate('/', { replace: true, state: { signedOut: true } });
       }, 2000);
     } catch (error) {
       setAppModalMessage('An error occured while signing out');

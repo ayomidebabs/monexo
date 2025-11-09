@@ -56,6 +56,7 @@
 
 .passwordGroup {
   position: relative;
+  margin-bottom: f.r(22);
 
   .passwordToggle {
     position: absolute;
@@ -65,13 +66,24 @@
     color: var(--accent-primary);
     font-size: 0.9rem;
     transition: color 0.25s ease;
-    &:focus {
-      outline: none;
-    }
+
     &:hover {
       color: var(--accent-secondary);
     }
+    &:focus {
+      outline: none;
+    }
   }
+
+  .errorMessage {
+    position: absolute;
+    top: 2.6rem;
+    left: 0;
+  }
+}
+
+.passwordGroup.confirmPassword {
+  margin-top: f.r(32);
 }
 
 .input {
@@ -86,6 +98,12 @@
   &:focus {
     border-color: var(--accent-secondary);
     outline: none;
+  }
+}
+
+.passwordGroup {
+  .input {
+    padding-right: f.r(40);
   }
 }
 
@@ -113,6 +131,7 @@
 .submitButton {
   width: 100%;
   padding: f.r(10) f.r(20);
+  margin-top: f.r(5);
   background-color: var(--accent-primary);
   border: none;
   border-radius: f.r(4);
@@ -164,7 +183,7 @@
     position: absolute;
     top: 50%;
     width: 45%;
-    height: 1px;
+    height: f.r(1);
     background-color: var(--accent-tertiary);
   }
   &:before {
@@ -203,6 +222,10 @@
 
   &:hover {
     background-color: var(--neutral-light);
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 

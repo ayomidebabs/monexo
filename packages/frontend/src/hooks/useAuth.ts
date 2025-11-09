@@ -1,1 +1,0 @@
-// Manages authentication logic

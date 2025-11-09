@@ -1,11 +1,15 @@
-.cart {
-    .item {
-        border-bottom: 1px solid #ddd;
-        padding: 1rem 0;
-    }
+@use '../utils/functions' as f;
+@use '../utils/mixins' as m;
+@use '../utils/shadows' as s;
 
-    .total {
-        font-weight: bold;
-        font-size: 1.2rem;
-    }
+.cart {
+  .item {
+    border-bottom: f.r(1) solid #ddd;
+    padding: 1rem 0;
+  }
+
+  .total {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
 }

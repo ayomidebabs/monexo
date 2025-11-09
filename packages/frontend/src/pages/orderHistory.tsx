@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import {
   useGetUserOrdersQuery,
   type Order,
 } from '../features/orders/ordersAPI';
-import styles from '../styles/pages/orderHistory.module.scss';
+import { Link } from 'react-router-dom';
+import Loader from '../components/others/Loader';
 import Seo from '../components/others/Seo';
+import styles from '../styles/pages/orderHistory.module.scss';
 
 const OrderHistory: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -101,123 +103,144 @@ const OrderHistory: React.FC = () => {
     </motion.div>
   );
 
+  if (isLoadingOrders) {
+    return (
+      <>
+        <Seo
+          title='Loading Your Order History | Monexo'
+          description="We're fetching your order history for you. View and manage your past orders with Monexo's order history."
+          keywords='monexo, order history, past orders, loading, online shopping'
+          robots='noindex, nofollow'
+        />
+        <motion.main
+          className='main'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <Loader text='Loading orders…' marginTop={10} />
+        </motion.main>
+      </>
+    );
+  }
+
+  if (fetchOrdersError) {
+    throw fetchOrdersError;
+  }
+
   return (
     <>
       <Seo
         title='Your Order History | Monexo'
         description="View and manage your past orders with Monexo's order history."
-        keywords='monexo, order history, past orders, shopping'
+        keywords='monexo, order history, past orders, online shopping'
       />
-      <main className='main'>
-        <div className={styles.orderHistory}>
-          <header className={styles.header}>
-            <h1 className={styles.title}>Order History</h1>
-            <p className={styles.subtitle}>View and manage your past orders</p>
-          </header>
+      <motion.main
+        className='main'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
+        {orders.length > 0 ? (
+          <>
+            <header className={styles.header}>
+              <h1 className={styles.title}>Order History</h1>
+              <p className={styles.subtitle}>
+                View and manage your past orders
+              </p>
+            </header>
 
-          <div className={styles.filters}>
-            <div className={styles.filterGroup}>
-              <label htmlFor='statusFilter'>Filter by Status:</label>
-              <select
-                id='statusFilter'
-                className={styles.select}
-                onChange={handleStatusFilter}
-                value={status || ''}
-              >
-                <option value=''>All</option>
-                <option value='pending'>Pending</option>
-                <option value='processing'>Processing</option>
-                <option value='shipped'>Shipped</option>
-                <option value='delivered'>Delivered</option>
-              </select>
+            <div className={styles.filters}>
+              <div className={styles.filterGroup}>
+                <label htmlFor='statusFilter'>Filter by Status:</label>
+                <select
+                  id='statusFilter'
+                  className={styles.select}
+                  onChange={handleStatusFilter}
+                  value={status || ''}
+                >
+                  <option value=''>All</option>
+                  <option value='pending'>Pending</option>
+                  <option value='processing'>Processing</option>
+                  <option value='shipped'>Shipped</option>
+                  <option value='delivered'>Delivered</option>
+                </select>
+              </div>
+              <div className={styles.filterGroup}>
+                <label htmlFor='sortBy'>Sort by:</label>
+                <select
+                  className={styles.select}
+                  id='sortBy'
+                  onChange={handleSortBy}
+                  value={sortBy}
+                >
+                  <option value='createdAt'>Date</option>
+                  <option value='total'>Total</option>
+                  <option value='status'>Status</option>
+                </select>
+              </div>
+              <div className={styles.filterGroup}>
+                <label htmlFor='sortOrder'>Order:</label>
+                <select
+                  className={styles.select}
+                  id='sortOrder'
+                  onChange={handleSortOrder}
+                  value={sortOrder}
+                >
+                  <option value='desc'>Descending</option>
+                  <option value='asc'>Ascending</option>
+                </select>
+              </div>
             </div>
-            <div className={styles.filterGroup}>
-              <label htmlFor='sortBy'>Sort by:</label>
-              <select
-                className={styles.select}
-                id='sortBy'
-                onChange={handleSortBy}
-                value={sortBy}
-              >
-                <option value='createdAt'>Date</option>
-                <option value='total'>Total</option>
-                <option value='status'>Status</option>
-              </select>
+
+            <div className={styles.orderSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>
+                  <FontAwesomeIcon
+                    icon={faShoppingCart}
+                    className={styles.sectionIcon}
+                  />
+                  Orders
+                  <span className={styles.sectionCount}>
+                    ({data?.total || 0})
+                  </span>
+                </h2>
+              </div>
+              <div className={styles.orderGrid}>
+                {orders.map((order, index) => renderOrderCard(order, index))}
+              </div>
+
+              <div className={styles.pagination}>
+                <p>
+                  Page {data?.page} of {totalPages}
+                </p>
+                <button
+                  onClick={() => handlePageChange((data?.page as number) - 1)}
+                  disabled={!hasPrevPage}
+                  aria-label='Previous page'
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => handlePageChange((data?.page as number) + 1)}
+                  disabled={!hasNextPage}
+                  aria-label='Next page'
+                >
+                  Next
+                </button>
+              </div>
             </div>
-            <div className={styles.filterGroup}>
-              <label htmlFor='sortOrder'>Order:</label>
-              <select
-                className={styles.select}
-                id='sortOrder'
-                onChange={handleSortOrder}
-                value={sortOrder}
-              >
-                <option value='desc'>Descending</option>
-                <option value='asc'>Ascending</option>
-              </select>
-            </div>
+          </>
+        ) : (
+          <div className={styles.emptyState}>
+            <h2 className={styles['emptyTitle']}>No orders found</h2>
+            <Link to='/' className={styles['continue-shopping']}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+              <span>Continue Shopping</span>
+            </Link>
           </div>
-
-          <AnimatePresence>
-            {isLoadingOrders ? (
-              <div className={styles.loading}>Loading orders...</div>
-            ) : fetchOrdersError ? (
-              <motion.p
-                className={styles.errorText}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                role='alert'
-              >
-                Failed to load orders
-              </motion.p>
-            ) : orders.length > 0 ? (
-              <div className={styles.orderSection}>
-                <div className={styles.sectionHeader}>
-                  <h2 className={styles.sectionTitle}>
-                    <FontAwesomeIcon
-                      icon={faShoppingCart}
-                      className={styles.sectionIcon}
-                    />
-                    Orders
-                    <span className={styles.sectionCount}>
-                      ({data?.total || 0})
-                    </span>
-                  </h2>
-                </div>
-                <div className={styles.orderGrid}>
-                  {orders.map((order, index) => renderOrderCard(order, index))}
-                </div>
-
-                <div className={styles.pagination}>
-                  <p>
-                    Page {data?.page} of {totalPages}
-                  </p>
-                  <button
-                    onClick={() => handlePageChange((data?.page as number) - 1)}
-                    disabled={!hasPrevPage}
-                    aria-label='Previous page'
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={() => handlePageChange((data?.page as number) + 1)}
-                    disabled={!hasNextPage}
-                    aria-label='Next page'
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <p>No orders found</p>
-              </div>
-            )}
-          </AnimatePresence>
-        </div>
-      </main>
+        )}
+      </motion.main>
     </>
   );
 };

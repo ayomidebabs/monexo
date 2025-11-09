@@ -1,1 +1,0 @@
-// Fetches products with RTK Query

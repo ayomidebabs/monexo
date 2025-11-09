@@ -11,9 +11,10 @@ import visaCardIcon from '../../assets/images/visa-4-logo-svgrepo-com.svg';
 import { modalContext } from '../../context/modalContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faLock } from '@fortawesome/free-solid-svg-icons';
+import { TiTimes } from 'react-icons/ti';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import styles from '../../styles/pages/cart.module.scss';
 import Seo from '../../components/others/Seo';
+import styles from '../../styles/pages/cart.module.scss';
 
 const ShoppingCart: React.FC = () => {
   const { setShowSignInModal } = useContext(modalContext);
@@ -44,33 +45,31 @@ const ShoppingCart: React.FC = () => {
           keywords='monexo, cart, shopping, checkout'
         />
 
-        <main className='main'>
-          <motion.div
-            className={styles.emptyCart}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className={styles['emptyCart-wrapper']}>
-              <h2 className={styles.emptyTitle}>Your cart is empty</h2>
-              <Link to='/' className={styles['continue-shopping']}>
-                <FontAwesomeIcon icon={faArrowLeft} />
-                <span>Continue Shopping</span>
-              </Link>
-              {!user && (
-                <>
-                  <p>Sign in to see if you have saved some items in cart.</p>
-                  <button
-                    className={styles.signin}
-                    onClick={() => setShowSignInModal(true)}
-                  >
-                    Sign In
-                  </button>
-                </>
-              )}
-            </div>
-          </motion.div>
-        </main>
+        <motion.main
+          className='main'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <div className={styles['emptyCart-wrapper']}>
+            <h2 className={styles.emptyTitle}>Your cart is empty</h2>
+            <Link to='/' className={styles['continue-shopping']}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+              <span>Continue Shopping</span>
+            </Link>
+            {!user && (
+              <>
+                <p>Sign in to see if you have saved some items in cart.</p>
+                <button
+                  className={styles.signin}
+                  onClick={() => setShowSignInModal(true)}
+                >
+                  Sign In
+                </button>
+              </>
+            )}
+          </div>
+        </motion.main>
       </>
     );
   }
@@ -82,13 +81,13 @@ const ShoppingCart: React.FC = () => {
         description='Review and manage your shopping cart before checking out at Monexo.'
         keywords='monexo, cart, shopping, checkout'
       />
-      <main className='main'>
-        <motion.div
-          className={styles['cart-content']}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
+      <motion.main
+        className={`main ${styles['cart-content']}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
+        <div>
           <div className={styles['subtotal-wrapper']}>
             <h4 className={styles.title}>Shopping Cart</h4>
             <div className={styles.subtotal}>
@@ -120,9 +119,16 @@ const ShoppingCart: React.FC = () => {
                   maximumFractionDigits: 2,
                 }
               );
-              const unitPrice = `${item.price.toLocaleString(undefined, {
-                maximumFractionDigits: 2,
-              })} ✖ ${item.quantity}`;
+              const unitPrice = (
+                <div>
+                  $
+                  {item.price.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  <TiTimes /> {item.quantity}
+                </div>
+              );
+
               return (
                 <CartItem
                   key={item.pId}
@@ -160,8 +166,8 @@ const ShoppingCart: React.FC = () => {
           <button className={styles['checkout-link']} onClick={handleCheckout}>
             Continue to Checkout
           </button>
-        </motion.div>
-      </main>
+        </div>
+      </motion.main>
     </>
   );
 };

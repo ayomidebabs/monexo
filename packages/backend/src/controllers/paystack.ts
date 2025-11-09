@@ -15,6 +15,8 @@ import axios, { AxiosError } from 'axios';
 import User from '../models/User.js';
 import crypto from 'crypto';
 import WebhookEvents from '../models/WebhookEvents.js';
+import { getExchangeRatesUtil } from '../utils/exchangeRates.js';
+import mongoose from 'mongoose';
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 
@@ -67,10 +69,17 @@ export const initializeTransaction = [
         };
       });
 
-      const total = validatedItems.reduce(
+      const usdTotal = validatedItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       );
+
+      const exchangeRates: { [key: string]: number } =
+        await getExchangeRatesUtil();
+
+      const buffer = 0.3; // 30 cents buffer
+
+      const convertedTotal = (usdTotal + buffer) * exchangeRates[currency];
 
       const multipliers: { [key: string]: number } = {
         NGN: 100,
@@ -90,12 +99,12 @@ export const initializeTransaction = [
           'https://api.paystack.co/transaction/initialize',
           {
             email,
-            amount: Math.round(formatTotal(total, currency)),
+            amount: Math.round(formatTotal(convertedTotal, currency)),
             currency,
             metadata: {
               userId: appUser?.id as string,
               products: JSON.stringify(validatedItems),
-              total,
+              total: usdTotal,
             },
           },
           {
@@ -106,7 +115,7 @@ export const initializeTransaction = [
         )
       ).data.data;
 
-      res.send({ reference: transaction.reference, total });
+      res.send({ reference: transaction.reference, total: convertedTotal });
     } catch (error) {
       if (error instanceof AxiosError) {
         return next(
@@ -175,7 +184,7 @@ export const addPaymentMethod = [
       if (!user) return res.status(404).send({ message: 'User not found' });
 
       const existing = user.paystackPaymentMethods.find(
-        (method) => method.last4 === last4 && method.userId === userId
+        (method) => method.last4 === last4 && method.cardType === cardType
       );
       if (existing) {
         return res
@@ -189,7 +198,7 @@ export const addPaymentMethod = [
         {
           $push: {
             paystackPaymentMethods: {
-              userId,
+              _id: new mongoose.Types.ObjectId(),
               authorizationCode,
               customerCode,
               email,
@@ -203,7 +212,7 @@ export const addPaymentMethod = [
         }
       );
 
-      res.status(201).json({ message: 'Payment method saved successfully' });
+      res.status(201).send({ message: 'Payment method saved successfully' });
     } catch (error) {
       next(
         new AppError(
@@ -226,9 +235,9 @@ export const fetchSavedPaymentMethods = async (
       .select('paystackPaymentMethods')
       .lean();
     if (!user || !user.paystackPaymentMethods) {
-      return res.status(404).send({ message: 'No payment methods found' });
+      return res.status(200).send([]);
     }
-    res.send(user.paystackPaymentMethods);
+    res.status(200).send(user.paystackPaymentMethods);
   } catch (error) {
     next(
       new AppError(
@@ -243,7 +252,6 @@ export const deletePaymentMethod = [
   async (req: Request, res: Response, next: NextFunction) => {
     const { paymentMethodId } = matchedData(req, { locations: ['params'] });
     const { appUser } = res.locals;
-
     try {
       const user = await User.findById(appUser?.id);
       if (!user) return res.status(404).send({ message: 'User not found' });
@@ -279,7 +287,6 @@ export const deletePaymentMethod = [
           );
         }
       }
-
       res.send({ message: 'Payment method deleted successfully' });
     } catch (error) {
       next(
@@ -387,10 +394,15 @@ export const chargeSavedPaymentMethod = [
         };
       });
 
-      const total = validatedItems.reduce(
+      const usdTotal = validatedItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       );
+      const exchangeRates: { [key: string]: number } =
+        await getExchangeRatesUtil();
+      const buffer = 0.3;
+
+      const convertedTotal = (usdTotal + buffer) * exchangeRates[currency];
 
       const multipliers: { [key: string]: number } = {
         NGN: 100,
@@ -411,11 +423,12 @@ export const chargeSavedPaymentMethod = [
           {
             authorization_code: method.authorizationCode,
             email: method.email,
-            amount: Math.round(formatTotal(total, currency)),
+            amount: Math.round(formatTotal(convertedTotal, currency)),
             currency,
             metadata: {
               userId: appUser?.id,
               products: JSON.stringify(validatedItems),
+              total: usdTotal,
             },
           },
           {
@@ -431,12 +444,16 @@ export const chargeSavedPaymentMethod = [
       } else if (transaction.paused) {
         return res.send({
           paused: true,
+          message: transaction.message,
           authorizationUrl: transaction.authorization_url,
           reference: transaction.reference,
-          total,
+          total: convertedTotal,
         });
       } else {
-        return res.send({ success: false, message: transaction.message });
+        return res.send({
+          success: false,
+          message: transaction.message,
+        });
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -481,7 +498,7 @@ export const paystackWebhook = async (req: Request, res: Response) => {
     });
     if (existingEvent) {
       console.log(`Duplicate Paystack webhook event ignored: ${event.data.id}`);
-      return res.status(200).json({
+      return res.status(200).send({
         success: true,
         data: 'Event already processed',
         statusCode: 200,
@@ -498,14 +515,14 @@ export const paystackWebhook = async (req: Request, res: Response) => {
       }
     );
 
-    res.status(200).json({
+    res.status(200).send({
       success: true,
       data: 'Event received and queued',
       statusCode: 200,
     });
   } catch (error) {
     console.error(`Paystack webhook error: ${(error as Error).message}`);
-    return res.status(400).json({
+    return res.status(400).send({
       success: false,
       error: (error as Error).message || 'Webhook processing failed',
       statusCode: 400,

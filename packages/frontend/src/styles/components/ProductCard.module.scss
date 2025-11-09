@@ -2,9 +2,9 @@
 @use '../utils/mixins' as m;
 
 .productCard {
-  align-self: stretch;
   display: flex;
   flex-direction: column;
+  align-self: stretch;
   background: var(--bg-secondary);
   border-radius: f.r(8);
   box-shadow: 0 f.r(2) f.r(8) rgba(0, 0, 0, 0.1);
@@ -26,6 +26,7 @@
       width: 100%;
       height: f.r(150);
       object-fit: contain;
+      object-position: center f.r(-10);
       transition: filter 0.3s ease-in-out;
     }
   }
@@ -103,7 +104,7 @@
 
       .reviewCount {
         font-size: f.r(13.5);
-        color: #666;
+        color: var(--text-secondary);
       }
     }
 
@@ -114,7 +115,7 @@
       font-weight: 600;
       color: var(--neutral-white);
       padding: f.r(8) f.r(16);
-      border: 1px solid var(--accent-secondary);
+      border: f.r(1) solid var(--accent-secondary);
       border-radius: f.r(4);
       text-align: center;
       background-color: var(--accent-primary);

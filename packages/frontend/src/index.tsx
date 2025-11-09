@@ -4,11 +4,11 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import AppRoutes from './routes';
 import { fetchCurrentUser } from './features/auth/authSlice';
-import './styles/main.scss';
 import CustomCursor from './components/others/customCursor';
 import ThemeProvider from './components/others/ThemeProvider';
 import { HelmetProvider } from 'react-helmet-async';
 import ErrorBoundary from './components/others/ErrorBoundary';
+import './styles/main.scss';
 store.dispatch(fetchCurrentUser());
 
 createRoot(document.getElementById('root')!).render(

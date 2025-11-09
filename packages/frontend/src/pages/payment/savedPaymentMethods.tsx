@@ -5,6 +5,7 @@ import {
   faCreditCard,
   faTrash,
   faCheckCircle,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import {
@@ -17,8 +18,10 @@ import {
   useSetPaystackDefaultPaymentMethodMutation,
   useDeletePaystackPaymentMethodMutation,
 } from '../../features/Payment/Paystack/paystackAPI';
-import styles from '../../styles/pages/SavedPaymentMethods.module.scss';
+import { Link } from 'react-router-dom';
+import Loader from '../../components/others/Loader';
 import Seo from '../../components/others/Seo';
+import styles from '../../styles/pages/SavedPaymentMethods.module.scss';
 
 interface PaymentMethod {
   id: string;
@@ -35,8 +38,14 @@ const SavedPaymentMethods: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const { data: stripePaymentMethods = [], isLoading: isLoadingStripeMethods } =
-    useGetStripePaymentMethodsQuery(undefined, { skip: !user });
+  const {
+    data: stripePaymentMethods = [],
+    isLoading: isLoadingStripeMethods,
+    error: loadingStripeMethodsError,
+  } = useGetStripePaymentMethodsQuery(undefined, {
+    skip: !user,
+    refetchOnMountOrArgChange: true,
+  });
   const [
     setStripeDefaultPaymentMethod,
     { isLoading: isSettingDefaultForStripe },
@@ -47,7 +56,11 @@ const SavedPaymentMethods: React.FC = () => {
   const {
     data: paystackPaymentMethods = [],
     isLoading: isLoadingPaystackMethods,
-  } = useGetPaystackPaymentMethodsQuery(undefined, { skip: !user });
+    error: loadingPaystackMethodsError,
+  } = useGetPaystackPaymentMethodsQuery(undefined, {
+    skip: !user,
+    refetchOnMountOrArgChange: true,
+  });
   const [
     setPaystackDefaultPaymentMethod,
     { isLoading: isSettingDefaultForPaystack },
@@ -76,8 +89,10 @@ const SavedPaymentMethods: React.FC = () => {
     })),
   ];
 
-  const isLoading = isLoadingStripeMethods || isLoadingPaystackMethods;
-  const hasMethods = paymentMethods.length > 0;
+  const isLoadingPaymentMethods =
+    isLoadingStripeMethods || isLoadingPaystackMethods;
+  const fetchPaymentMethodsError =
+    loadingStripeMethodsError || loadingPaystackMethodsError;
 
   const handleSetDefault = async (method: PaymentMethod) => {
     try {
@@ -187,50 +202,79 @@ const SavedPaymentMethods: React.FC = () => {
     }
   }, [successMessage]);
 
+  if (isLoadingPaymentMethods) {
+    return (
+      <>
+        <Seo
+          title='Loading your Payment Methods | Monexo'
+          description="We're fetching your order history for you. Securely manage your payment methods for easy checkout at Monexo."
+          keywords='monexo, payment methods, secure payment, loading'
+          robots='noindex, nofollow'
+        />
+        <motion.main
+          className='main'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <Loader text='Loading cards…' marginTop={10} />
+        </motion.main>
+      </>
+    );
+  }
+  if (fetchPaymentMethodsError) {
+    throw fetchPaymentMethodsError;
+  }
+
   return (
     <>
       <Seo
         title='Manage Payment Methods | Monexo'
         description='Securely manage your payment methods for easy checkout at Monexo.'
-        keywords='monexo, payment methods, secure payment, checkout'
+        keywords='monexo, payment methods, secure payment'
       />
-      <main className='main'>
-        <div className={styles.savedPaymentMethods}>
-          <header className={styles.header}>
-            <h1 className={styles.title}>Saved Cards</h1>
-            <p className={styles.subtitle}>Manage your saved cards securely</p>
-          </header>
+      <motion.main
+        className='main'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
+        {paymentMethods.length > 0 ? (
+          <>
+            <header className={styles.header}>
+              <h1 className={styles.title}>Saved Cards</h1>
+              <p className={styles.subtitle}>
+                Manage your saved cards securely
+              </p>
+            </header>
 
-          <AnimatePresence>
-            {successMessage && (
-              <motion.p
-                className={styles.successMessage}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                role='status'
-              >
-                {successMessage}
-              </motion.p>
-            )}
-            {errorMessage && (
-              <motion.p
-                className={styles.errorText}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                role='alert'
-              >
-                {errorMessage}
-              </motion.p>
-            )}
-          </AnimatePresence>
+            <AnimatePresence>
+              {successMessage && (
+                <motion.p
+                  className={styles.successMessage}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  role='status'
+                >
+                  {successMessage}
+                </motion.p>
+              )}
+              {errorMessage && (
+                <motion.p
+                  className={styles.errorText}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  role='alert'
+                >
+                  {errorMessage}
+                </motion.p>
+              )}
+            </AnimatePresence>
 
-          {isLoading ? (
-            <div className={styles.loading}>Loading cards...</div>
-          ) : (
             <div className={styles.paymentSection}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>
@@ -244,21 +288,24 @@ const SavedPaymentMethods: React.FC = () => {
                   </span>
                 </h2>
               </div>
-              {hasMethods ? (
-                <div className={styles.cardGrid}>
-                  {paymentMethods.map((method, index) =>
-                    renderCard(method, index)
-                  )}
-                </div>
-              ) : (
-                <div className={styles.emptyState}>
-                  <p>No cards saved</p>
-                </div>
-              )}
+
+              <div className={styles.cardGrid}>
+                {paymentMethods.map((method, index) =>
+                  renderCard(method, index)
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </main>
+          </>
+        ) : (
+          <div className={styles.emptyState}>
+            <h2 className={styles['emptyTitle']}>No saved cards</h2>
+            <Link to='/' className={styles['continue-shopping']}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+              <span>Continue Shopping</span>
+            </Link>
+          </div>
+        )}
+      </motion.main>
     </>
   );
 };

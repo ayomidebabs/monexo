@@ -1,6 +1,15 @@
 @use '../utils//functions' as f;
 @use '../utils//mixins' as m;
 
+.categoriesSlider-container {
+  background-color: var(--neutral-white);
+  border-radius: f.r(10) f.r(10) 0 0;
+}
+
+.marginTop {
+  margin-top: f.r(10);
+}
+
 .sliderWrapper {
   width: 100%;
   padding: f.r(10) f.r(5);
@@ -138,7 +147,7 @@
   }
 }
 
-@media (min-width: f.r(576)) {
+@include m.up(sm) {
   .sliderTrack {
     grid-auto-columns: 33%;
     gap: f.r(20);
@@ -164,14 +173,14 @@
   }
 }
 
-@media (min-width: 768px) {
+@include m.up(md) {
   .sliderTrack {
     grid-auto-columns: 33.33%;
-    gap: 24px;
+    gap: f.r(24);
   }
 
   .slideImage {
-    height: 300px;
+    height: f.r(300);
   }
 
   .viewMoreLink {
@@ -186,7 +195,7 @@
     transform: translateY(-50%);
     background-color: rgb(245, 245, 245, 0.5);
     color: var(--neutral-white);
-    padding: 10px;
+    padding: f.r(10);
     width: f.r(40);
     height: f.r(40);
     border-radius: 50%;
@@ -211,42 +220,42 @@
   }
 
   .prevButton {
-    left: 10px;
+    left: f.r(10);
   }
 
   .nextButton {
-    right: 10px;
+    right: f.r(10);
   }
 }
 
-@media (min-width: 992px) {
+@include m.up(lg) {
   .sliderTrack {
     grid-auto-columns: 25%;
-    gap: 28px;
+    gap: f.r(28);
   }
 
   .slideImage {
-    height: 350px;
+    height: f.r(350);
   }
 
   .viewMoreLink {
-    font-size: 20px;
+    font-size: f.r(20);
   }
 
   .sliderButton {
-    padding: 12px;
-    font-size: 18px;
+    padding: f.r(12);
+    font-size: f.r(18);
   }
 
   .sliderButtonIcon {
-    width: 18px;
-    height: 18px;
+    width: f.r(18);
+    height: f.r(18);
   }
 }
 
-@media (min-width: 1200px) {
+@include m.up(xl) {
   .sliderWrapper {
-    max-width: 1200px;
+    max-width: f.r(1200);
     margin-inline: auto;
   }
 

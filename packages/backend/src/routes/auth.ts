@@ -5,8 +5,8 @@ import {
   notifySignInSuccess,
   notifySignOutSuccess,
 } from '../controllers/auth.js';
-import { signInLimiter } from '../middleware/rateLimiter.js';
 import authMiddleware from '../middleware/auth.js';
+import { signInLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 

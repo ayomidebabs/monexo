@@ -14,7 +14,11 @@ import {
   faShoppingCart,
   faBars,
   faSearch,
+  faChevronDown,
+  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
+import { FaRegUser } from 'react-icons/fa6';
+import { MdOutlineShoppingCart } from 'react-icons/md';
 import { useGetSearchSuggestionsQuery } from '../../features/search/searchApi';
 import CreateAccountModal from '../authModals/SignUpModal';
 import SignInModal from '../../components/authModals/SignInModal';
@@ -29,6 +33,7 @@ import AppModal from '../others/AppModal';
 import Footer from './Footer';
 import BottomNav from './bottomNavMobile';
 import CheckoutInfoModal from '../others/CheckoutInfoModal';
+import { useRedirectOnSignOut } from '../../hooks/useRedirectOnSignOut';
 import styles from '../../styles/components/Navbar.module.scss';
 
 const dropdownVariants: Variants = {
@@ -68,6 +73,7 @@ const itemVariants: Variants = {
 };
 
 const NavBar: React.FC = () => {
+  useRedirectOnSignOut();
   const [search, setSearch] = useState('');
   const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -91,6 +97,7 @@ const NavBar: React.FC = () => {
   const accountDropdownDesktopRef = useRef<HTMLDivElement>(null);
   const accountDropdownOverlayMobileRef = useRef<HTMLDivElement>(null);
   const accountDropdownOverlayDesktopRef = useRef<HTMLDivElement>(null);
+  const accountDropdownTriggerDesktopRef = useRef<HTMLButtonElement>(null);
   const offcanvasToggleOverlayRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const cartItemCount = useSelector((state: RootState) =>
@@ -110,6 +117,10 @@ const NavBar: React.FC = () => {
 
   const toggleAccount = useCallback(() => {
     setIsAccountOpen((prev) => !prev);
+  }, []);
+
+  const closeAccount = useCallback(() => {
+    setIsAccountOpen(false);
   }, []);
 
   const handleToggleTheme = useCallback(() => {
@@ -242,25 +253,53 @@ const NavBar: React.FC = () => {
       ) {
         setIsSearchDropdownOpen(false);
       }
+
       if (
         accountDropdownMobileRef.current &&
         !accountDropdownMobileRef.current.contains(event.target as Node) &&
         event.target !== accountDropdownOverlayMobileRef.current &&
         event.target !== accountDropdownOverlayDesktopRef.current
       ) {
-        setIsAccountOpen(false);
+        closeAccount();
       }
+
       if (
         accountDropdownDesktopRef.current &&
         !accountDropdownDesktopRef.current.contains(event.target as Node) &&
-        event.target !== accountDropdownOverlayDesktopRef.current
+        event.target !== accountDropdownOverlayDesktopRef.current &&
+        event.target !== accountDropdownTriggerDesktopRef.current
       ) {
-        setIsAccountOpen(false);
+        closeAccount();
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [closeAccount]);
+
+  useEffect(() => {
+    const desktopContainer = accountDropdownDesktopRef.current;
+    if (!desktopContainer) return;
+
+    const closeOnLeave = () => closeAccount();
+
+    desktopContainer.addEventListener('mouseleave', closeOnLeave);
+    return () => {
+      desktopContainer.removeEventListener('mouseleave', closeOnLeave);
+    };
+  }, [closeAccount]);
+
+  useEffect(() => {
+    const mobileContainer = accountDropdownMobileRef.current;
+    if (!mobileContainer) return;
+
+    const closeOnLeave = () => closeAccount();
+
+    mobileContainer.addEventListener('mouseleave', closeOnLeave);
+    return () => {
+      mobileContainer.removeEventListener('mouseleave', closeOnLeave);
+    };
+  }, [closeAccount]);
 
   return (
     <>
@@ -634,20 +673,31 @@ const NavBar: React.FC = () => {
               className={`${styles.accountDropdown} accountDropdown`}
               ref={accountDropdownDesktopRef}
             >
-              <motion.button
+              <button
                 type='button'
                 className={styles.navLink}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
                 aria-label='Open account menu'
+                ref={accountDropdownTriggerDesktopRef}
               >
                 <div
                   className={styles.overlay}
                   ref={accountDropdownOverlayDesktopRef}
                   onClick={toggleAccount}
                 ></div>
-                <FontAwesomeIcon icon={faUser} />
-              </motion.button>
+                <FaRegUser className={styles.userSvg} />
+                <span>Account</span>
+                {isAccountOpen ? (
+                  <FontAwesomeIcon
+                    icon={faChevronUp}
+                    className={styles.chevronDownSvg}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className={styles.chevronDownSvg}
+                  />
+                )}
+              </button>
               {accountMenu}
             </div>
             <NavLink
@@ -658,16 +708,13 @@ const NavBar: React.FC = () => {
               aria-label='View cart'
               end
             >
-              <motion.div
-                className={styles.cartIcon}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <FontAwesomeIcon icon={faShoppingCart} />
+              <div className={styles.cartIcon}>
+                <MdOutlineShoppingCart className={styles.cartSvg} />
                 {cartItemCount > 0 && (
                   <span className={styles.cartBadge}>{cartItemCount}</span>
                 )}
-              </motion.div>
+              </div>
+              <span>Cart</span>
             </NavLink>
             <motion.button
               className={styles.themeToggle}

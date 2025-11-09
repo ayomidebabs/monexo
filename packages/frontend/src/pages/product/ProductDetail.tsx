@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar as faStarSolid,
@@ -23,15 +24,6 @@ import {
   useRemoveReviewMutation,
 } from '../../features/Reviews/reviewApi';
 import { store, type AppDispatch, type RootState } from '../../app/store';
-import {
-  useAddRecentlyViewedMutation,
-  useLazyGetRecentlyViewedQuery,
-  type RecentlyViewedProduct,
-} from '../../features/recentlyViewed/recentlyviewedAPI';
-import {
-  addLocalRecentlyViewedProduct,
-  getLocalRecentlyViewedProducts,
-} from '../../utils/recentlyViewed';
 import Carousel from '../../components/others/Carousel';
 import { updateLocalCart } from '../../utils/localCartManager';
 import { useUpdateCartMutation } from '../../features/cart/cartAPI';
@@ -46,12 +38,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DOMPurify from 'dompurify';
-import HorizontalSlider from '../../components/others/HorizontalSlider';
 import type { ApiError } from '../../app/apiSlice';
+import ErrorBoundary from '../../components/others/ErrorBoundary';
+import RecentlyViewedSection from '../../components/others/RecentlyViewedSection';
+import Loader from '../../components/others/Loader';
 import Seo from '../../components/others/Seo';
 import styles from '../../styles/pages/productDetail.module.scss';
-import RecentlyViewedSkeleton from '../../components/skeletons/RecentlyViewedSkeleton';
-import Error from '../../components/others/Error';
 
 const reviewSchema = z.object({
   rating: z
@@ -72,8 +64,8 @@ const ProductDetailPage: React.FC = () => {
   const { pId } = useParams<{ pId: string }>();
   const {
     data: product,
-    isLoading: productLoading,
-    error: productError,
+    isLoading: isLoadingProduct,
+    error: fetchProductError,
   } = useGetProductQuery(pId!, { skip: !pId });
 
   const {
@@ -105,15 +97,6 @@ const ProductDetailPage: React.FC = () => {
     useUpdateCartMutation();
   const cart = useSelector(selectAllCartItems);
   const [isCartItem, setIsCartItem] = useState<CartItem>();
-
-  const [addRecentlyViewedProductServer] = useAddRecentlyViewedMutation();
-  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<
-    RecentlyViewedProduct[]
-  >([]);
-  const [
-    getServerRecentlyViewedProducts,
-    { isLoading: loadingRecentlyViewed, error: recentlyViewedError },
-  ] = useLazyGetRecentlyViewedQuery();
 
   const [quantity, setQuantity] = useState(1);
   const [StockLimitReached, setStockLimitReached] = useState<boolean>(false);
@@ -276,39 +259,6 @@ const ProductDetailPage: React.FC = () => {
   }, [dispatch, guestWishlistIntent, handleAddToWishlist, product, user]);
 
   useEffect(() => {
-    if (product) {
-      const productData = {
-        id: product._id,
-        name: product.name,
-        price: product.price,
-        imageSrc: product.images[0] || '',
-        imageAlt: product.description,
-        link: `/product-detail/${product._id}`,
-      };
-      if (user) {
-        (async () => {
-          try {
-            await addRecentlyViewedProductServer(productData).unwrap();
-            setRecentlyViewedProducts(
-              await getServerRecentlyViewedProducts().unwrap()
-            );
-          } catch (error) {
-            console.error('Recently viewed error:', error);
-          }
-        })();
-      } else {
-        addLocalRecentlyViewedProduct(productData);
-        setRecentlyViewedProducts(getLocalRecentlyViewedProducts());
-      }
-    }
-  }, [
-    addRecentlyViewedProductServer,
-    product,
-    user,
-    getServerRecentlyViewedProducts,
-  ]);
-
-  useEffect(() => {
     const cartItem = cart.find((item) => item.pId === product?._id);
     if (!product || !cartItem) return;
     setIsCartItem(cartItem);
@@ -324,8 +274,29 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [addReviewError]);
 
-  if (productLoading) return <p>Loading...</p>;
-  if (productError || !product) return <p>Product not found</p>;
+  if (isLoadingProduct) {
+    return (
+      <>
+        <Seo
+          title='Loading Product Details | Monexo'
+          description="We're fetching the product details for you. Shop premium products at Monexo." // Default description
+          keywords='monexo, product details, loading, online shopping'
+          robots='noindex, nofollow'
+        />
+        <motion.main
+          className='main'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <Loader text='Loading item…' marginTop={10} />
+        </motion.main>
+      </>
+    );
+  }
+  if (fetchProductError || !product) {
+    throw fetchProductError || new Error('Product not found');
+  }
 
   return (
     <>
@@ -336,7 +307,12 @@ const ProductDetailPage: React.FC = () => {
         ogImage={product.images[0]}
       />
 
-      <main className={`main ${styles.main}`}>
+      <motion.main
+        className={`main ${styles.main}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
         <div className={styles.productDetails}>
           <div className={styles['carousel-detail-mobile']}>
             <Carousel
@@ -468,7 +444,6 @@ const ProductDetailPage: React.FC = () => {
                   } else if (parseInt(e.target.value) > product.stock) {
                     return setQuantity(NaN);
                   }
-                  console.log(parseInt(e.target.value), 'setting');
                   setQuantity(parseInt(e.target.value));
                 }}
                 value={quantity ? quantity : ''}
@@ -522,11 +497,11 @@ const ProductDetailPage: React.FC = () => {
 
         <div className={styles.reviewsSection}>
           <h2 className={styles.reviewsTitle}>Product Reviews</h2>
-          {productLoading || reviewsLoading ? (
+          {isLoadingProduct || reviewsLoading ? (
             <p>Loading reviews...</p>
           ) : loadingReviewsError ? (
             <p>An error occured while loading reviews</p>
-          ) : !productLoading && reviews && reviews.length === 0 ? (
+          ) : !isLoadingProduct && reviews && reviews.length === 0 ? (
             <p>No reviews yet</p>
           ) : (
             reviews!.map((review) => (
@@ -637,22 +612,13 @@ const ProductDetailPage: React.FC = () => {
             </button>
           )}
         </div>
-        {loadingRecentlyViewed ? (
-          <RecentlyViewedSkeleton />
-        ) : recentlyViewedProducts && recentlyViewedProducts.length ? (
-          <div className={styles['HorizontalSlider-container']}>
-            <HorizontalSlider
-              slides={recentlyViewedProducts}
-              title='Recently Viewed'
-            />
-          </div>
-        ) : recentlyViewedError ? (
-          <Error
-            message='Failed to load recently viewed products. Please try again later'
-            onRetry={() => window.location.reload()}
-          />
-        ) : null}
-      </main>
+        <ErrorBoundary
+          message='Unable to load recently viewed products.'
+          fallback
+        >
+          <RecentlyViewedSection productDetailPage product={product} />
+        </ErrorBoundary>
+      </motion.main>
     </>
   );
 };

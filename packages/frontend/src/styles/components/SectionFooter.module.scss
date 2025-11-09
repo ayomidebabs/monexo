@@ -49,13 +49,13 @@ a {
   }
 }
 
-@media (min-width: f.r(576)) {
+@include m.up(sm) {
   .sectionFooter {
     height: f.r(45);
   }
 }
 
-@media (min-width: f.r(768)) {
+@include m.up(md) {
   .sectionFooter {
     height: f.r(70);
 

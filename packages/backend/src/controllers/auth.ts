@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { matchedData } from 'express-validator';
 import User from '../models/User.js';
-import { hashPassword } from '../utils/pswdEncryption.js';
 import { AppError } from '../middleware/GlobalErrorHandler.js';
 import { validateUserCreation } from '../inputValidation/Auth/userCreation.js';
 import TwoFa from '../models/TwoFa.js';
 import { validateVerifyTwoFa } from '../inputValidation/verifyTwoFa.js';
 import { getSession } from '@auth/express';
-import { authConfig } from '../auth.js';
+import { authConfig } from '../config/auth.js';
 
 export const signUp = [
   ...validateUserCreation,
@@ -17,7 +16,7 @@ export const signUp = [
     try {
       let user = await User.findOne({ email });
 
-      if (user) return res.status(400).send({ message: 'user already exists' });
+      if (user) return res.status(400).send({ message: 'User exists already' });
 
       user = new User({
         name,

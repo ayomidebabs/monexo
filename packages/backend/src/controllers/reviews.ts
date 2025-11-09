@@ -59,7 +59,7 @@ export const getReviews = [
           },
         },
       ]);
-      console.log(products);
+
       if (!products.length) {
         return res.send([]);
       }

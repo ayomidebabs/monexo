@@ -15,15 +15,6 @@
   }
 }
 
-.categoriesSlider-container {
-  background-color: var(--neutral-white);
-  border-radius: f.r(10) f.r(10) 0 0;
-}
-
-.marginTop {
-  margin-top: f.r(10);
-}
-
 @include m.up(sm) {
   .header {
     .title {

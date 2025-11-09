@@ -88,20 +88,20 @@
 
 .previewImage {
   width: 100%;
-  height: 100px;
+  height: f.r(100);
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: f.r(4);
   transition: opacity 0.3s ease;
 }
 
 .previewDetails {
-  padding: 8px;
+  padding: f.r(8);
   text-align: center;
 }
 
 .previewDetails h3 {
   font-size: 1rem;
-  margin: 0 0 4px;
+  margin: 0 0 f.r(4);
   font-weight: 600;
   color: var(--accent-primary);
 }
@@ -114,26 +114,26 @@
 
 .textContainer {
   position: absolute;
-  padding-inline: 8px;
+  padding-inline: f.r(8);
   z-index: 10;
 }
 
-@media (min-width: 576px) {
+@include m.up(sm) {
   .heroSection {
-    height: 400px;
+    height: f.r(400);
   }
 
   .hotspot {
-    width: 35px;
-    height: 35px;
+    width: f.r(35);
+    height: f.r(35);
   }
 
   .preview {
-    width: 250px;
+    width: f.r(250);
   }
 
   .previewImage {
-    height: 120px;
+    height: f.r(120);
   }
 
   .previewDetails h3 {
@@ -145,22 +145,22 @@
   }
 }
 
-@media (min-width: 768px) {
+@include m.up(md) {
   .heroSection {
-    height: 500px;
+    height: f.r(500);
   }
 
   .hotspot {
-    width: 40px;
-    height: 40px;
+    width: f.r(40);
+    height: f.r(40);
   }
 
   .preview {
-    width: 300px;
+    width: f.r(300);
   }
 
   .previewImage {
-    height: 150px;
+    height: f.r(150);
   }
 
   .previewDetails h3 {
@@ -172,22 +172,22 @@
   }
 }
 
-@media (min-width: 992px) {
+@include m.up(lg) {
   .heroSection {
-    height: 600px;
+    height: f.r(600);
   }
 
   .hotspot {
-    width: 45px;
-    height: 45px;
+    width: f.r(45);
+    height: f.r(45);
   }
 
   .preview {
-    width: 350px;
+    width: f.r(350);
   }
 
   .previewImage {
-    height: 180px;
+    height: f.r(180);
   }
 
   .previewDetails h3 {
@@ -199,24 +199,24 @@
   }
 }
 
-@media (min-width: 1200px) {
+@include m.up(xl) {
   .heroSection {
-    max-width: 1200px;
+    max-width: f.r(1200);
     margin: 0 auto;
-    height: 700px;
+    height: f.r(700);
   }
 
   .hotspot {
-    width: 50px;
-    height: 50px;
+    width: f.r(50);
+    height: f.r(50);
   }
 
   .preview {
-    width: 400px;
+    width: f.r(400);
   }
 
   .previewImage {
-    height: 200px;
+    height: f.r(200);
   }
 
   .previewDetails h3 {

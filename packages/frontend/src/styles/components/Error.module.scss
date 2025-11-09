@@ -1,4 +1,17 @@
-.error-container {
+@use '../utils//functions' as f;
+@use '../utils//mixins' as m;
+
+.pageError-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: f.r(200);
+  margin-top: 6rem;
+  color: #e74c3c;
+}
+
+.sectionError-container {
   text-align: center;
   padding: 3rem 1rem;
   color: #e74c3c;
@@ -10,13 +23,9 @@
   background-color: var(--accent-primary);
   color: var(--neutral-white);
   border: none;
-  border-radius: 6px;
+  border-radius: f.r(6);
   font-weight: 500;
   transition: background-color 0.3s ease, scale 0.12s ease;
-
-  &:hover {
-    background: #2980b9;
-  }
 
   &:hover {
     background-color: var(--accent-secondary);

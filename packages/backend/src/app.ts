@@ -1,15 +1,14 @@
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
-import express from 'express';
 import 'express-async-errors';
+import dotenv from 'dotenv';
+import path from 'path';
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from './middleware/cors.js';
 import Stripe from 'stripe';
 import appRouter from './routes/index.js';
 import { errorHandler } from './middleware/GlobalErrorHandler.js';
 import { ExpressAuth } from '@auth/express';
-import { authConfig } from './auth.js';
+import { authConfig } from './config/auth.js';
 import { verifyLockout } from './middleware/verifyLockout.js';
 import { validateUserSignIn } from './inputValidation/Auth/userSignIn.js';
 

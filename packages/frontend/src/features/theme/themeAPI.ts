@@ -1,8 +1,11 @@
-import { apiSlice } from "../../app/apiSlice";
+import { apiSlice } from '../../app/apiSlice';
 
 export const themeApi = apiSlice.injectEndpoints({
-    endpoints: (builder) => ({
-        getThemePreference: builder.query<{ themePreference: 'light' | 'dark' | 'system' }, void>({
+  endpoints: (builder) => ({
+    getThemePreference: builder.query<
+      { themePreference: 'light' | 'dark' | 'system' },
+      void
+    >({
       query: () => '/user/theme',
       providesTags: ['Theme'],
     }),
@@ -17,7 +20,8 @@ export const themeApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Theme'],
     }),
-    }),
+  }),
 });
 
-export const { useGetThemePreferenceQuery, useUpdateThemePreferenceMutation } = themeApi;
+export const { useGetThemePreferenceQuery, useUpdateThemePreferenceMutation } =
+  themeApi;

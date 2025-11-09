@@ -4,10 +4,10 @@
 
 .emptyCart-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  flex-direction: column;
+  height: f.r(200);
   gap: 1rem;
   margin-top: 6rem;
 
@@ -46,11 +46,11 @@
     justify-content: space-between;
     gap: f.r(5);
     background: none;
-    border: 1px solid var(--accent-primary);
+    border: 0.0625rem solid var(--accent-primary);
     color: var(--accent-primary);
     font-size: 0.9rem;
     padding: 0.4rem 0.6rem;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     transition-property: color border-color background-color;
     transition-duration: 0.3s;
     transition-timing-function: ease;
@@ -63,6 +63,7 @@
       border-color: var(--accent-secondary);
       background-color: var(--accent-secondary);
       color: var(--neutral-white);
+
       svg {
         transform: translateX(f.r(-3));
       }
@@ -86,6 +87,7 @@
 
 .cart-content {
   align-self: start;
+
   .subtotal-wrapper {
     padding: f.r(12) f.r(5) f.r(15) f.r(5);
     background-color: var(--bg-secondary);
@@ -120,11 +122,11 @@
     justify-content: space-between;
     gap: f.r(5);
     background: none;
-    border: 1px solid var(--accent-primary);
+    border: 0.0625rem solid var(--accent-primary);
     color: var(--accent-primary);
     font-size: 0.9rem;
     padding: 0.4rem 0.6rem;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     transition-property: color border-color background-color;
     transition-duration: 0.3s;
     transition-timing-function: ease;
@@ -137,6 +139,7 @@
       border-color: var(--accent-secondary);
       background-color: var(--accent-secondary);
       color: var(--neutral-white);
+
       svg {
         transform: translateX(f.r(-3));
       }
@@ -161,10 +164,12 @@
     justify-content: center;
     gap: f.r(4);
   }
+
   .we-accept {
     display: inline-block;
     font-size: f.r(14);
   }
+
   .payment-methods {
     display: inline-flex;
     align-items: center;
@@ -206,10 +211,12 @@
     &:focus {
       outline: none;
     }
+
     &:hover {
       scale: 1.02;
       background-color: var(--accent-secondary);
     }
+
     &:active {
       scale: 0.95;
     }

@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/User.js';
 import { AppError } from '../middleware/GlobalErrorHandler.js';
 import Subscriber from '../models/Subscriber.js';
 import { validateSubscribeNewsletter } from '../inputValidation/newsletter.js';
@@ -13,7 +12,7 @@ export const subscribeNewsletter = [
     try {
       const existingSubscriber = await Subscriber.findOne({ email });
       if (existingSubscriber) {
-        return res.status(400).json({ message: 'Email already subscribed' });
+        return res.status(400).json({ message: 'Email already subscribed!' });
       }
       const subscriber = new Subscriber({ email });
       await subscriber.save();

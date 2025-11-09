@@ -21,6 +21,7 @@ import WishlistPage from './pages/wishlist';
 import SavedPaymentMethods from './pages/payment/savedPaymentMethods';
 import OrderHistory from './pages/orderHistory';
 import ScrollToTop from './components/others/ScrollToTop';
+import ErrorBoundary from './components/others/ErrorBoundary';
 
 const AppRoutes: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,14 +32,12 @@ const AppRoutes: React.FC = () => {
     if (user) {
       (async function () {
         try {
-          console.log('setting cart server');
           dispatch(setCart(await getServercart().unwrap()));
         } catch (error) {
           console.error((error as Error).message);
         }
       })();
     } else {
-      console.log('setting cart local');
       dispatch(setCart(getLocalCart()));
     }
   }, [dispatch, getServercart, user]);
@@ -58,7 +57,11 @@ const AppRoutes: React.FC = () => {
         },
         {
           path: '/product-detail/:pId',
-          element: <ProductDetailPage />,
+          element: (
+            <ErrorBoundary>
+              <ProductDetailPage />
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/products',
@@ -66,27 +69,51 @@ const AppRoutes: React.FC = () => {
         },
         {
           path: '/categories',
-          element: <CategoriesPage />,
+          element: (
+            <ErrorBoundary>
+              <CategoriesPage />,
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/cart',
-          element: <CartPage />,
+          element: (
+            <ErrorBoundary>
+              <CartPage />
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/orders',
-          element: <OrderHistory />,
+          element: (
+            <ErrorBoundary>
+              <OrderHistory />
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/checkout',
-          element: <CheckoutPage />,
+          element: (
+            <ErrorBoundary>
+              <CheckoutPage />
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/wishlist',
-          element: <WishlistPage />,
+          element: (
+            <ErrorBoundary>
+              <WishlistPage />
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/payment-methods',
-          element: <SavedPaymentMethods />,
+          element: (
+            <ErrorBoundary>
+              <SavedPaymentMethods />
+            </ErrorBoundary>
+          ),
         },
         {
           path: '/*',

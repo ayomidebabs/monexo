@@ -6,8 +6,8 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import styles from '../../styles/components/HorizontalSlider.module.scss';
 import SectionHeader from './SectionHeader';
+import styles from '../../styles/components/HorizontalSlider.module.scss';
 
 interface Slide {
   id: string;

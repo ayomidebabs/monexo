@@ -1,5 +1,4 @@
-// src/api/adminApi.ts
-import { apiSlice } from "../../app/apiSlice";
+import { apiSlice } from '../../app/apiSlice';
 
 interface User {
   _id: string;

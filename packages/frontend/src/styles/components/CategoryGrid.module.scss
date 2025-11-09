@@ -27,7 +27,7 @@
   }
 }
 
-@media screen and (min-width: f.r(576)) {
+@include m.up(sm) {
   .categoryGrid {
     grid-template-columns: repeat(4, 22vw);
 
@@ -37,7 +37,7 @@
   }
 }
 
-@media screen and (min-width: f.r(768)) {
+@include m.up(md) {
   .categoryGrid {
     img {
       height: f.r(180);
@@ -45,7 +45,7 @@
   }
 }
 
-@media screen and (min-width: f.r(992)) {
+@include m.up(lg) {
   .categoryGrid {
     img {
       height: f.r(220);

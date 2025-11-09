@@ -1,14 +1,4 @@
-import bcrypt from "bcryptjs";
-
-// export const hashPassword = async (password: string) => {
-//     const salt = await bcrypt.genSalt(10);
-//     return await bcrypt.hash(password, salt);
-// }
-
-// export const validatePswd = async (providedPswd: string, storedPswd: string) => {
-//     return await bcrypt.compare(providedPswd, storedPswd);
-// }
-
+import bcrypt from 'bcryptjs';
 
 export const hashPassword = async (password: string) => {
   const salt = await new Promise<string>((resolve, reject) => {
@@ -34,6 +24,3 @@ export const validatePassword = async (password: string, hash: string) => {
     });
   });
 };
-
-
-

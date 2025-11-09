@@ -5,14 +5,22 @@ interface SeoProps {
   description: string;
   keywords: string;
   ogImage?: string;
+  robots?: string;
 }
 
-const Seo: React.FC<SeoProps> = ({ title, description, keywords, ogImage }) => {
+const Seo: React.FC<SeoProps> = ({
+  title,
+  description,
+  keywords,
+  ogImage,
+  robots,
+}) => {
   return (
     <Helmet>
       <title>{title}</title>
       <meta name='description' content={description} />
       <meta name='keywords' content={keywords} />
+      {robots && <meta name='robots' content={robots} />}
       <meta property='og:title' content={title} />
       <meta property='og:description' content={description} />
       <meta

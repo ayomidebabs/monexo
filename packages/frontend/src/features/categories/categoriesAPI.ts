@@ -1,4 +1,4 @@
-import { apiSlice } from "../../app/apiSlice";
+import { apiSlice } from '../../app/apiSlice';
 
 export interface Category {
   _id: string;
@@ -12,7 +12,10 @@ export const categoriesApi = apiSlice.injectEndpoints({
       query: () => '/categories',
       providesTags: ['Categories'],
     }),
-    createCategory: builder.mutation<Category, { name: string; description?: string }>({
+    createCategory: builder.mutation<
+      Category,
+      { name: string; description?: string }
+    >({
       query: (data) => ({
         url: '/admin/categories',
         method: 'POST',

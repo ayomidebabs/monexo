@@ -7,40 +7,49 @@
   scroll-behavior: smooth;
 
   &[data-theme='light'] {
-    --bg-primary: rgb(242, 242, 242);
-    --bg-secondary: rgb(246, 246, 246);
+    --bg-primary: #f2f2f2;
+    --bg-secondary: #f6f6f6;
     --text-primary: #2c1f1f;
     --text-secondary: #5a4033;
     --accent-primary: #f68b1e;
-    --accent-secondary: rgb(255, 107, 97);
-    --highlight: #26a69a;
+    --accent-secondary: #ff6b61;
     --accent-tertiary: #fdb56d;
-    --neutral-white: rgb(249, 249, 249);
+    --highlight: #26a69a;
+    --white: #f9f9f9;
+    --neutral-white: #f9f9f9;
     --neutral-light: #fbd2a8;
-    --primary-rgb: 198, 142, 23;
+    --dark: #2c1f1f;
+    --slider-bg: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.35),
+        transparent 60%
+      ),
+      linear-gradient(135deg, #f68b1e 0%, #fdb56d 45%, #ff6b61 100%);
   }
 
   &[data-theme='dark'] {
-    // --bg-primary: #1E1A13;
-    // --bg-secondary: #2F251A;
-    // --text-primary: #E8D4B5;
-    // --text-secondary: #B8A488;
-    // --accent-primary: #D4A017;
-    // --accent-secondary: #9C552E;
-    // --highlight: #33CCC1;
-    // --accent-tertiary: #FF8A80;
-    // --neutral-black: #0F0C09;
-    // --neutral-dark: #3B2F1F;
-    // --primary-rgb: 212, 160, 23;
-
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2c2c2c;
-    --text-primary: #e0e0e0;
-    --text-secondary: #adb5bd;
-    --accent-primary: #d4a017;
-    --accent-secondary: #9c552e;
-    --primary-rgb: 212, 160, 23;
-    --highlight: #de1b1b;
+    --bg-primary: #19191c;
+    --bg-secondary: #0d0d0d;
+    --text-primary: #e6e6e6;
+    --text-secondary: #ffffffb3;
+    --accent-primary: #f5a623;
+    --accent-secondary: #ff795a;
+    --accent-tertiary: #e7a85e;
+    --highlight: #1e897e;
+    --white: #dadada;
+    --neutral-white: #0d0d0d;
+    --dark: #2c1f1f;
+    --slider-bg: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.08),
+        transparent 60%
+      ),
+      linear-gradient(
+        135deg,
+        rgba(245, 166, 35, 0.8) 0%,
+        rgba(255, 121, 90, 0.6) 50%,
+        rgba(231, 168, 94, 0.8) 100%
+      );
   }
 }
 

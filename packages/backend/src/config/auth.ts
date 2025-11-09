@@ -1,0 +1,240 @@
+import dotenv from 'dotenv';
+import { Request } from 'express';
+import Google from '@auth/express/providers/google';
+import Facebook from '@auth/express/providers/facebook';
+import Credentials from '@auth/express/providers/credentials';
+import type { AuthConfig, Session } from '@auth/core/types';
+import type { OAuthConfig, Provider } from '@auth/core/providers';
+import type { JWT } from '@auth/core/jwt';
+import User from '../models/User.js';
+import { validatePassword } from '../utils/pswdEncryption.js';
+import { updateLockout } from '../utils/updateLockout.js';
+import { AppError } from '../middleware/GlobalErrorHandler.js';
+import { type User as user } from '../types/appUser.js';
+
+interface CustomUser extends Partial<user> {
+  id?: string;
+  _id?: string;
+}
+
+dotenv.config();
+
+const { GOOGLE_ID, GOOGLE_SECRET, FACEBOOK_ID, FACEBOOK_SECRET, AUTH_SECRET } =
+  process.env;
+if (
+  !GOOGLE_ID ||
+  !GOOGLE_SECRET ||
+  !FACEBOOK_ID ||
+  !FACEBOOK_SECRET ||
+  !AUTH_SECRET ||
+  typeof GOOGLE_ID !== 'string' ||
+  typeof GOOGLE_SECRET !== 'string' ||
+  typeof FACEBOOK_ID !== 'string' ||
+  typeof FACEBOOK_SECRET !== 'string' ||
+  typeof AUTH_SECRET !== 'string'
+) {
+  throw new Error(
+    'Missing or invalid required environment variables for Google or Facebook OAuth'
+  );
+}
+
+interface CustomSession extends Session {
+  user: {
+    id?: string;
+    [key: string]: any;
+  };
+}
+
+export const authConfig: AuthConfig = {
+  secret: AUTH_SECRET,
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
+  },
+
+  providers: [
+    Google({
+      clientId: GOOGLE_ID,
+      clientSecret: GOOGLE_SECRET,
+      async profile(profile) {
+        let user = await User.findOne({ 'google.id': profile.sub });
+        try {
+          if (!user)
+            user = await User.create({
+              name: profile.name,
+              email: profile.email || `google-${profile.sub}@example.com`,
+              google: {
+                id: profile.sub,
+                avatar: profile.picture,
+              },
+              strategy: 'google',
+            });
+        } catch (error) {
+          throw new AppError((error as Error).message);
+        }
+        return {
+          id: user.id.toString(),
+          _id: user.id.toString(),
+          name: user.name,
+          email: user.email,
+        };
+      },
+    }) as OAuthConfig<any>,
+    Facebook({
+      clientId: FACEBOOK_ID,
+      clientSecret: FACEBOOK_SECRET,
+      authorization: { params: { scope: '' } },
+      async profile(profile) {
+        let user = await User.findOne({ 'facebook.id': profile.id });
+        try {
+          if (!user) {
+            user = await User.create({
+              name: profile.name,
+              email: profile.email || `facebook-${profile.id}@example.com`,
+              facebook: {
+                id: profile.id,
+                avatar: profile.picture?.data?.url,
+              },
+              strategy: 'facebook',
+            });
+          }
+          return {
+            id: user.id.toString(),
+            _id: user.id.toString(),
+            name: user.name,
+            email: user.email,
+          };
+        } catch (error) {
+          throw new AppError((error as Error).message);
+        }
+      },
+    }) as OAuthConfig<any>,
+    Credentials({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials, req: unknown) {
+        const expressReq = req as Request & {
+          lockoutKey?: string;
+          lockoutDuration?: number;
+          maxAttempts?: number;
+        };
+        const {
+          lockoutKey = 'unknown',
+          lockoutDuration = 15 * 60 * 1000,
+          maxAttempts = 5,
+        } = expressReq;
+
+        try {
+          if (
+            !credentials?.email ||
+            !credentials?.password ||
+            typeof credentials.email !== 'string' ||
+            typeof credentials.password !== 'string'
+          ) {
+            return null;
+          }
+
+          const user = await User.findOne({
+            email: credentials.email,
+          });
+          if (!user) {
+            return null;
+          }
+
+          const isValidPswd = await validatePassword(
+            credentials.password,
+            user.local.password
+          );
+          if (!isValidPswd) {
+            await updateLockout(lockoutKey, lockoutDuration, maxAttempts);
+            user.failedSignInAttempts = (user.failedSignInAttempts || 0) + 1;
+            if (user.failedSignInAttempts >= maxAttempts) {
+              user.lockedUntil = new Date(Date.now() + lockoutDuration);
+            }
+            await user.save();
+            return null;
+          }
+
+          user.failedSignInAttempts = 0;
+          user.lockedUntil = undefined;
+          await user.save();
+          return {
+            id: user.id.toString(),
+            name: user.name,
+            email: user.email,
+          };
+        } catch (error) {
+          throw new AppError((error as Error).message);
+        }
+      },
+    }),
+  ],
+
+  callbacks: {
+    async signIn() {
+      return true;
+    },
+    async jwt({ token, user }: { user: any; token: JWT }) {
+      if (user) {
+        const dbId = user._id?.toString() ?? user.id?.toString();
+        token.id = dbId;
+        token.sub = dbId;
+      }
+
+      return token;
+    },
+    async session({
+      session,
+      token,
+    }: {
+      session: CustomSession;
+      token: JWT;
+    }): Promise<CustomSession> {
+      if (token.id) {
+        try {
+          const user = await User.findById(token.id);
+          if (user) {
+            switch (user.strategy) {
+              case 'local':
+                session.user = {
+                  id: user.id,
+                  name: user.name,
+                  role: user.role,
+                };
+                break;
+              case 'google':
+                session.user = {
+                  id: user.id,
+                  name: user.name,
+                  role: user.role,
+                };
+                break;
+              case 'facebook':
+                session.user = {
+                  id: user.id,
+                  name: user.name,
+                  role: user.role,
+                };
+                break;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching user in session callback:', error);
+        }
+      }
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.includes('/signin')) return baseUrl + '/signin-success';
+      if (url.includes('/signout')) return baseUrl + '/signout-success';
+
+      return process.env.FRONT_END_URL as string;
+    },
+  },
+
+  trustHost: true,
+};

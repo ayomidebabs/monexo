@@ -3,7 +3,7 @@
   padding: 3rem 1rem;
   color: #e74c3c;
   background: #fdf2f2;
-  border-radius: 12px;
+  border-radius: f.r(12);
   margin: 2rem 1rem;
 }
 
@@ -13,7 +13,7 @@
   background: #3498db;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: f.r(8);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;

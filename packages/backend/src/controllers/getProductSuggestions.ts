@@ -13,7 +13,6 @@ export const getProductSuggestion = [
         locations: ['query'],
       }) as unknown as ProductQuery;
       const query: any = {};
-      console.log(search);
 
       if (search) query.name = { $regex: search, $options: 'i' };
 

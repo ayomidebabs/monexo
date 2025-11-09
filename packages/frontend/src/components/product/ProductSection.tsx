@@ -1,7 +1,7 @@
 import HorizontalSlider from '../others/HorizontalSlider';
 import { useGetProductsQuery } from '../../features/products/productAPI';
-import styles from '../../styles/pages/home.module.scss';
 import ProductSliderSkeleton from '../skeletons/ProductSliderSkeleton';
+import styles from '../../styles/pages/home.module.scss';
 
 const ProductSection = ({
   title,

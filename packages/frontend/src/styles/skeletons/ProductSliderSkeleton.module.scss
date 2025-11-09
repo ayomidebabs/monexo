@@ -1,3 +1,7 @@
+@use '../utils//functions' as f;
+@use '../utils//mixins' as m;
+@use '../utils/shadows' as s;
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -31,18 +35,18 @@
 }
 
 .skeleton-title {
-  height: 26px;
-  width: 180px;
-  border-radius: 8px;
+  height: f.r(26);
+  width: f.r(180);
+  border-radius: fr(8);
   background: linear-gradient(90deg, #f1f1f1 25%, #e5e5e5 50%, #f1f1f1 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
 }
 
 .skeleton-link {
-  height: 34px;
-  width: 92px;
-  border-radius: 10px;
+  height: f.r(34);
+  width: f.r(92);
+  border-radius: fr(10);
   background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
@@ -67,18 +71,18 @@
 }
 
 .skeleton-card {
-  flex: 0 0 210px;
+  flex: 0 0 f.r(210);
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: fr(16);
   padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 f.r(4) f.r(12) rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease;
   animation: pulse 2.2s ease-in-out infinite;
 }
 
 .skeleton-image {
-  height: 160px;
-  border-radius: 12px;
+  height: f.r(160);
+  border-radius: f.r(12);
   margin-bottom: 0.875rem;
   background: linear-gradient(90deg, #ececec 25%, #e0e0e0 50%, #ececec 75%);
   background-size: 200% 100%;
@@ -86,8 +90,8 @@
 }
 
 .skeleton-line {
-  height: 14px;
-  border-radius: 6px;
+  height: f.r(14);
+  border-radius: f.r(6);
   margin-bottom: 0.625rem;
   background: linear-gradient(90deg, #f3f3f3 25%, #e8e8e8 50%, #f3f3f3 75%);
   background-size: 200% 100%;
@@ -99,101 +103,101 @@
 }
 
 .skeleton-line-short {
-  height: 12px;
+  height: f.r(12);
   width: 68%;
-  border-radius: 6px;
+  border-radius: f.r(6);
   background: linear-gradient(90deg, #f3f3f3 25%, #e8e8e8 50%, #f3f3f3 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
 }
 
-@media (min-width: 576px) {
+@include m.up(sm) {
   .skeleton-slider {
     padding: 2rem 1.25rem;
   }
 
   .skeleton-title {
-    width: 220px;
-    height: 28px;
+    width: f.r(220);
+    height: f.r(28);
   }
   .skeleton-link {
-    width: 100px;
-    height: 36px;
+    width: f.r(100);
+    height: f.r(36);
   }
 
   .skeleton-card {
-    flex: 0 0 230px;
+    flex: 0 0 f.r(230);
     padding: 1.125rem;
   }
 
   .skeleton-image {
-    height: 175px;
+    height: f.r(175);
   }
   .skeleton-line {
-    height: 15px;
+    height: f.r(15);
   }
   .skeleton-line-short {
-    height: 13px;
+    height: f.r(13);
     width: 62%;
   }
 }
 
-@media (min-width: 768px) {
+@include m.up(md) {
   .skeleton-slider {
     padding: 2.5rem 1.5rem;
   }
   .skeleton-title {
-    width: 260px;
+    width: f.r(260);
   }
   .skeleton-cards {
     gap: 1.25rem;
   }
   .skeleton-card {
-    flex: 0 0 250px;
+    flex: 0 0 f.r(250);
   }
   .skeleton-image {
-    height: 190px;
+    height: f.r(190);
   }
 }
 
-@media (min-width: 992px) {
+@include m.up(lg) {
   .skeleton-slider {
     padding: 3rem 2rem;
   }
   .skeleton-title {
-    width: 300px;
+    width: f.r(300);
   }
   .skeleton-card {
-    flex: 0 0 270px;
+    flex: 0 0 f.r(270);
   }
   .skeleton-image {
-    height: 210px;
+    height: f.r(210);
   }
 }
 
-@media (min-width: 1200px) {
+@include m.up(xl) {
   .skeleton-slider {
     padding: 3.5rem 2.5rem;
-    max-width: 1200px;
+    max-width: f.r(1200);
     margin: 0 auto;
   }
   .skeleton-card {
-    flex: 0 0 290px;
+    flex: 0 0 f.r(290);
   }
   .skeleton-image {
-    height: 230px;
+    height: f.r(230);
   }
 }
 
-@media (min-width: 1400px) {
+@include m.up(xxl) {
   .skeleton-slider {
-    max-width: 1320px;
+    max-width: f.r(1320);
   }
   .skeleton-card {
-    flex: 0 0 310px;
+    flex: 0 0 f.r(310);
   }
   .skeleton-image {
-    height: 250px;
+    height: f.r(250);
   }
 }
 
@@ -208,6 +212,6 @@ html[data-theme='dark'] {
 
   .skeleton-card {
     background: #1f1f1f;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 f.r(4) f.r(12) rgba(0, 0, 0, 0.3);
   }
 }
